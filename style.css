@@ -1,23 +1,18 @@
 * {
-	font-family: "Abel", sans-serif;
+	font-family: "Open Sans", sans-serif;
 	color: #434d56;
-	/*border-style: solid;
-	border-width: 1px;*/
+	font-weight:300;
 }
 
-.banner {
-	font-family: "Amatic SC", cursive;
-}
 
-/* links */
-
-li {
+/* header list */
+.header li {
 	display: inline;
 	padding: 0px 32px 0px 32px;
 
 }
 
-ul {
+.header ul {
 	text-align:right;
 	list-style-type: none;
 	margin: 0;
@@ -25,22 +20,52 @@ ul {
 	z-index: 0;
 }
 
-a {
-	text-decoration: none;
-	font-weight: bold;
+/* in-text list */
+.text li{
+	display: list-item;
+	font-weight: 300;
+	margin: 0px 0px 5px 0px;
 }
 
-a:visited{
+.text ul {
+	text-align: left;
+	list-style-type: none;
+
+}
+
+/* header links */
+.header a {
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.header a:visited{
 	text-decoration: none;
 }
 
-a:hover{
-	font-weight: bold;
+.header a:hover{
+	font-weight: 600;
+	color: lightslategrey;
+}
+/* in-text links */
+.text a {
+	text-decoration: none;
+	font-weight: 400;
+}
+
+.text a:visited{
+	text-decoration: none;
+}
+
+.text a:hover{
+	font-weight: 400;
 	color: lightslategrey;
 }
 
-/* header */
+/* title */
 h1 {
+	font-family: "Abel", sans-serif;
+	font-size: 42px;
 	display:table;
 	margin:auto;
 	border-style: solid;
@@ -48,10 +73,26 @@ h1 {
 	padding: 2px 8px 2px 8px;
 }
 
+/* content text */
 .text {
 	display: inline-block;
 	position: relative;
 	left: 50%;
 	padding-top: 100px;
 }
+
+.text .secretlink a {
+	text-decoration:none;
+	font-weight: 300;
+}
+
+.text .secretlink a:visited{
+	text-decoration: none;
+}
+
+.text .secretlink a:hover{
+	text-decoration:none;
+	color: #434d56;
+}
+
 
