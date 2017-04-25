@@ -19,6 +19,7 @@
 	display: inline;
 	padding: 0px 32px 0px 32px;
 
+
 }
 
 .header ul {
@@ -54,7 +55,7 @@
 
 .header a:hover{
 	font-weight: 600;
-	color: lightslategrey;
+	color: #F4C2C2;
 }
 /* in-text links */
 .text a {
@@ -68,7 +69,8 @@
 
 .text a:hover{
 	font-weight: 400;
-	color: lightslategrey;
+	color: #F4C2C2;
+
 }
 
 /* title */
@@ -103,5 +105,3 @@ h1 {
 	text-decoration:none;
 	color: #434d56;
 }
-
-
