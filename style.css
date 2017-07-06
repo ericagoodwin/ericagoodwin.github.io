@@ -5,14 +5,14 @@
 }
 
 .pic img {
-	width: 46%;
+	width: 40%;
 	height: auto;
 	background-attachment: fixed;
 	position: absolute;
 	top: 13%;
 	bottom: 10%;
-	left: 27%;
-	right: 27%;
+	left: 30%;
+	right: 30%;
 }
 
 img:hover {
@@ -22,7 +22,7 @@ img:hover {
 .pic #text {
 	font-size: 12px;
 	text-align: center;
-	margin-top: 56%;
+	margin-top: 49%;
 }
 
 /* header list */
