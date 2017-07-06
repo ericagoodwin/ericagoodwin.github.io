@@ -5,20 +5,31 @@
 }
 
 .pic img {
-	width:40%;
-	height: 50%;
+	width: 46%;
+	height: auto;
 	background-attachment: fixed;
 	position: absolute;
-	top: 20%;
-	left: 5%;
+	top: 13%;
+	bottom: 10%;
+	left: 27%;
+	right: 27%;
 }
 
+img:hover {
+	opacity: 0.5;
+}
+
+.pic #text {
+	font-size: 12px;
+	text-align: center;
+	margin-top: 56%;
+}
 
 /* header list */
 .header li {
 	display: inline;
 	padding: 0px 32px 0px 32px;
-
+	visibility: hidden;
 }
 
 .header ul {
@@ -73,15 +84,16 @@
 
 /* title */
 h1 {
-	font-family: "Abel", sans-serif;
-	font-size: 42px;
+	font-family: 'Crimson Text', serif;
+	font-size: 3.5em;
 	display:table;
 	margin:auto;
-	border-style: solid;
-	border-width: 2px;
 	padding: 2px 8px 2px 8px;
+	letter-spacing: 8px;
 }
 
+h1:hover {
+}
 /* content text */
 .text {
 	display: inline-block;
@@ -104,5 +116,3 @@ h1 {
 	text-decoration:none;
 	color: #434d56;
 }
-
-
