@@ -84,31 +84,41 @@ img:hover {
 	color: #ffcccc;
 }
 
+a {
+	text-decoration: none;
+	font-weight: 500;
+}
 
+a:hover {
+	color: #AFB4B7;
+}
 
-/* content text
+/* content text */
 .text {
 	display: inline-block;
 	position: relative;
 	left: 50%;
-	padding-top: 100px;
+	padding-top: 10%;
 	width: 40%;
 }
 
-.text .secretlink a {
-	text-decoration:none;
-	font-weight: 300;
+footer {
+	position: absolute;
+	padding: 0px;
+	margin: 0px;
+	top: 94%;
+	height: 6%;
+	width: 100%;
+	font-style: italic;
+	word-spacing: 100px;
+	text-align: center;
+	z-index: 0;
+	background-color: #D8DBDB;
+
 }
 
-.text .secretlink a:visited{
-	text-decoration: none;
-}
 
-.text .secretlink a:hover{
-	text-decoration:none;
-	color: #434d56;
-}
-*/
+
 
 /* in-text list
 .text li{
