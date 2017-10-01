@@ -45,7 +45,7 @@ h1 a:hover {
 	cursor: pointer;
 }
 
-img:hover {
+.frontpic img:hover {
 	opacity: 0.5;
 }
 
@@ -94,7 +94,15 @@ a:hover {
 }
 
 /* content text */
-.text {
+.hitext {
+	display: inline-block;
+	position: relative;
+	left: 50%;
+	padding-top: 7%;
+	width: 40%;
+}
+
+.personaltext {
 	display: inline-block;
 	position: relative;
 	left: 50%;
@@ -117,6 +125,14 @@ footer {
 
 }
 
+ img {
+	width: 35%;
+	height: auto;
+	background-attachment: fixed;
+	position: absolute;
+	top: 22%;
+	left: 10%;
+}
 
 
 
