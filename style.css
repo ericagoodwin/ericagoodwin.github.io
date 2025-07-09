@@ -1,168 +1,73 @@
-/* TODO
-hi content
-projects content
-update resume
-personal content
-contact footer?
- */
-
 * {
 	font-family: 'Raleway', sans-serif;
 	color: #434d56;
 	font-weight:300;
+	line-height: 1.5;
+}
+
+b {
+	font-weight:700;
+	color: #8A9A5B;
+}
+
+a {
+	text-decoration: none;
+	font-weight: 450;
+}
+
+a:visited{
+	text-decoration: none;
 }
 
 /* title */
 h1 {
 	font-family: 'Crimson Text', serif;
-	font-size: 3.5em;
+	font-size: 2em;
 	display:table;
 	margin:auto;
 	padding: 2px 8px 2px 8px;
-	letter-spacing: 8px;
-}
-
-h1 a {
-	text-decoration: none;
-	font-family: 'Crimson Text', serif;
-}
-
-h1 a:hover {
-	color: #ffcccc;
-}
-
-
-/* front page pic */
-.frontpic img {
-	width: 40%;
-	height: auto;
-	background-attachment: fixed;
-	position: absolute;
-	top: 13%;
-	bottom: 10%;
-	left: 30%;
-	right: 30%;
-	cursor: pointer;
-}
-
-.frontpic img:hover {
-	opacity: 0.5;
-}
-
-.frontpic #text {
-	font-size: 12px;
-	text-align: center;
-	margin-top: 49%;
-}
-
-/* menu list */
-.menu li {
-	display: inline;
-	padding: 20px 80px 0px 80px;
-}
-
-.menu ul {
-	text-align:center;
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	z-index: 0;
-}
-
-.menu a {
-	text-decoration: none;
-	font-weight: 400;
-
-}
-
-.menu a:visited{
-	text-decoration: none;
-}
-
-.menu a:hover{
-	font-weight: 500;
-	color: #ffcccc;
-}
-
-a {
-	text-decoration: none;
-	font-weight: 500;
+	color: #336600;
 }
 
 a:hover {
-	color: #AFB4B7;
+	color: #8A9A5B;
+}
+
+.menu {
+	text-align:center;
+}
+
+.menu a {
+	font-weight: 400;
 }
 
 /* content text */
-.hitext {
+.intro {
 	display: inline-block;
 	position: relative;
 	left: 50%;
-	padding-top: 7%;
+	padding-top: 2%;
 	width: 40%;
 }
 
-.personaltext {
-	display: inline-block;
-	position: relative;
-	left: 50%;
-	padding-top: 10%;
-	width: 40%;
+.research {
+	padding-top: 1%;
+	padding-left: 10%;
+	padding-right: 10%;
+	left: 90%;
 }
 
-footer {
-	position: absolute;
-	padding: 0px;
-	margin: 0px;
-	top: 94%;
-	height: 6%;
-	width: 100%;
-	font-style: italic;
-	word-spacing: 100px;
-	text-align: center;
-	z-index: 0;
-	background-color: #D8DBDB;
-
+.other {
+	padding-top: 5%;
 }
 
- img {
+ /* img {
 	width: 35%;
 	height: auto;
 	background-attachment: fixed;
 	position: absolute;
 	top: 22%;
 	left: 10%;
-}
+} */
 
 
-
-/* in-text list
-.text li{
-	display: list-item;
-	font-weight: 300;
-	margin: 0px 0px 5px 0px;
-}
-
-.text ul {
-	text-align: left;
-	list-style-type: none;
-
-}
-*/
-
-/* in-text links
-.text a {
-	text-decoration: none;
-	font-weight: 400;
-}
-
-.text a:visited{
-	text-decoration: none;
-}
-
-.text a:hover{
-	font-weight: 400;
-	color: lightslategrey;
-}
-
-*/
