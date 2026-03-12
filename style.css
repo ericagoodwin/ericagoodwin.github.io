@@ -61,9 +61,8 @@ a:hover {
 
 /* content text */
 .intro {
-	float: right;
-	left: 50%;
 	padding-top: 2%;
+	padding-right: 5%;
 	width: 50%;
 }
 
