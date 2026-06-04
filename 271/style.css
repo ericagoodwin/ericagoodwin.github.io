@@ -1,0 +1,170 @@
+* {
+	font-family: 'Raleway', sans-serif;
+	color: #434d56;
+	font-weight:300;
+	line-height: 1.5;
+}
+
+body {
+    margin: 0;
+    padding: 0 10%;
+}
+
+b {
+	font-weight:700;
+	color: #8A9A5B;
+}
+
+a {
+	/* text-decoration: none; */
+	font-weight: 450;
+	color: #2F4F2F;
+}
+
+a:visited{
+	text-decoration: none;
+}
+
+.container {
+	display: flex;
+	justify-content: space-around;
+}
+
+/* headshot */
+.pic {
+	padding-top: 3%;
+	padding-left: 20%;
+	padding-right: 5%;
+}
+
+img {
+	max-width: 100%; /* Allows the image to scale down to fit its container */
+	height: auto;    /* Maintains the image's aspect ratio */
+  }
+
+
+/* title */
+h1 {
+	font-family: 'Crimson Text', serif;
+	font-size: 2em;
+	display:table;
+	margin:auto;
+	padding: 2px 8px 2px 8px;
+	color: #336600;
+}
+
+.site-header {
+	background-color:  #dfe8d8;
+	/* padding: 20px; */
+
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+}
+
+a:hover {
+	color: #8A9A5B;
+}
+
+.menu {
+	text-align:center;
+}
+
+.menu a {
+	font-weight: 400;
+}
+
+/* content text */
+.intro {
+	padding-top: 2%;
+	padding-right: 5%;
+	width: 50%;
+}
+
+.research {
+	padding-top: 1%;
+	padding-left: 10%;
+	padding-right: 10%;
+	left: 90%;
+}
+
+.other {
+	padding-top: 5%;
+}
+
+
+
+#lecture-schedule {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#lecture-schedule th,
+#lecture-schedule td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+
+#lecture-schedule thead th {
+    background-color: #dfe8d8;
+}
+
+#lecture-schedule th:first-child {
+    width: 120px;
+    white-space: normal;
+}
+
+.button-link {
+    display: inline-block;
+    background-color: #355E3B;
+    color: white !important;
+    text-decoration: none;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border-radius: 3px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.button-link:visited {
+    color: white !important;
+}
+
+.button-link:hover {
+    background-color: #8A9A5B;
+    color: white !important;
+}
+
+.welcome {
+    text-align: center;
+    font-size: 1.1em;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+}
+
+.course-buttons {
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.syllabus-box {
+    margin: 1.5em 0;
+    padding: 10px 14px;
+    border: 1px solid #355E3B;
+    border-radius: 4px;
+    background-color: #f8faf7;
+}
+
+.syllabus-box summary {
+    font-weight: 600;
+    cursor: pointer;
+    color: #355E3B;
+}
+
+.syllabus-box summary:hover {
+    color: #8A9A5B;
+}
+
+.syllabus-content {
+    margin-top: 10px;
+}
