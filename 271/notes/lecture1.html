@@ -1,0 +1,901 @@
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel='shortcut icon' type='image/x-icon' href='uc.png'>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+
+    <title>CMSC 27100 &mdash; Lecture 1: Logic and Proofs</title>
+    <link rel="stylesheet" href="style-notes.css" type="text/css" media="screen, print">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+
+    <style>
+        body {
+            counter-reset: section 1 theorem;
+        }
+    </style>
+
+</head>
+
+<body>
+<h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 1</h1>
+
+<h3 class="citation">The notes for this course began from a series originally
+    written by <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>, with extensions by
+    <a href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and
+            <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>. I have modified them to follow our course.</h3>
+
+<p> As described in the course introduction, this is a course first and foremost
+    about mathematical reasoning. Specifically, we will use systematic deductive reasoning to solve problems and, most importantly, prove that our solutions are correct. </p>
+
+<p> The backbone of any proof is <em>logic</em>. In our course and in this field, it will be used as our model for
+    determining truth. Practically speaking, a brief encounter with logic will give you a foundation for parsing,
+    understanding, and finally proving mathematical statements.  </p>
+
+<h2>Propositional Logic</h2>
+
+<h3>Propositions</h3>
+
+<p>We will begin with <em>propositional logic</em> and expand from there.
+    The basic element of propositional logic is the <em>proposition</em>.
+    Propositions simply model statements that are either true or false.</p>
+
+<div class="definition">
+    <p>A <strong>proposition</strong> is a statement that is either true or
+        false.</p>
+</div>
+
+<div class="example">
+    <p>The following sentences are propositions:</p>
+    <em>
+        <ul>
+            <li> Chicago is capitol of Illinois. </li>
+            <li> Springfield is the capitol of Illinois.</li>
+            <li> Either Chicago or Springfield is the capital of Illinois.</li>
+            <li> Paul Alivisatos is the president of UChicago and Katherine Baicker
+                is the provost of UChicago.</li>
+            <li> Milkshakes at the Reynolds Club cost $1 on Wednesdays.</li>
+            <li> If Chicago is the capitol of Illinois, then milkshakes
+                are free.</li>
+        </ul>
+    </em>
+    </p>
+
+    <p>
+        The following are not propositions:
+        <em>
+            <ul>
+                <li>Chicago.</li>
+                <li>Is it going to snow on Halloween again?</li>
+                <li>Please get a milkshake for me.</li>
+            </ul>
+        </em>
+    </p>
+    <p>
+        The upshot is that we'll be very permissive about what counts as a
+        proposition. As long as we can reasonably interpret a statement as
+        an assertion about something that can be true or false, it's a proposition.
+    </p>
+</div>
+
+<p> If propositional logic stopped there, it wouldn't be very interesting.
+    But we can already notice that simply modeling statements as true and false
+    suggests some intuitive relationships. For instance, we don't expect that
+    the first two examples can both be true (since Illinois only has one
+    capitol), and the third example is clearly related somehow to the first
+    two.  </p>
+
+<p>In propositional logic, we represent propositions symbolically by
+    <em>formulas</em>. Formulas are made up of propositional variables,
+    parentheses, and connectives. Propositional variables, usually lowercase
+    roman letters like $p,q,r,\dots$, represent atomic propositions and
+    connectives allow us to build compound propositions by joining one or more
+    propositions together. Parentheses are used to denote the ordering that we
+    should interpret the connectives in. Hypothetically, we would be able to
+    express every proposition that shows up in this course symbolically, but we
+    won't go that far. </p>
+
+
+<h3>Basic Logical Connectives</h3>
+
+<p>There are four basic logical connectives, called <em>Boolean
+    connectives</em>, after George Boole who defined them in 1854. We will
+    define and consider each one.  </p>
+
+<div class="definition"> <p>For a proposition $p$, $\neg p$ is called
+    <strong>negation</strong> of $p$, and is pronounced "not $p$". The
+    proposition $\neg p$ is defined to be true when $p$ is false and
+    false when $p$ is true.
+</p></div>
+
+<p>For instance, $\neg q$ is the proposition "I cannot take two weeks off".
+    Note that negation is a <em>unary</em> connective, in that it only applies
+    to one formula, while all the other connectives are <em>binary</em>. Observe
+    that because of this, we tend to express atomic propositions positively.
+</p>
+
+<p>The unary connective $\neg$ is defined for a propositional formula $p$ by
+<table>
+    <tr> <th>$p$ <th>$(\neg p)$
+    <tr> <td>$T$ <td>$F$
+    <tr> <td>$F$ <td>$T$
+</table>
+</p>
+
+<p>
+    This is our first example of a <b>truth table</b>. To construct it, we
+    listed the possible truth values for $p$, and then for each of those
+    we listed $(\neg p)$ in the corresponding row.
+</p>
+
+<div class="definition"> <p>For propositions $p$ and $q$, $p \wedge q$ is the
+    <strong>conjunction</strong> of $p$ and $q$. It is pronounced "$p$ and $q$".
+    The proposition $p \wedge q$ is defined to be true if both $p$ and $q$ are
+    true, and false otherwise.</p></div>
+
+<p>This connective expresses the idea that both $p$ and $q$ are true. For
+    instance, $q \wedge r$ is the proposition "I can take two weeks off and I
+    can fly to Tokyo".</p>
+
+<div class="definition"> <p>For propositions $p$ and $q$, $p \vee q$ is the
+    <strong>disjunction</strong> of $p$ and $q$. It is pronounced "$p$ or $q$".
+    The proposition $p \vee q$ is defined to be true $p$ is true or $q$ is true
+    (or both), and false otherwise.</p></div>
+
+<p>For example, $q \vee r$ is the proposition "I can take two weeks off or
+    I can fly to Tokyo". One tricky thing to note with English is that many
+    times we use "or" to mean "exclusive or". For instance, when you are asked
+    whether you prefer beef or chicken, the expectation is that you may only
+    choose one and not both. This logical connective allows for both $p$ and
+    $q$ to be true, which corresponds to something like "and/or" in English.
+</p>
+
+<p>The binary connectives $\wedge$ and $\vee$ are defined for propositional
+    formulas $p$ and $q$ by
+<table>
+    <tr> <th>$p$ <th>$q$ <th>$\quad$ <th>$p \wedge q$ <th>$p \vee q$
+    <tr> <td>$T$ <td>$T$ <td> <td>$T$ <td>$T$
+    <tr> <td>$T$ <td>$F$ <td> <td>$F$ <td>$T$
+    <tr> <td>$F$ <td>$T$ <td> <td>$F$ <td>$T$
+    <tr> <td>$F$ <td>$F$ <td> <td>$F$ <td>$F$
+</table>
+We have again used a truth table. Notice that this table has four rows,
+because have to list the four possible truth values for $p$ and $q$.
+</p>
+
+<h3>The Conditional Connective</h3>
+
+<p>
+    So far the connectives have been mostly natural, up to some quibbling
+    over the meaning of "or". But propositional logic really springs to
+    life we speak of assertions <em>implying</em> each other. Essentially
+    every mathematical statement asserts that, under some conditions, one
+    can draw certain conclusions. This motivates the following definition.
+</p>
+
+<div class="definition"> <p>For propositions $p$ and $q$, the proposition $p
+    \rightarrow q$ is called <strong>implication</strong> and is pronounced "if
+    $p$, then $q$".  We call $p$ the <strong>hypothesis</strong> and $q$ the
+    <strong>conclusion</strong>.  </p></div>
+
+<p>That definition leaves much to be desired. How exactly can we construct
+    a truth table for the $\rightarrow$ connective? Some rows of the table
+    are relatively easy:
+<table>
+    <tr> <th>$p$ <th>$q$ <th>$\quad$ <th>$p \rightarrow q$
+    <tr> <td>$T$ <td>$T$ <td> <td>$T$
+    <tr> <td>$T$ <td>$F$ <td> <td>$F$
+    <tr> <td>$F$ <td>$T$ <td> <td>?
+    <tr> <td>$F$ <td>$F$ <td> <td>?
+</table></p>
+
+<p>
+    Even those rows could be debated, but we're ultimately building up to the
+    language that mathematicians use, so that will be our guide. And in their
+    usage, $p\rightarrow q$ does not mean "$p$ causes $q$ to be true", in the
+    way that sunshine and rain cause grass to grow. The meaning of
+    $p\rightarrow q$ is closer to "if $p$ is true, then $q$ is also true". So
+    if $p$ is true and $q$ is true, then $p\rightarrow q$ is declared to be true.
+    Similarly, if $p$ is true but $q$ is false, then $p\rightarrow q$ is false.
+</p>
+
+<p>
+    But what about the remaining rows? If $p$ is false, then it's a funny
+    question. In fact, we saw an example of this situation above: <em>
+    If Chicago is the capitol of Illinois, then milkshakes are free.</em>
+    (Chicago is not the capitol of Illinois!) There are a few ways to wrap your
+    head around what the value should be here - the primary one being the vacuous
+    truth: the value of $q$ does not matter if $p$ is false, so for any $q$ the
+    statement $p \rightarrow q$ should hold. Or, we can think of it as saying
+    that if our assumptions are false then we can conclude anything. Regardless,
+    we'll see later that it makes notation much more straightforward in the future
+    if we assume that both of those rows should be filled with $T$,
+    giving the truth table:
+<table>
+    <tr> <th>$p$ <th>$q$ <th>$\quad$ <th>$p \rightarrow q$
+    <tr> <td>$T$ <td>$T$ <td> <td>$T$
+    <tr> <td>$T$ <td>$F$ <td> <td>$F$
+    <tr> <td>$F$ <td>$T$ <td> <td>$T$
+    <tr> <td>$F$ <td>$F$ <td> <td>$T$
+</table></p>
+
+<p>
+    One could certainly fairly object to this, but we'll see in a few lectures that
+    mathematical statements are ultimately a lot more natural if we use
+    this definition.
+</p>
+
+<h3>More Complex Propositions and Order of Operations</h3>
+
+<p>
+    We can string together propositions using the connectives $\neg,
+    \wedge,\vee,\rightarrow,\leftrightarrow$ to model more complex assertions.
+    As with arithmetic, we need to be careful about the order of operations.
+</p>
+
+<p> An example of a more complex proposition we'd like to model is <em>"If
+    it is either Wednesday and it is not raining, then I buy a
+    milkshake."</em> This could be modeled as $(p \vee (\neg q)) \rightarrow
+    r$, where $p =$ <em>"It is Wednesday."</em> and $q =$ <em>"It is
+        raining."</em> and $r =$ <em>"I will be a milkshake."</em>
+</p>
+
+<p>In order to avoid being overwhelmed by parentheses, we introduce an order
+    of precedence amongst the connectives: From highest to lowest, we take them
+    in the order $\neg, \wedge,\vee$ and let $\rightarrow,\leftrightarrow$ have
+    equal precedence (and thus ties are broken by reading them left-to-right).
+    So, for example, $\neg p \wedge q$ means $(\neg p) \wedge q$ and not $\neg
+    (p \wedge q)$ because $\neg$ has higher precedence than $\wedge$.  Something
+    like $p\rightarrow q \leftrightarrow r$ will be avoided, because we have to
+    assign precedence from left to right, meaning it is $(p\rightarrow q)
+    \leftrightarrow r$ and not $p\rightarrow (q \leftrightarrow r)$. In these
+    cases we'll try to use parentheses always.  </p>
+
+<p>
+    Arbitrarily complex propositions are allowed; For instance we could
+    consider $((p\wedge q)\rightarrow r) \leftrightarrow (r \rightarrow q)$
+    or other even larger combinations of connectives.
+</p>
+
+<p>
+    To compute the truth table of a compound proposition, we proceed by
+    computing the truth tables of its components and iteratively put them
+    together, as in the following example.
+</p>
+
+<div class="example"> <p>Let's compute the truth table of
+    $\neg p\wedge q$. We start by computing the truth table
+    of $\neg p$ as before:</p>
+    <table>
+        <tr> <th>$p$ <th>$q$ <th>$\quad$ <th>$\neg p$
+        <tr> <td>$T$ <td>$T$ <td> <td>$F$
+        <tr> <td>$T$ <td>$F$ <td> <td>$F$
+        <tr> <td>$F$ <td>$T$ <td> <td>$T$
+        <tr> <td>$F$ <td>$F$ <td> <td>$T$
+    </table>
+    <p>Now we use this column, along with the existing column for $p$, the
+        compute the truth table we are after. We simply extend the table with
+        another column:</p>
+    <table>
+        <tr>
+            <th>$p$ </th>
+            <th>$q$ </th>
+            <th>$\quad$ </th>
+            <th>$\neg p$ </th>
+            <th>$\quad$ </th>
+            <th>$\neg p\wedge q$ </th>
+        <tr>
+            <td>$T$ </td>
+            <td>$T$ </td>
+            <td> </td>
+            <td>$F$ </td>
+            <td> </td>
+            <td> $F$</td>
+        </tr>
+        <tr>
+            <td>$T$ </td>
+            <td>$F$ </td>
+            <td> </td>
+            <td>$F$ </td>
+            <td> </td>
+            <td> $F$</td>
+        </tr>
+        <tr>
+            <td>$F$ </td>
+            <td>$T$ </td>
+            <td> </td>
+            <td>$T$ </td>
+            <td> </td>
+            <td> $T$</td>
+        </tr>
+        <tr>
+            <td>$F$ </td>
+            <td>$F$ </td>
+            <td> </td>
+            <td>$T$ </td>
+            <td> </td>
+            <td> $F$</td>
+        </tr>
+    </table>
+</div>
+
+<div class="example"> <p>Let's try a slightly harder one to demonstrate that the negation does not naturally
+distribute: $\neg(p \rightarrow q) \neq \neg p \rightarrow \neg q$. </p>
+    <table>
+        <tr> <th>$p$ <th>$q$ <th>$\quad$ <th>$\neg p$ <th>$\neg q$
+        <tr> <td>$T$ <td>$T$ <td>        <td>$F$      <td>$F$
+        <tr> <td>$T$ <td>$F$ <td>        <td>$F$      <td>$T$
+        <tr> <td>$F$ <td>$T$ <td>        <td>$T$      <td>$F$
+        <tr> <td>$F$ <td>$F$ <td>        <td>$T$      <td>$T$
+    </table>
+    <p>Again, we extend some columns and fill in the rows using our definitions:</p>
+    <table>
+        <tr> <th>$p$ <th>$q$ <th>$\quad$ <th>$\neg p$ <th>$\neg q$ <th>$\quad$ <th>$\neg p \rightarrow \neg q$  <th> $\quad$ <th>$p \rightarrow q$ <th>$\neg(p \rightarrow q)$
+        <tr> <td>$T$ <td>$T$ <td>        <td>$F$      <td>$F$      <td>        <td>$T$   <td>  <td>$T$  <td>$F$
+        <tr> <td>$T$ <td>$F$ <td>        <td>$F$      <td>$T$      <td>        <td>$T$   <td>  <td>$F$  <td>$T$
+        <tr> <td>$F$ <td>$T$ <td>        <td>$T$      <td>$F$      <td>        <td>$F$   <td>  <td>$T$  <td>$F$
+        <tr> <td>$F$ <td>$F$ <td>        <td>$T$      <td>$T$      <td>        <td>$T$   <td>  <td>$T$  <td>$F$
+    </table>
+    <p>So we can see that there are disagreeing values between $\neg(p \rightarrow q)$ and $\neg p \rightarrow \neg q$,
+    so they are not logically equivalent (see below).</p>
+</div>
+
+<p>
+    Once you do a few of these, they become a simple matter of robotically
+    composing together truth tables until you have the one you're after.
+
+<div class="example"><p>
+    Here's a more complicated example, given in one table, for the
+    proposition $((p \wedge q) \rightarrow r) = (p \rightarrow (q
+    \rightarrow r))$. We can see how even the equals is built in. </p>
+    <table>
+        <tr> <th>$p$<th>$q$<th>$r$<th>$p \wedge q$<th>$(p \wedge q) \to r$<th>$q \to r$<th>$p \to (q \to r)$
+            <th>$(p \wedge q) \to r = p \to (q \to r)$
+        <tr> <td>$T$<td>$T$<td>$T$<td>$T$         <td>$T$                 <td>$T$      <td>$T$      <td>$T$
+        <tr> <td>$T$<td>$T$<td>$F$<td>$T$         <td>$F$                 <td>$F$      <td>$F$      <td>$T$
+        <tr> <td>$T$<td>$F$<td>$T$<td>$F$         <td>$T$                 <td>$T$      <td>$T$      <td>$T$
+        <tr> <td>$T$<td>$F$<td>$F$<td>$F$         <td>$T$                 <td>$T$      <td>$T$      <td>$T$
+        <tr> <td>$F$<td>$T$<td>$T$<td>$F$         <td>$T$                 <td>$T$      <td>$T$      <td>$T$
+        <tr> <td>$F$<td>$T$<td>$F$<td>$F$         <td>$T$                 <td>$F$      <td>$T$      <td>$T$
+        <tr> <td>$F$<td>$F$<td>$T$<td>$F$         <td>$T$                 <td>$T$      <td>$T$      <td>$T$
+        <tr> <td>$F$<td>$F$<td>$F$<td>$F$         <td>$T$                 <td>$T$      <td>$T$      <td>$T$
+    </table>
+    <p>
+        Note that since we had three atomic propositions $p,q,r$ we needed
+        eight rows in our table this time. Also note that, curiously, this
+        proposition is always true.
+    </p>
+</div>
+
+<h3>Translating Between Logic and English</h3>
+
+Recall that the point of studying propositional logic at this stage is so
+that we can later understand what mathematical statements are saying
+precisely. The application of logic will thus involve translating between
+English and the language of propositional logic (at least in your head).
+A well-written statement should make this easy, but it is good to have
+practice a bit first, and there are some gotchas in common mathematical
+language.
+
+<div class="example">
+    <p>
+        Consider the proposition:</p>
+    <blockquote> Hina knows Python if she is a CS major and
+        took 141, and she is a CS major or did not take 141.
+    </blockquote>
+    <p>A mathematical statement of this form would be rejected outright as
+        too complicated; If you find yourself twisting around words like this,
+        it's a sign that you should refactor your claims into something plainer.
+        But let's try to parse it, just for the challenge. The atomic propositions
+        are</p>
+    <ul>
+        <li>$p=$<em>Hina knows Python.</em></li>
+        <li>$q=$<em>Hina is a CS major.</em></li>
+        <li>$r=$<em>Hina took 141.</em></li>
+    </ul>
+
+    <p>Next, if you look at the statement, it breaks apart into two independent
+        pieces at the comma, joined by a conjunction. The first piece (<em>Hina
+            knows Python if she is a CS major and took 141,</em>) is $(q \wedge r)
+        \rightarrow p$; Note that $q$ and $r$ come second in the English but are on
+        the left-hand side in logical notation. The second piece
+        (<em>she is a CS major or did not take 141</em>) is $q \vee \neg r$.</p>
+
+    Putting  that all together gives $((q \wedge r) \rightarrow p) \wedge (q \vee
+    \neg r)$. Quite a mouthful. </p></div>
+
+<div class="example"> <p>Consider the proposition:</p>
+
+    <blockquote> I'm having pie, unless I'm having a milkshake. </blockquote>
+
+    <p>The problem here is with "unless". Take $p=$<em>"I'm having pie"</em> and
+        $q=$<em>"I'm having a milkshake"</em>. The question is: What does "$p$
+        <em>unless</em> $q$" mean, logically?  </p>
+
+    <p>The common interpretation is $\neg q \rightarrow p$, that is, "<em>If I'm
+        not having a milkshake, then I'm having pie.</em>". You can justify this
+        to yourself by writing down a truth table directly from the sentence and
+        comparing it to  $\neg q \rightarrow p$ (though the case where $p$ and $q$
+        are both false is still awkward; it's similar to the situation with
+        $\rightarrow$). In any case, you may see "unless" from time to time, but it
+        is usually best to avoid it.  </p>
+</div>
+
+
+<h3>Logical Equivalences</h3>
+
+The following notion of logical <em>equivalence</em> is both simple and very
+useful.
+
+<div class="definition"> <p>Two propositions $p,q$ are said to be
+    <strong>equivalent</strong> if they have the same truth tables.  We write $p
+    \equiv q$ to indicate that $p$ and $q$ are equivalent.</p>
+</div>
+
+<p> The definition is simple because no matter how hairy two propositions
+    are, you can always derive their truth tables mechanistically and then
+    compare them.  Why it should be useful will hopefully be apparent later. At
+    a high level, when you're asked to prove a mathematical statement is true, a
+    common trick is to translate it to a proposition $p$, manipulate it into an
+    equivalent proposition $q$, and then prove the equivalent proposition
+    instead.  </p>
+
+<p> The rest of this section records a set of equivalences that are
+    "universal" in a sense that logicians study: Any equivalence can be
+    explained by applying a sequence of these equivalences. For our purposes, we
+    present these equivalences to draw attention to some manipulations that you
+    might be applying without even realizing it.  </p>
+
+<div class="example">
+    <p title="Basic Equivalences">You can check the following equivalences by computing
+        truth tables. These don't need to be memorized, but are worth trying to
+        understand.</p>
+    <em>
+        <ul>
+            <li>  $p \wedge q \equiv q \wedge p$
+                &nbsp;&nbsp;&nbsp;&nbsp;(Commutativity of $\wedge$)</li>
+            <li> $p \vee q \equiv q \vee p$
+                &nbsp;&nbsp;&nbsp;&nbsp;(Commutativity of $\vee$)</li>
+            <li> $(p \wedge q)\wedge r \equiv p \wedge (q \wedge r)$
+                &nbsp;&nbsp;&nbsp;&nbsp;(Associativity of $\wedge$)</li>
+            <li> $(p \vee q)\vee r \equiv p \vee (q \vee r)$
+                &nbsp;&nbsp;&nbsp;&nbsp;(Associativity of $\vee$)</li>
+            <li> $p \vee (q\wedge r) \equiv (p \vee q) \wedge (p \vee r)$
+                &nbsp;&nbsp;&nbsp;&nbsp;(Distributive law) </li>
+            <li> $p \wedge (q\vee r) \equiv (p \wedge q) \vee (p \wedge r)$
+                &nbsp;&nbsp;&nbsp;&nbsp;(Distributive law) </li>
+            <li> $p \leftrightarrow q \equiv (p \rightarrow q) \wedge (q \rightarrow p)$
+                &nbsp;&nbsp;&nbsp;&nbsp;(Biconditional equivalence) </li>
+        </ul>
+    </em>
+    <p>In addition to the truth tables, you can intuit why these
+        equivalences
+        should hold. For example, in the first distributed law, if $p$ is true
+        then both sides are true; If $p$ is false, then both sides are true
+        exactly when $q$ and $r$ are both true.
+    </p>
+</div>
+
+
+<div class="example">
+    <p title="De Morgan's Laws."> Here are two more famous equivalences:
+        <em>
+            <ul>
+                <li>  $\neg(p \wedge q) \equiv \neg p \vee \neg q$
+                    &nbsp;&nbsp;&nbsp;&nbsp;(De Morgan's laws)</li>
+                <li>  $\neg(p \vee q) \equiv \neg p \wedge \neg q$
+                    &nbsp;&nbsp;&nbsp;&nbsp;(De Morgan's laws)</li>
+            </ul>
+        </em>
+        These equivalences are also fairly intuitive. In fact, you've probably
+        thought through them at some point while programming. For example,
+        the code
+    </p>
+
+    <p>
+        <code>
+            if( !((x>0) and (y==1)) ) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// do something<br>
+            }<br>
+        </code>
+    </p>
+    is equivalent to the code
+    <p>
+        <code>
+            if( (x<=0) or (y!=1) ) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// do something<br>
+            }<br>
+        </code>
+    </p>
+    <p>
+        This is another form of De Morgan's Laws.
+    </p>
+</div>
+
+
+<div class='example'>
+    <p title='Additional Basic Equivalences'>
+        Below let us write $T$ as a placeholder for any proposition
+        that is a tautology (definitionally true, e.g. $p \vee \neg p$), similarly $F$ for a contradiction
+        (definitionally false, e.g. $p \wedge \neg p$).
+        <em>
+            <ul>
+                <li>  $p\wedge T \equiv p$ and $p \vee F \equiv p$
+                    &nbsp;&nbsp;&nbsp;&nbsp;(Identity laws) </li>
+                <li>  $p\vee T \equiv T$ and $p \wedge F \equiv F$
+                    &nbsp;&nbsp;&nbsp;&nbsp;(Domination laws) </li>
+                <li>  $p\vee p \equiv p$ and $p \wedge p \equiv p$
+                    &nbsp;&nbsp;&nbsp;&nbsp;(Idempotence of $\vee$ and $\wedge$) </li>
+                <li>  $p\vee (p \wedge q)\equiv p$ and $p \wedge (p\vee q) \equiv p$
+                    &nbsp;&nbsp;&nbsp;&nbsp;(Absorption laws) </li>
+                <li>  $p\vee \neg p \equiv T$ and $p\wedge \neg p \equiv F$
+                    &nbsp;&nbsp;&nbsp;&nbsp;(Negation laws) </li>
+                <li>  $\neg \neg p \equiv p$
+                    &nbsp;&nbsp;&nbsp;&nbsp;(Double negation)</li>
+                <li> $\neg T \equiv F$ and $\neg F \equiv T$
+                    &nbsp;&nbsp;&nbsp;&nbsp;(Tautology or Contradiction Negation)</li>
+            </ul>
+        </em>
+        Verifying these is a good exercise (but don't bother memorizing them
+        for this course).</p>
+</div>
+
+<div class='example'>
+    <p title="Implication"> Of all the equivalences in this
+        section, this one is probably the least familiar:
+        <em>
+            <ul>
+                <li>  $p \rightarrow q \equiv \neg p \vee q$
+                    &nbsp;&nbsp;&nbsp;&nbsp;(Implication equivalence) </li>
+            </ul>
+        </em>
+        Let's look at the truth tables for these:
+    <table>
+        <tr>
+            <th>$p$ </th> <th>$q$ </th> <th>$\quad$ </th>
+            <th>$p \rightarrow q$</th> <th> $\neg p$ </th>
+            <th> $\neg p \vee q$</th>
+        </tr>
+        <tr>
+            <td>$T$ </td> <td>$T$</td> <td></td>
+            <td>$T$</td> <td>$F$</td> <td>$T$</td>
+        </tr>
+        <tr>
+            <td>$T$ </td> <td>$F$</td> <td></td>  <td>$F$</td>  <td>$F$</td>
+            <td>$F$</td>
+        </tr>
+        <tr>
+            <td>$F$ </td> <td>$T$</td> <td></td>  <td>$T$</td>  <td>$T$</td>
+            <td>$T$</td>
+        </tr>
+        <tr>
+            <td>$F$ </td> <td>$F$</td> <td></td>  <td>$T$</td>  <td>$T$</td>
+            <td>$T$</td>
+        </tr>
+    </table>
+    <p>
+        The truth tables match, so they're definitely equivalent. But why?
+        One way to understand it is that when we assert $p\rightarrow q$, if
+        $p$ is not true, then we're done and it holds. But if $p$ is true, then
+        we need $q$ to hold; This is exactly what the right-hand side of the
+        equivalence says.</p>
+</div>
+
+
+<div class='example'>
+    <p title="Equivalence of the contrapositive"> Here is a particularly useful
+        equivalence:</p>
+
+    $$\begin{aligned}p\rightarrow q \equiv \neg q \rightarrow \neg
+    p.\end{aligned}$$
+
+    <p>
+        The <b>contraposition</b> of an implication $p \rightarrow q$ is defined as
+        $\neg q \rightarrow \neg p$, and it turns out that these are equivalent! You'll check
+        in the homework that this is true. This isn't true for $q \rightarrow p$ (the <i>converse</i>)
+        or $\neg p \rightarrow \neg q$ (the <i>inverse</i>).
+        Later we'll learn about "switching to the contrapositive" as a very useful
+        trick in finding proofs.</p>
+</div>
+
+
+<h2>Predicate logic</h2>
+
+<p>Now, one thing you might notice is that propositions as we've defined them
+    don't quite let us say everything we may want to. For instance, if I wanted to
+    talk about some property about integers, I can certainly define propositions
+    for them. However, there's no way to relate the various propositions about
+    integers to the fact that we're talking about the same kinds of objects. For
+    that, we need to expand our language a bit further. The extension that we'll
+    be talking about is called <em>predicate</em> or <em>first-order</em> logic.
+</p>
+
+<p>First, we need to determine a <strong>domain</strong> of discourse, which
+    is the set to which all of our objects belong. This can be something like the
+    natural numbers $\mathbb N$ or the integers $\mathbb Z$ or matrices or
+    functions or graphs and so on. There's also nothing stopping us from making
+    our domain the set of all dogs, if what we really wanted to do was express
+    statements about dogs, or other "real-world" types of objects. This occurs
+    less in math but more in places like database theory. </p>
+
+<p>This brings us to an important thing to keep in mind: statements that may
+    be true in one domain will not necessarily be true in another domain.
+    Obviously, statements that we make about integers will not necessarily hold
+    true for dogs, but it is important to remember that the same could be said for
+    integers versus natural numbers.</p>
+
+<div class="definition"> <p>We define the following domains/sets:</p>
+    <ul>
+        <li>the set of <strong>integers</strong>, $\mathbb Z = \{\dots, -3, -2, -1, 0, 1, 2, 3, \dots \}$,
+        <li>the set of <strong>natural numbers</strong>, $\mathbb N = \{0,1, 2, \dots\}$,
+        <li>the set of <strong>real numbers</strong>, $\mathbb R$,
+        <li>the set of <strong>rational numbers</strong>, $\mathbb Q$,
+        <li>the set of <strong>complex numbers</strong>, $\mathbb C$.
+    </ul>
+</div>
+
+<p>Note that in this course, <strong>we consider 0 to be a natural
+    number</strong>. Not everyone agrees! This is mostly to simplify some
+    notation later on.  </p>
+
+<p>Then, we want to express properties and relationships about the objects in
+    our domain. Specifically, we may want to know whether a property is true for
+    a specific object in our domain. At first glance we may try the proposition $p$ to
+    be defined as "$x$ is an even number," but we run into a problem - this isn't a
+    proposition because its truth value depends on $x$! For this, we need to define
+    <strong>predicates</strong>.
+</p>
+
+<div class="example"> <p>For example, if we define $E$ to be a predicate that
+    expresses the evenness property, then we can say that $E(x)$ means "$x$ is an
+    even number". We would then have $E(12000)$ is true while $E(765)$ is false.
+</p></div>
+
+<p>The less-than relation is another example of a predicate, although because
+    it's pretty important, we've given it its own symbol and usage. We can define
+    a predicate $L(x,y)$ to mean "$x$ is less than $y$" or "$x \lt y$". Then we
+    can say that $L(3,30)$ is true and $L(30,3)$ is false.
+</p>
+
+<p>In the previous examples, almost instinctively, we used both concrete
+    objects and <strong>variables</strong> with our predicates. When we use
+    specific objects with predicates, our statements are not all that different
+    from propositions. However, variables are considered placeholders for objects
+    in the domain and it's the use of variables, together with
+    <strong>quantifiers</strong>, that gives us more expressive power than
+    propositional logic.
+</p>
+
+<div class="definition"> <p>The symbol $\forall$ is called the
+    <strong>universal quantifier</strong> and is read "for all". The symbol
+    $\exists$ is called the <strong>existential quantifier</strong> and is read
+    "there exists".  </p></div>
+
+<p>Basically, we use $\forall$ when we want to make a statement about all
+    objects in our domain and we use $\exists$ when we want to say that there is
+    some object out there in our domain that has a particular property.
+</p>
+
+<div class="example"> <p>We can use predicates and quantifiers
+    together with the logical connectives we introduced with propositional logic
+    to say things like $\forall x (E(x) \rightarrow \neg E(x+1))$. If we take our
+    domain to be $\mathbb Z$, this says that for every integer $x$, if $x$ is
+    even, then $x+1$ is not even. </p></div>
+
+<div class="example"><p> Let's fix our domain to be $\mathbb N$.
+    Recalling our less than predicate $L$ from above, we can consider the
+    following proposition:
+</p>
+    $$\forall x \exists y L(x,y).$$
+    <p>
+        This reads "for every natural number $x$, there exists a natural number $y$
+        such that $x \lt y$". This statement turns out to be true: every natural
+        number does have some other natural number that it's less than. Now, let's
+        consider the following similar statement, where the order of the quantifiers
+        is reversed:
+    </p>
+    $$\exists y \forall x L(x,y).$$
+    <p>
+        Here, we're saying that there is a natural number $y$ for which every other
+        natural number $x$ is less than it. In other words, this says that there is a
+        "biggest" natural number, which is obviously not true. As we can see, the
+        order of the quantifiers matters.
+    </p></div>
+
+<p class="example"> Remember that the domain is important. For instance, if we
+    are working in $\mathbb N$ and we modify the above example slightly to
+    $\forall x \exists y L(y,x)$, we have the statement that "for every natural
+    number $x$, there is some natural number $y$ that is less than $x$". This
+    statement is false if we consider $x = 0$. However, this statement is true if
+    our domain is $\mathbb Z$ (for every integer $x$, there is some integer $y$
+    that is less than $x$). &#x220E;
+</p>
+
+<p>Something we have just run into is the negation of a quantified statement.
+    We have the following logical equivalences:
+
+<div class="theorem"> <p>For all predicates $\varphi$</p>
+    \begin{align*}
+    \neg \forall x \varphi &= \exists x \neg \varphi \\
+    \neg \exists x \varphi &= \forall x \neg \varphi \\
+    \end{align*}
+</div>
+
+<p>We can consider this to be a generalized version of De Morgan's laws for
+    quantifiers. This should be surprising! At first glance, we don't really
+    have a reason to believe that $\forall$ and $\exists$ should be opposites -
+    if anything, $\exists$ seems like a weaker equivalent of $\forall$.</p>
+
+<div class="example"> <p>This may seem strange, but it'll become intuitive when put in use. Taking our example $E(x)$ again,
+    we may have a proposition $\forall x \: E(x)$, which says all numbers are even. This is, of course, false, because
+    <b>there exists</b> a number that is not even. This is in contrast to, say $\forall x \: \neg E(x)$, a statement
+    that is also false (why?) and therefore not the negation of the original proposition.</p>
+</div>
+
+<p>Let's take a moment to think about what this is saying.
+<ul>
+    <li>If $\neg \forall x \varphi$, then this means that $\varphi$ isn't true for all $x$ in the domain and there is some element, say $a$ such that $\neg \varphi$. Thus, $\exists x \neg \varphi$.
+    <li>If $\exists x \neg \varphi$, then there is an element, say $a$ such that $\neg \varphi$ is true. Therefore, $\varphi$ isn't true for every element in the domain and we have $\neg \forall x \varphi$.
+    <li>If $\neg \exists x \varphi$, then there is no element in the domain such that $\varphi$ is true. This means that for every element in the domain, $\neg \varphi$ is true and we have $\forall x \neg \varphi$.
+    <li>If $\forall x \neg \varphi$, this means that $\varphi$ is false for every element in the domain. In other words, there is no element in the domain that makes $\varphi$ true and we have $\neg \exists x \varphi$.
+</ul>
+</p>
+
+<div class="example"> <p>Taking our example $\forall x (E(x) \rightarrow \neg
+    E(x+1)$, we can think about what the <em>negation</em> of this statement might
+    be. Of course, we can begin by slapping on a negation: $$\neg \forall x (E(x)
+    \rightarrow \neg E(x+1)).$$ Is there anything more we can do to clarify what
+    this statement means though? We can make use of the negation of quantified
+    statements that were just mentioned: $$\exists x \neg(E(x) \rightarrow \neg
+    E(x+1)).$$ From here, we can make use of the propositional equivalences we saw
+    earlier. Applying the implication equivalence gets us $$\exists x (\neg (\neg
+    E(x) \vee \neg E(x+1))).$$ Now we can use De Morgan's laws together and
+    eliminate the resultant double negations to get $$\exists x (E(x) \wedge
+    E(x+1)).$$ Now, this statement says that there exists an integer $x$ such that
+    $x$ is even and $x+1$ is even.</p>
+</div>
+
+<p>The final statement we arrived at makes it much more clear what the
+    negation of our original statement actually meant. Obviously, since it was so
+    simple, we could have probably guessed what it meant without going through the
+    formal process of applying inference rules. However, if you're faced with
+    proving some proposition, it is helpful to try to methodically translate the
+    statement to formal logic and consider what it is saying in this way to make
+    it more clear what it is you need to prove.</p>
+
+
+<h2>A First Proof</h2>
+<p>That's all good and well, but you may be wondering how this information can directly be applied to proofs. You
+may especially be wondering about the point of filling in all these truth tables where we already know the values
+of $p$ and $q$: if we already know the truth value of $p$ and $q$, there's nothing to prove!</p>
+
+<p>To see how to proceed, let's look back at our truth table for implications.
+<table>
+    <tr> <th>$p$ <th>$q$ <th>$\quad$ <th>$p \rightarrow q$
+    <tr> <td>$T$ <td>$T$ <td> <td>$T$
+    <tr> <td>$T$ <td>$F$ <td> <td>$F$
+    <tr> <td>$F$ <td>$T$ <td> <td>$T$
+    <tr> <td>$F$ <td>$F$ <td> <td>$T$
+</table>
+Say we want to prove some proposition $q$ is true. According to the first row of our table, if $p$ is true and
+$p \rightarrow q$ is true, then $q$ much be true as well! In logical notation, this is $(p \wedge (p \rightarrow q))
+\rightarrow q$. This line of reasoning is called <i>modus ponens,</i>
+and is the key driver of deductive reasoning. Any proof we construct of $q$ should start from something we agree to
+be true ($p$), like a definition or an axiom, and demonstrate that $p \rightarrow q$ is true as well. This should
+be a relatively natural way to view proofs: if we start with things we agree upon, and show evidence that it must lead to
+some conclusion, then we must agree upon the conclusion as well.
+
+<p>Side note: you may notice that $q$ also has value $T$ in the truth table when $p$ is false but $p \rightarrow q$ is
+true. However, the next row also states that when $p$ is false but $p \rightarrow q$ is true, $q$ can be false. What
+that tells us is that when $p$ is false but $p \rightarrow q$ is true, we can't actually conclude anything about $q$,
+which should make sense; the statement "if it rains, I'll bring an umbrella" doesn't actually tell us about what happens
+when it doesn't rain. As such, if we want to guarantee that $q$ is $T$, the only way to do so is to utilize the top row.</p>
+
+<h3>The Setup</h3>
+
+<p>How, then, do we show that $p \rightarrow q$? Let's try an example. Say I am thinking of an integer $n$, and I tell
+you that it's even. You tell me that the square of my integer must also be even, but I don't believe you. In that case,
+you need to prove the following claim:
+
+<div class="claim">For all integers $n$, if $n$ is even then $n^2$ is even. </div>
+
+<p> Breaking it down into propositions, if we define the preposition $E(x)$ to represent when $x$ is even, then what we need
+to prove is that $\forall n \: E(n) \rightarrow E(n^2)$. Here, to translate words into math, we say that
+    \[E(n) = ``\text{There exists some integer }k\text{ such that }n=2k.\text{"}\]
+
+<h3>Detour: Principle of Universal Generalization</h3>
+<p> Before we even get started, we run into a problem: the $\forall$
+means we have to prove this true for every number. In the worst case scenario, this would mean that I have to take every
+possible value of $n$ and individually show that $E(n) \rightarrow E(n^2)$! I can show that $2^2 = 4$ is even, $4^2 = 16$
+is even, $6^2 = 36$ is even, and so on, but of course this will take infinitely long.
+
+<p> To resolve this, we'll rely on the following logic: if I take an arbitrary $n$ that I don't know anything about, and
+prove that for that $n$, $E(n) \rightarrow E(n^2)$, then I can conclude that $\forall n \: E(n) \rightarrow E(n^2)$.
+This is known as the <b>Principle of Universal Generalization.</b> Now, I have to be careful here - I can't make any
+assumptions about $n$ beyond what I'm told. In this case, I only know that $n$ is an even integer. If I assume
+anything else about $n$, then I've lost my claim that this is true for <i>all</i> $n$, and can only argue it's true for
+the $n$ that follow my further assumption.
+<div class="example"> <p>Consider the proposition: every student in this class has a CNetID. Of course, one way I could go
+    about proving this is by checking every student individually. However, a faster way would be as follows. Take
+    any student $s$ who has enrolled in the class. This can only be done with a CNetID. Thus
+    $s$ has a CNetID.</p>
+
+    <p>Note that I only argued about one student $s$, but because it was a student chosen arbitrarily, I know that
+    the proof applies to every student simultaneously, so I can conclude the "every" part of the proposition.</p>
+</div>
+
+<h3>The Proof</h3>
+
+<p>With the Principle of Universal Generalization in tow, we can finally start proving our proposition. </p>
+
+<div class="proof"><p>Select an even integer $x$. If $x$ is an even integer, there is some integer $k$ such that $x = 2k$.
+    If $x = 2k$, then for that $k$, $x^2 = 4k^2$. If $x^2 = 4k^2$, then $x^2 = 2(2k^2)$. If $x^2 = 2(2k^2)$, then it can be written as
+    the form $2k'$ for $k' = 2k^2$. If $x^2$ can be written in the form $2k'$, then $x^2$ is even. Thus, for any
+    even integer $x$, $x^2$ is even. </p></div>
+
+<p>To break down this proof, consider the following prepositions, keeping in mind that we have selected an arbitrary
+    $x$:</p>
+<ul>
+    <li>$p$: $E(x)$.</li>
+    <li>$p_1$: There is some integer $k$ such that $x = 2k$.</li>
+    <li>$p_2$: For that $k$, $x^2 = 4k^2$.</li>
+    <li>$p_3$: For that $k$, $x^2 = 2(2k^2)$. </li>
+    <li>$p_4$: $x^2$ can be written as the form $2k'$ for $k' = 2k^2$.</li>
+    <li>$q$: $E(x^2)$.</li>
+</ul>
+<p>With this notation, our proof becomes the following:</p>
+<div class="proof"><p>Select any $x$ where $p$. $p \rightarrow p_1$.
+    $p_1 \rightarrow p_2$. $p_2 \rightarrow p_3$. $p_3 \rightarrow p_4$. $p_4 \rightarrow q$. Thus,
+    for all $p$, $p \rightarrow q$.</p></div>
+<p> Written this way, the proof is of course pretty illegible, but its structure becomes very clear. We're starting
+with $p$ and making a chain of implications that end in $q$. Of note, any of these individual implications should
+be very clearly true. For example, $p \rightarrow p_1$ and $p_4 \rightarrow q$ are just our definition of $E$,
+    and the other implications are just one step of algebra, so it is easy to tell that they are true as well. </p>
+
+<p>The really cautious among you may also notice that we assumed that implications are transitive - that because
+this chain exists, we can collapse it down to $p \rightarrow q$. The logic should of course intuitively make sense,
+but intuition isn't everything, so it can't hurt to check whether this is actually the case. </p>
+
+<table>
+    <tr> <th>$p$<th>$q$<th>$r$<th>$p \to q$<th>$q \to r$<th>$(p \to q) \wedge (q \to r)$
+        <th>$p \to r$ <th>$((p \to q) \wedge (q \to r)) \to (p \to r)$
+    <tr> <td>$T$<td>$T$<td>$T$<td>$T$      <td>$T$      <td class="highlight">$T$      <td class="highlight">$T$ <td>$T$
+    <tr> <td>$T$<td>$T$<td>$F$<td>$T$      <td>$F$      <td>$F$      <td>$F$ <td>$T$
+    <tr> <td>$T$<td>$F$<td>$T$<td>$F$      <td>$T$      <td>$F$      <td>$T$ <td>$T$
+    <tr> <td>$T$<td>$F$<td>$F$<td>$F$      <td>$T$      <td>$F$      <td>$F$ <td>$T$
+    <tr> <td>$F$<td>$T$<td>$T$<td>$T$      <td>$T$      <td class="highlight">$T$      <td class="highlight">$T$ <td>$T$
+    <tr> <td>$F$<td>$T$<td>$F$<td>$T$      <td>$F$      <td>$F$      <td>$T$ <td>$T$
+    <tr> <td>$F$<td>$F$<td>$T$<td>$T$      <td>$T$      <td class="highlight">$T$      <td class="highlight">$T$ <td>$T$
+    <tr> <td>$F$<td>$F$<td>$F$<td>$T$      <td>$T$      <td class="highlight">$T$      <td class="highlight">$T$ <td>$T$
+</table>
+On the right column, we find that our belief is true - that a chain of implications from $p$ to $r$ implies that $p \to r$
+as well. Highlighted are the important cells. For our proof, all we care is that if the two implications are true, then
+the collapsed implication is true as well. After all, our proof shouldn't contain any false implications (hopefully??).
+
+<p>This style of proof is called a <b>direct proof.</b> In the rest of the unit, we'll talk more about how to construct
+these proofs, and what other types of proof exist.
+
+<h2>Recommended Exercises</h2>
+
+<p>The following problems from Rosen (8th edition) cover the topics from this
+    lecture:
+<ul>
+    <li>Section 1.3: 6, 11, 37 </li>
+    <li>Section 1.4: 7, 12, 15 </li>
+    <li>Section 1.5: 4, 9, 27,30 </li>
+</ul>
+There are a great many similar problems in those sections if you feel you
+need more practice.</p>
+
+</body>

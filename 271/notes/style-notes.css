@@ -1,0 +1,358 @@
+@import url(https://fonts.googleapis.com/css?family=EB+Garamond:400,400i,700,700i);
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,400i,700,700i);
+
+body {
+    font-family: 'EB Garamond',Helvetica,sans-serif;
+    padding: 1em;
+    margin: 0 auto;
+    width: 650px;
+    font-size: 14pt;
+    counter-reset: theorem;
+}
+
+
+h3, h2, h4, h5 {
+    font-family: 'Raleway',Helvetica,sans-serif;
+    font-weight: 700;
+}
+
+h3.citation {
+    font-family: 'EB Garamond',Helvetica,sans-serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 11pt;
+}
+
+a {
+	color: #2F4F2F;
+	font-weight: 450;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+
+dl {
+    padding-top: 0;
+}
+
+dt {
+    font-family: 'Raleway',Helvetica,sans-serif;
+    font-weight: bold;
+}
+
+p {
+    text-align: justify;
+}
+
+address {
+    padding-bottom: 1em;
+}
+
+.abstract {
+    font-style: italic;
+}
+
+.citation {
+}
+
+.figure{
+    display: block;
+    padding: 1em;
+    margin: auto;
+    max-width: 80%;
+}
+
+blockquote {
+    font-style: italic;
+}
+
+table {
+    margin: 1em auto;
+    border-top: medium solid;
+    border-bottom: medium solid;
+    border-left: medium solid;
+    border-right: medium solid;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+td,th {
+    padding: 0.5em;
+    border: 1px solid #333;
+}
+
+
+th {
+    border-bottom: thin solid;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.highlight {
+    background-color: lightgreen;
+}
+
+/*.claim::before, .corollary::before, .definition::before, .example::before, .lemma::before, .proposition::before, .theorem::before {*/
+.claim::before, .corollary::before, .lemma::before, .proposition::before {
+    counter-increment: theorem;
+    content: attr(class) " " counter(section) "." counter(theorem) ". ";
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.exercise::before {
+    content: "Exercise.";
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+p.definition {
+    background-color:#f9f5eb;
+}
+
+/*p.lemma[data-ref]::before, p.theorem[data-ref]::before, p.example[data-ref]::before {*/
+p.lemma[data-ref]::before {
+    counter-increment: theorem;
+    content: attr(class) " " counter(section) "." counter(theorem) " (" attr(data-ref) "). ";
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+/* Example div */
+
+div.example {
+    border-style: solid;
+    margin: 5px 0 5px 0;
+    padding: 2px;
+    border-color: #b8c46b;
+}
+
+div.example p:first-child {
+    margin-top: 5px;
+}
+
+div.example p:last-child {
+    margin-bottom: 5px;
+}
+
+div.example p:first-child::before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "Example " counter(section) "." counter(theorem) ". ";
+}
+
+div.example p[title]:first-child::before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "Example " counter(section) "." counter(theorem) " (" attr(title) "). ";
+}
+
+div.example p:first-child::before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "Example " counter(section) "." counter(theorem) ". ";
+}
+
+/* Notation div */
+
+div.notation {
+    background-color: #f9f5eb;
+    padding: 1px 2px 1px 2px;
+    margin: 10px 0 10px 0;
+}
+
+div.notation p:first-child {
+    margin-top: 5px;
+}
+
+div.notation p:last-child {
+    margin-bottom: 5px;
+}
+
+div.notation p:first-child::before {
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "Notation. ";
+}
+/* Theorem and Proposition div */
+
+div.theorem, div.proposition, div.algorithm {
+    background-color: #dfe8d8;
+    padding: 1px 2px 1px 2px;
+    margin: 10px 0 10px 0;
+}
+
+div.theorem p:first-child, div.proposition p:first-child, div.algorithm p:first-child {
+    margin-top: 5px;
+}
+
+div.theorem p:last-child, div.proposition p:last-child, div.algorithm p:last-child {
+    margin-bottom: 5px;
+}
+
+div.theorem p:first-child::before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "Theorem " counter(section) "." counter(theorem) ". ";
+}
+
+div.proposition p:first-child::before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "Proposition " counter(section) "." counter(theorem) ". ";
+}
+
+div.algorithm p:first-child::before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "Algorithm " counter(section) "." counter(theorem) ". ";
+}
+
+div.theorem p[title]:first-child:before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "Theorem " counter(section) "." counter(theorem) " (" attr(title) "). ";
+}
+
+div.algorithm p[title]:first-child:before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "Algorithm " counter(section) "." counter(theorem) " (" attr(title) "). ";
+}
+
+/* Lemma div */
+
+div.lemma {
+    background-color: rgb(128,128,128,0.2);
+    padding: 1px 2px 1px 2px;
+    margin: 10px 0 10px 0;
+}
+
+div.lemma p:first-child {
+    margin-top: 5px;
+}
+
+div.lemma p:last-child {
+    margin-bottom: 5px;
+}
+
+div.lemma p:first-child::before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "lemma " counter(section) "." counter(theorem) ". ";
+}
+
+div.lemma p[title]:first-child:before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "lemma " counter(section) "." counter(theorem) " (" attr(title) "). ";
+}
+
+/* Corollary div */
+
+div.corollary {
+    background-color: #dfe8d8;
+    padding: 1px 2px 1px 2px;
+    margin: 10px 0 10px 0;
+}
+
+div.corollary p:first-child {
+    margin-top: 5px;
+}
+
+div.corollary p:last-child {
+    margin-bottom: 5px;
+}
+
+div.corollary p:first-child::before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "corollary " counter(section) "." counter(theorem) ". ";
+}
+
+div.corollary p[title]:first-child:before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "corollary " counter(section) "." counter(theorem) " (" attr(title) "). ";
+}
+
+
+/* Definition div */
+
+div.definition {
+    background-color:#f9f5eb;
+    padding: 1px 2px 1px 2px;
+    margin: 10px 0 10px 0;
+}
+
+div.definition p:first-child {
+    margin-top: 5px;
+}
+
+div.definition p:last-child {
+    margin-bottom: 5px;
+}
+
+div.definition p:first-child::before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "Definition " counter(section) "." counter(theorem) ". ";
+}
+
+div.definition[data-ref] p:first-child:before {
+    counter-increment: theorem;
+    font-weight: bold;
+    text-transform: capitalize;
+    content: "Definition " counter(section) "." counter(theorem) " (" attr(data-ref) "). ";
+}
+
+/* Proof div */
+.proof {
+    background-color: #F4F7F2;
+
+}
+
+.proof p:first-child::before {
+    content: "Proof. ";
+    font-style: italic;
+}
+
+.proof p[title]:first-child::before{
+    content: "Proof " attr(title) ". ";
+    font-style: italic;
+}
+
+.proof p:last-child::after {
+    float: right;
+    content: "\25A1";
+    font-size: 1.25em;
+}
+
+ol.exercises > li::marker {
+    font-weight: bold;
+}
+
+ol.exercises {
+    li {
+        margin: 10px 0;
+    }
+}

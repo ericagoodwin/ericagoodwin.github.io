@@ -1,0 +1,415 @@
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" sizes="32x32" href="../src/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../src/favicon-16x16.png">
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+
+    <title>CMSC 27100 &mdash; Lecture 4: Strong Induction and the FTA</title>
+    <link rel="stylesheet" href="style-notes.css" type="text/css" media="screen, print">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+
+    <style>
+        body {
+            counter-reset: section 3 theorem;
+        }
+    </style>
+
+</head>
+
+<body>
+<h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 4</h1>
+
+<h3 class="citation">The notes for this course are adapted from notes written by <a href="https://liujon23.github.io/">Jonathan Liu</a>,
+    <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>,
+    <a href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and
+    <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>.</h3>
+
+<h2>Strong Induction</h2>
+
+<p>Sometimes, ordinary induction doesn't give us quite enough to prove what we want to prove. In this lecture, we'll introduce a reformulation of induction called strong induction.</p>
+
+One example of what strong induction can help us prove is the
+    <strong>Fundamental Theorem of Arithmetic</strong>: </p>
+
+<div class="theorem"><p title="Fundamental Theorem of Arithmetic - FTA"> Every
+    integer $n \gt 1$ can be written as a product of primes. This product is
+    unique up to reordering.</p>
+</div>
+
+
+Another great, equally important example that strong induction can help us with is this problem: 
+<div class="example"><p>
+McDonald’s is currently selling chicken nuggets in packages of 3 or 5 nuggets.
+Let $P(n)$ denote the proposition that you can buy exactly n nuggets. For example, $P(6)$ is true because you can buy
+two packs of three, and P(8) is true, but P(7) is false. Show that for all n ≥ 8, $P(n)$ is true. </p></div>
+
+<p>Let's think about how we'd prove this chicken nuggets probelm. We want to show that, for every natural 
+number $n \geq 8$, we can buy exactly $n$ nuggets (served in packs of 3 or 5).</p>
+
+
+<p> Assuming that we set everything up properly, our inductive step would involve showing that 
+    if we can buy exactly $k$ nuggets, then we can buy exactly $k+1$ nuggets. 
+    But knowing that we can buy exactly $k$ nuggets doesn't quite help us, since we can't buy a single nugget to achieve $k+1$ nuggets. 
+    What we <i>really</i> want to know is whether we can buy $k + 1 - 3$ or $k + 1 - 5$ nuggets, and then add in a 3-pack or a 5-pack. 
+    However, our inductive hypothesis doesn't help us with that! </p>
+
+<p>Strong induction is a reformulation of induction that gives us a "stronger"
+    hypothesis to say these kinds of things.</p>
+
+
+<div class="theorem">
+    <p> Let $P(n)$ be a predicate with domain $\mathbb N$. If</p>
+    <ol>
+        <li>$P(0)$
+    </ol>
+    and
+    <ol start="2">
+        <li>for all $k \in \mathbb N$, if $P(i)$ for all
+            $i\in\{0,1,\ldots,k\}$, then $P(k+1)$
+    </ol>
+    <p> are both true, then the following is true:
+    <ol start="3">
+        <li>for all $n \in \mathbb N$, $P(n)$ holds.
+    </ol>
+</div>
+
+<p>This is called the <strong>principle of strong induction</strong>.</p>
+
+<p>What is the difference between ordinary mathematical induction and
+    <em>strong</em> induction? Or, in other words, what makes strong induction
+    strong? The hypothesis that we make in part 2 is stronger.  Recall that
+    ordinary induction was stated as a chain of implications $P(k) \rightarrow
+    P(k+1)$. Strong induction is a chain of implications of the form $$P(0) \wedge
+    P(1) \wedge P(2) \wedge \cdots \wedge P(k) \rightarrow P(k+1).$$ Then what
+    we're really proving is all of the following statements, \begin{align*} &P(0),
+    \\ P(0) \rightarrow &P(1), \\ P(0) \wedge P(1) \rightarrow &P(2), \\ P(0)
+    \wedge P(1) \wedge P(2) \rightarrow &P(3), \\ & \vdots \end{align*}</p>
+
+<p>It's important to note that strong induction is not stronger in the sense
+    that it allows us to prove things that we wouldn't be able to with
+    mathematical induction. This is why I described strong induction as an
+    alternate form of mathematical induction. It is possible to use mathematical
+    induction to prove anything we would prove with strong induction, but this
+    involves slightly altering the statement that you want to prove to incorporate
+    your stronger assumptions.</p>
+
+<p>A proof by strong induction looks similar to a proof by mathematical
+    induction.</p>
+    <ol start="0">
+        <li><strong>Introduce the proof.</strong> Clearly state the statement $P$ that you
+            want to prove and what you want to show induction on. </li>
+    
+        <li><strong>Base case.</strong> Prove $P(0)$.</li>
+        <li><strong>State the inductive hypothesis.</strong> State your assumption that for some arbitrary natural number $k$, $\forall i \in\{0,1,\ldots,k\}, P(i)$.</li>
+        <li><strong>Inductive step.</strong> Using the inductive hypothesis, prove $P(k+1)$.</li>
+        <li><strong>Conclude the proof.</strong> Proof writing is about clear communication &mdash; summarize what was shown! "Therefore, $P(n)$ holds for all $n \in N.$"
+    </ol>
+
+Let's apply this to our chicken nuggets problem:
+
+
+ <div class="proof"><p title="of Example 3.2"> We proceed by strong induction on $n$ to show that for all $n \geq 8$, we can buy $n$ nuggets.
+    Define $P(n)$ to mean that we can buy $n$ nuggets.</p>
+
+
+    <p>Base Case: We’ll need three base cases here: 8, 9, 10. Note that</p>
+    <ul>
+    <li> 8 = 3 + 5,</li>
+    <li> 9 = 3 + 3 + 3,</li>
+    <li>10 = 5 + 5.</li>
+    </ul>
+
+    <p>Thus, P(8), P(9), and P(10) are all true.</p>
+
+    <p>Assume that $P(i)$ is true for some arbitrary $k \in \mathbb{N}$ where $8 \leq i \leq k$. 
+        We aim to show that this implies that $P(k + 1)$ is true &mdash; we can buy exactly $k + 1$
+        nuggets.</p>
+
+    <p>Note that $k + 1$ nuggets can be bought as a combination of $k − 2$ nuggets plus 3 nuggets. 
+        We can of course buy 3 nuggets, and by the inductive hypothesis we can buy $k − 2$ nuggets. 
+        Thus, we can buy $k + 1$ nuggets.
+        Thus, we have shown that $P(8) ∧ P(9) ∧ . . . ∧ P(k)$ implies $P(k + 1)$, so $∀n P(n)$.</p>
+</div>
+
+<p>For the remainder of the lecture, we are going to develop some more number theory and apply strong induction to prove some famous theorems.</p>
+
+<h2>Primes</h2>
+
+<p>	The study of <em>primes</em> is a central topic of number theory and has
+    fascinated people for thousands of years. </p>
+
+<div class="definition">
+    <p> An integer $p$ greater than 1 is called
+        <strong>prime</strong> if the only positive divisors of $p$ are 1 and $p$.
+        Otherwise, $p$ is called <strong>composite</strong>.</p>
+</div>
+
+<div class="example"><p> Primes are obviously relatively prime to any positive
+    number less than them, since they don't have any divisors except 1 and
+    themselves. However, non-prime numbers (called composite numbers) can be
+    relatively prime, even to each other. The numbers 10 and 21 are not prime,
+    since $10 = 2 \cdot 5$ and $21 = 3 \cdot 7$. However, they are relatively
+    prime, since  the divisors of $10$ are $\{\pm 1, \pm 2, \pm 5, \pm 10\}$ and
+    the divisors of $21$ are $\{\pm 1, \pm 3, \pm 7, \pm 21\}.$</p>
+</div>
+
+<p>Simple questions about primes immediately get into deep mathematical
+    territory. However we can establish several important results in this lecture.
+
+<h2>Proof of The FTA</h2>
+<p>Let's prove Theorem 3.1, The Fundamental Theorem of Arithmetic.
+    <div class="proof"><p title="of Theorem 3.1"> We will first prove that for $n \gt 1$,
+    $n$ can be written as a product of primes. (That is, we'll put off proving
+    the uniqueness up to reordering for now.) We will proceed by strong induction on $n$.
+</p>
+
+<p><strong>Base case.</strong> Let $n = 2$. 2 is a product of primes
+    because 2 itself is a prime number.</p>
+
+<p><strong>Inductive Hypothesis.</strong> Let $k \in \mathbb N$ be arbitrary. Assume that for $2 \leq m \leq k$, $m$
+    can be written as a product of primes. </p>
+
+<p><strong>Inductive step.</strong> We want to show that $k+1$ can be
+    written as a product of primes. There are two cases to consider.</p>
+<ul>
+
+    <li>If $k+1$ is <em>prime</em>, then $k+1$ can clearly be written as a product
+        of primes since $k+1$ is itself a prime number.</li>
+
+    <li>If not, then $k+1$ is <em>composite</em>, then we can write $k + 1 = a \cdot
+        b$ for some $a, b \in \mathbb N$. Observe that $2 \leq a, b \leq k$.
+        Therefore, by the inductive hypothesis, $a$ and $b$ can be written as a
+        product of primes. Let $a = p_1 p_2 \cdots p_s$ and $b = q_1 q_2 \cdots
+        q_t$, where $p_1, p_2, \dots, p_s, q_1, q_2, \dots, q_t$ are primes.
+        Then $$k + 1 = a \cdot b = p_1 p_2 \cdots p_s q_1 q_2 \cdots q_t$$ and
+        therefore $k + 1$ can be written as a product of primes.
+    </li>
+
+</ul> 
+<p>This completes the proof that any $n$ can be written as a product of
+    primes.</p>
+</div>
+
+<p>  The proof of uniqueness, below, is optional.
+
+<h3>Proof of Uniqueness of Factorization (Optional)</h3>
+We'll need a lemma first (but it's a particularly good lemma called Euclid's
+Lemma, so we'll label it a Theorem).
+
+<div class="theorem"><p title="Euclid's Lemma"> If $p$ is prime, and
+    $a,b$ are integers such that $p \mid a \cdot b$, then $p \mid a$ or $p \mid
+    b$.</p>
+</div>
+
+<div class="proof"><p> Without loss of generality, suppose $p \not \mid a$.
+    Then $\gcd(p,a) = 1$ and there exist integers $x$ and $y$ such that $xa +
+    yp = 1$. Then multiplying both sides by $b$, we have $$b = xab + ypb.$$
+    Since $p \mid ab$, let $n$ be an integer such that $ab = pn$. Then we have
+    $$b = xab + ypb = xpn + ypb = p \cdot (xn+yb).$$ Therefore, by definition
+    of divisibility, $p \mid b$.  </p></div>
+
+<div class="example"><p>Since $3\mid 10\cdot 15 = 150$, the theorem says
+    that $3$ must divide $10$ or $15$ and indeed $3\mid 15$. This isn't true
+    if $p$ is not prime. For instance, $6\mid 10\cdot 15$ but $6$ does not
+    divide either $10$ or $15$ (it gets the factor of $2$ from $10$ and the
+    factor of $3$ from $15$).</p>
+</div>
+
+With the lemma, we present a corollary (a statement that follows naturally from a key result).
+<div class="corollary"> If $p, p_1, \dots, p_k$ are prime and $p
+    \mid p_1 \cdots p_k$, then $p = p_i$ for some $i$.
+</div>
+
+<div class="proof"><p> We will prove this by (non-strong) induction on $k$,
+    the number of primes.</p>
+
+    <p><strong>Base case.</strong> In this case, $p \mid p_1$, so $p$
+        is a positive divisor of $p_1$. Since $p_1$ is
+        prime, its only positive divisors are $1$ and $p_1$.
+        But $p\neq 1$, so it must be the case that $p = p_1$.</p>
+
+    <p><strong>Inductive hypothesis.</strong>Suppose our lemma is true for $k$.</p>
+
+    <p><strong>Inductive step.</strong> Consider $p \mid p_1 \cdots p_k \cdot p_{k+1}$.
+        Let $a = p_1 \cdots p_k$
+        and $p_{k+1} = b$.  Since $p \mid ab$, by Theorem 7.7, $p \mid a$ or $p
+        \mid b$.  If $p \mid a$, then $p = p_i$ for some $i$ with $1 \leq i \leq
+        k$ by our inductive hypothesis and our result holds. If $p \mid b$, then
+        an argument similar to the base case shows that $p = p_{k+1}$, and our
+        result holds.  This completes the induction.</p>
+</div>
+
+<p>With this corollary in tow, we can finally prove that factorization is unique.
+
+<div class="proof">
+    <p>Suppose that $$n = p_1p_2\dots p_s = q_1q_2 \dots q_t$$ are two
+    ways of writing $n$ as a product of primes. We must show that $q_1, q_2,
+    \ldots, q_t$ is a reordering of $p_1, p_2, \ldots, p_s$.  We'll prove this
+    by strong induction on $n$ again.</p>
+
+    <p><strong>Base case.</strong> Our base case is the claim with $n=2$. This
+        is easy to establish (any other product of primes will be larger than
+        $2$).</p>
+
+    <p><strong>Inductive step.</strong> Now we suppose the theorem is true
+        for all $1,\ldots,n$ and show it is true for $n+1$. Suppose that
+        $$
+        n+1 = p_1p_2\dots p_s = q_1q_2 \dots q_t.
+        $$
+        Then $p_1$ divides $q_1 q_2 \dots q_t$. By Corollary 7.10, $p_1 = q_j$ for
+        some $j$. Therefore
+        $$
+        p_2\dots p_s = q_1\cdots q_{j-1} q_{j+1} \dots q_t.
+        $$
+        Call this value $m$. Then $1 \leq m \leq n$, so the strong inductive
+        hypothesis applies, we have that $q_1\cdots q_{j-1} q_{j+1} \dots q_t$
+        is a reordering of $p_2\dots p_s$. Therefore $p_1\dots p_s$ is a reordering
+        of $q_1\dots q_t$.</p>
+</div>
+
+<h2>Two Applications of Factorization</h2>
+
+<p>We move on to two of the most famous proofs ever. Both use the results
+about prime numbers and factorization that we proved last time. They also both
+wield contradiction, further demonstrating the surprising power and potentially
+broad nature of proofs in the space.</p>
+
+
+<div class="theorem">
+  <p>There exist infinitely many prime numbers.</p>
+</div>
+
+<div class="proof"><p>Assume for contradiction that there are a finite number
+  of primes. Let $p_1,\ldots,p_k$ be the $k$
+  primes. To find a contradiction, it is enough to show that some prime is not included on this list.
+  Consider $x=p_1 p_2\cdots p_k+1$. Observe that $x$ is not divisible by any
+  of $p_1,\ldots, p_k$ (as this would imply that $p_i\mid 1$, which is
+  impossible). On the other hand, by the Fundamental Theorem of Arithmetic,
+  $x$ can be factored into primes, and in particular some prime $p$ divides
+  $x$. Since this prime can't be any of $p_1,\ldots,p_k$, we have found an
+  additional prime beyond $p_1,\ldots,p_k$.
+</p></div>
+
+
+<div class="theorem">
+  <p>Any square root of $2$ is irrational. More explicitly, for all
+    $a,b\in\mathbb{Z}$ with $b\neq 0$, $(a/b)^2 \neq 2$.  </p>
+</div>
+
+<div class="proof">
+  <p>Let's continue avoiding division, and prove the equivalent
+    statement that $a^2 \neq 2b^2$ for all $a,b\in\mathbb{Z}$ with $b\neq 0$. (Note
+    that the assumption that $b$ is non-zero is necessary, since otherwise
+    we can take $a=0$ and $b=0$.)
+  </p>
+
+  <p>Now suppose for the purpose of contradiction that there exist
+    $a,b\in\mathbb{Z}$, $b\neq 0$, such that $a^2 = 2 b^2$. By negating $b$
+    if necessary, we may assume that $b$ is positive.  Since there exists at
+    least one such pair with positive $b$, we can select a pair that
+    minimizes the value of $b$.  We are going to contradict our choice of
+    $a,b$ by showing that we can find another pair with a smaller $b$.</p>
+
+  <p>Since $a^2=2b^2$, we have that $2|a^2$. Since $2$ is prime, we have
+    that $2|a$ by Euclid's Lemma from the last lecture. Thus there exists
+    $k\in\mathbb{Z}$ such that $a=2k$.</p>
+
+  <p>Next we have that $2b^2 = a^2 = (2k)^2 = 4k^2$. Thus $b^2 = 2k^2$. We can
+    repeat the argument from the previous paragraph to show that $2|b$ as well,
+    so there is $\ell\in\mathbb{Z}$ such that $b=2\ell$.</p>
+
+  <p> Since $a^2=2b^2$, we have that $(2k)^2=2(2\ell)^2$, which implies
+    that $k,\ell$ is another pair satisfying $k^2=2\ell^2$.  Moreover $\ell$
+    is positive and $\ell \lt b$, which contradicts our choice of $a$ and
+    $b$. This completes the proof.</p>
+
+</div>
+
+<h2>Even more on primes...</h2>
+
+<p>Quite a few striking results about primes have been established! Here are a few, though we won't go into their proofs.
+
+<div class="theorem"><p title="Prime Number Theorem"> Let $\pi(x)$ be the
+    number of primes at most $x$. Then</p>
+    $$
+    \lim_{x\rightarrow\infty} \frac{\pi(x)}{x/\ln(x)} = 1.
+    $$
+</div>
+
+<p>Here $\ln(x)$ is the natural logarithm of $x$. So this theorem not
+    only says there are infinitely many primes, but also that, amongst the $x$
+    numbers $\{1,\ldots,x\}$, approximately a $1/\ln(x)$-fraction of them are
+    prime! (And in the limit the fraction is <em>exactly</em> $1/\ln(x)$, which
+    provides an example of the Euler's number $e$ from calculus showing up in
+    number theory.) This means there are a <em>lot</em> or primes. A concrete
+    analysis shows, for example, that a random $1000$-digit number has about
+    a $1/7000$ chance of being prime. Combined with the fact that we can
+    efficiently recognize prime numbers (even large ones, but this is a story
+    for another day), this means that finding a $1000$-digit prime is a simple
+    matter with a computer, which is important in cryptography.
+
+<p>The Prime Number Theorem is a hard theorem that was famously proved using
+    complex analysis (i.e. calculus with imaginary numbers). We definitely
+    won't be proving it in this course.
+
+<p>Here's an even harder question, which is open. Define <strong>twin
+    primes</strong> to be numbers $p, p+2$ that are both prime.  For example,
+    $3,5$ are twin primes, as are $137,139$.
+
+<p><strong>Open Question.</strong> Do there exist infinitely many
+    twin primes?
+
+<p>It's a very old question that remains unsolved. However there has been
+    some spectacular progress on this question in the last decade. This started
+    with the following breakthrough result in 2013:
+
+<div class="theorem"><p> There exist infinitely many pairs of
+    primes $p,q$ satisfying $|p-q| < 10^7$.
+</p>
+</div>
+
+<p>The $10^7$ number is far cry from 2, but at least it's finite, and this
+    was the first theorem showing there infinitely many primes within some
+    constant distance of each other. The number $10^7$ was quickly improved to
+    $246$, which remains the record today. You can read more about these events
+    <a href="https://www.quantamagazine.org/yitang-zhang-proves-landmark-theorem-in-distribution-of-prime-numbers-20130519/">here</a>.
+</p>
+
+
+<h2>Exercises</h2>
+
+<ol>
+
+  <li>In the proof that there are infinitely many primes, a common
+    misunderstanding is that $\left(\prod_{i=1}^k p_i\right)+1$ is
+    always prime. Verify that this is not the case.
+
+  <li>Prove that $3$ does not have a rational square root. More
+    generally, prove that no prime has a rational square root.
+
+  <!-- <li>Prove Corollary 8.9 using Bézout's theorem instead of prime
+    factorization.</li> -->
+
+
+</ol>
+
+</div>
+
+<h2>Recommended Exercises</h2>
+
+<p>Rosen Chapter 5.2 and Velleman Chapter 6 both have a plethora of great examples. </p>
+
+</body>

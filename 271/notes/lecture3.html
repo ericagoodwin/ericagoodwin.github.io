@@ -1,0 +1,322 @@
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" sizes="32x32" href="../src/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../src/favicon-16x16.png">
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+
+    <title>CMSC 27100 &mdash; Lecture 3: Induction</title>
+    <link rel="stylesheet" href="style-notes.css" type="text/css" media="screen, print">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+
+    <style>
+        body {
+            counter-reset: section 3 theorem;
+        }
+    </style>
+
+</head>
+
+<body>
+<h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 3</h1>
+
+<h3 class="citation">The notes for this course are adapted from notes written by <a href="https://liujon23.github.io/">Jonathan Liu</a>,
+    <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>,
+    <a href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and
+    <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>.</h3>
+
+
+<h2>Mathematical Induction</h2>
+
+<p>This lecture introduces a new proof technique called <b>proof by induction</b>.
+    It works particularly well for theorems that have the form $\forall n\in\mathbb{N},
+    P(n)$ for some predicate $P$. It turns out to be an incredibly robust and widely applicable method
+    of proof within computer science, especially as we move towards algorithms. It is also
+    structurally more complex than any of the prior proofs we've seen.</p>
+
+<p>Let's start with some food for thought...</p>
+
+<div class="example">
+    <p>You are the CEO and founder of a company. You want to make sure that,
+    even when you retire, the company's vision never drifts too far from yours. You implement
+    the following rule: "Any CEO of the company must select a successor with the same name
+    as them." 1000000 years later, and many many CEOs later, what is the name of the CEO?
+
+    <p>Obviously, the CEO in the future has the same name that you do. In fact, every CEO has
+    the same name! This should hopefully be obvious, but the logical underpinnings
+    are not necessarily as obvious. Consider the predicate $P(n)$ for $n \in \mathbb{N}$
+    to mean "The $n$th CEO is named [your name]." Then, what we've done is said "If $P(1)$
+    is true, and $P(i) \to P(i+1)$ for all $i$, then $\forall n P(n)$ must be true.
+
+    <p>Now, consider a direct proof approach. How might I have proven that $P(n)$ is true
+    for all $n$ if I couldn't rely on this structure? It's not clear that, if I just looked
+    at what I know about CEO number $100000$, I would know enough to tell you their name.</p>
+</div>
+
+<p> This story reveals to us a new proof method. If I want to prove that $P(n)$ is true for all
+$n$, but I don't actually know enough about any individual $n$, I may instead be able to utilize
+the fact that some structure is retained between numbers - that $P(i) \to P(i+1)$ for all $i$.
+
+<p>Here is the abstract idea behind proof by
+    induction.</p>
+
+<div class="theorem"><p title="Principle of Mathematical Induction"></p><p> Let $P(n)$ be a predicate with domain $n \in \mathbb
+    N$. If</p>
+    <ol>
+        <li>$P(0)$
+    </ol>
+    and
+    <ol start="2">
+        <li>for all $k \in \mathbb N$, if $P(k)$, then $P(k+1)$
+    </ol>
+    are both true, then the following is true:
+    <ol start="3">
+        <li>for all $n \in \mathbb N$, $P(n)$.
+    </ol>
+</div>
+
+
+<p>This is called the <strong>principle of mathematical induction</strong>.
+    In terms of predicate logic, we can state it as </p> $$(P(0) \wedge (\forall
+k, P(k)\rightarrow P(k+1)))\rightarrow (\forall n, P(n)),$$ <p>where both
+    quantifiers are over $\mathbb{N}$. The predicate $P$ is often called
+    the <b>inductive hypothesis</b>.</p>
+
+<p>How and when do we make use of this? Mathematical induction is a property
+    of the natural numbers. What this means is that if there is some property that
+    we want to prove about <em>all</em> natural numbers, all we need to do is
+    prove that the property holds for the number 0 and that for any other natural
+    number $k$, if it's true for $k$, then we can show that it's true for the next
+    natural number, $k+1$.</p>
+
+<p>More formally, to prove that for all $n \in \mathbb N$ that $P(n)$ holds,
+</p>
+<ol>
+    <li>first, prove that $P(0)$ holds, then,</li>
+    <li>prove that for $k \in \mathbb N$, if $P(k)$ holds, then $P(k+1)$ also
+        holds.</li>
+</ol>
+
+<p>So why does this even work? Basically, what we're really proving is a very
+    large, infinite chain of implications,</p>
+\begin{align*}
+P(0)&, \\
+P(0) &\rightarrow P(1), \\
+P(1) &\rightarrow P(2), \\
+P(2) &\rightarrow P(3), \\
+& \vdots
+\end{align*}
+<p>The usual analogy for this is a chain of dominoes: we set up our argument
+    so that any one domino is guaranteed to knock over the next domino ($P(k)
+    \rightarrow P(k+1)$ for any $k$). Once we've set this up, all we need to do is
+    knock over the first domino (showing $P(0)$) to set off the chain
+    reaction.</p>
+
+<p>This leads us to what a proof by induction actually <em>looks</em> like.
+<ol start="0">
+    <li><strong>Introduce the proof.</strong> Determine the predicate $P(n)$ that you will be proving and state: "We will prove $P(n)$ by induction on $n$."
+
+    <li><strong>Base case.</strong> Prove $P(0)$.</li>
+    <li><strong>State the inductive hypothesis.</strong> State your assumption that P(k) is true for an arbitrary natural number $k$.</li>
+    <li><strong>Inductive step.</strong> Using the assumption $P(k)$, prove $P(k+1)$.</li>
+    <li><strong>Conclude the proof.</strong> Proof writing is about clear communication &mdash; summarize what was shown! "Therefore, $P(n)$ holds for all $n \in N.$"
+</ol>
+
+
+<h2>Induction and Sums</h2>
+
+<p>Here is a famous example where induction is useful.</p>
+
+<div class="notation"><p>
+    If $m,n$ are integers with $n\geq m$ and $x_1,\ldots,x_n$ are integers,
+    we use the following notation:</p>
+    $$\sum_{i = m}^n x_i = x_m + x_{m+1} + \cdots + x_{n-1} + x_n.$$
+</div>
+
+
+<div class="theorem"><p> For every $n \in \mathbb N$,</p>
+    $$\sum_{i=0}^n i = \frac{n(n+1)}2.$$
+</div>
+
+<p>
+
+<div class="proof"><p> We will prove this by induction on $n$.
+
+    <p><strong>Base case.</strong> Let $n = 0$. Then
+        $$\sum_{i = 0}^0 i = 0 \quad \text{and} \quad \frac{0 \cdot (0+1)}2 = 0,$$
+        so clearly $\sum_{i=0}^n i = \frac{n(n+1)}2$ holds for $n=0$.</p>
+
+    <p><strong>Inductive Hypothesis.</strong> Let $k \in \mathbb N$ be arbitrary and
+        assume that $\sum_{i=0}^k i = \frac{k(k+1)}2$.</p>
+
+    <p><strong>Inductive step.</strong> We will show that
+        $\sum_{i=0}^{k+1} i = \frac{k+1(k+2)}2$. We have
+        \begin{align*}
+        \sum_{i=0}^{k+1} i &= \sum_{i=0}^k i + (k+1) \\
+        &= \frac{k(k+1)}2 + (k+1) & \text{by ind. hyp.} \\
+        &= (k+1) \cdot \left(\frac k 2 + 1 \right) \\
+        &= (k+1) \cdot \left(\frac k 2 + \frac 2 2 \right) \\
+        &= \frac{(k+1)(k+2)}2
+        \end{align*}
+        Thus, we have shown that $\sum_{i=0}^n i = \frac{n(n+1)}2$ holds for $n=k+1$. Therefore, $\sum_{i=0}^n i = \frac{n(n+1)}2$ holds for all $n \in \mathbb N$.
+    </p></div>
+
+<p>This method works remarkably well for proving formulas like this. Once you've
+    done a few of them, new problems will mostly reduce to finding the
+    right algebraic manipulation. Here's another.
+
+<div class="theorem"><p> For all $n \in \mathbb N$ and $x \geq 0$,
+    $(1+x)^n \geq 1+nx$.</p></div>
+
+<div class="proof"><p> We will show this by induction on $n$.</p>
+
+    <p><strong>Base case.</strong> Let $n = 0$. Then $(1+x)^0 = 1 \geq 1 = 1 +
+        0 \cdot x$.</p>
+
+    <p><strong>Inductive hypothesis.</strong> Let $k \in \mathbb N$ be arbitrary and
+        assume that $(1+x)^k \geq 1+kx$.</p>
+
+    <p><strong>Inductive step.</strong>  Consider $n = k+1$.</p>
+    \begin{align*}
+    (1+x)^{k+1} &= (1+x)^k (1+x) \\
+    &\geq (1+kx) (1+x) & \text{ind. hyp.} \\
+    &= 1 + kx + x + kx^2 \\
+    &= 1 + (k+1)x + kx^2 \\
+    &\geq 1+(k+1)x & kx^2 \geq 0
+    \end{align*}
+    <p>which completes the induction.</p>
+</div>
+
+<p>Note this result had two variables, $x$ and $n$.  This is a great example
+    of why what you're applying induction to needs to be carefully considered
+    and clearly stated.</p>
+
+<h2>Induction in Less Obvious Cases</h2>
+
+<p>There is room for creativity in using induction. Here is another
+    famous application.
+</p>
+
+<p>There are $n$ people, and each of them know a different piece of gossip. When two people meet one-on-one,
+they can't help but share all the gossip they know. </p>
+
+<p>Define the <b>Gossip Number</b> $G(n)$ to be the minimum number of meetings needed for everyone to hear every
+piece of gossip.</p>
+
+<div class="example">
+    <p>Say there are four people, labeled $A, B, C, D$. First, $A$ meets $B$ and $C$ meets $D$, so the situation is
+    as follows: </p>
+    <ul>
+        <li>$A$: Knows the gossip from $A$, $B$.</li>
+        <li>$B$: Knows the gossip from $A$, $B$.</li>
+        <li>$C$: Knows the gossip from $C$, $D$.</li>
+        <li>$D$: Knows the gossip from $C$, $D$.</li>
+    </ul>
+    <p>Then, person $A$ meets person $C$ to trade stories. </p>
+    <ul>
+        <li>$A$: Knows the gossip from $A$, $B$, $C$, $D$.</li>
+        <li>$B$: Knows the gossip from $A$, $B$</li>
+        <li>$C$: Knows the gossip from $A$, $B$, $C$, $D$.</li>
+        <li>$D$: Knows the gossip from $C$, $D$</li>
+    </ul>
+    <p>Finally, person $B$ meets person $D$ to spill tea as well.</p>
+    <ul>
+        <li>$A$: Knows the gossip from $A$, $B$, $C$, $D$.</li>
+        <li>$B$: Knows the gossip from $A$, $B$, $C$, $D$.</li>
+        <li>$C$: Knows the gossip from $A$, $B$, $C$, $D$.</li>
+        <li>$D$: Knows the gossip from $A$, $B$, $C$, $D$.</li>
+    </ul>
+    Therefore, in four calls, everyone knows all the gossip. As such, $G(4) \leq 4$, and you can verify that
+    in fact you can't do better than four calls, so $G(4) = 4$.
+</div>
+
+<div class="theorem"><p>For all $n \geq 4$, $G(n) \leq 2n - 4$.</p></div>
+
+<div class="proof"><p> We will show this by induction on $n$.</p>
+
+    <p><strong>Base case.</strong> Note that because we only need to show this for $n \geq 4$,
+    our base case here is actually $4$. By the example earlier, $G(4) = 4$, and $2n-4 = 2(4)-4 = 4$,
+    so $G(4)$ satisfies the inequality.</p>
+
+    <p><strong>Inductive Hypothesis.</strong> Assume that, for some fixed $n$, $G(n) \leq 2n-4$.</p>
+
+    <p><strong>Inductive Step.</strong> We aim to show that $G(n+1) \leq 2(n+1)-4$. We know something about
+        the gossip number for any $n$ people. So, let's split our $n+1$ people into a "core" group of $n$ people
+        and one extra person. Denote by $p_1, p_2, ..., p_n, p_{n+1}$ the $n+1$ people in the group. Then say that
+        the core group is $p_1, ..., p_n$. By the Inductive Hypothesis, we know that it takes less than $2n-4$ meetings
+        for everyone in the core group to spread each others' gossip, so consider the following process: </p>
+    <ol>
+        <li>People $p_1$ and $p_{n+1}$ meet.</li>
+        <li>The core group all learns each others' gossip, along with $p_{n+1}$ gossip through $p_1$.</li>
+        <li>Now that $p_1$ has everyone's gossip, $p_1$ and $p_{n+1}$ meet again so that $p_{n+1}$ can learn it all. </li>
+    </ol>
+    <p>Through this process, we can see that everyone learns all the gossip. Furthermore, it takes $2$ meetings between
+    $p_1$ and $p_{n+1}$, as well as at most $2n-4$ meetings between the core group (due to our IH), which adds up to a total
+    of $2 + (2n-4) = 2(n+1) - 4$, so $G(n+1) \leq 2(n+1)-4$.</p>
+    <p>As a result, we have shown that if $G(n) \leq 2n-4$ then $G(n+1) \leq 2(n+1)-4$.</p>
+</div>
+
+
+<p>There is room for some variation in how you carry out the induction, and your
+    proofs should be careful about the details! 
+    
+    Here are three variations of our induction formula you should look out for: 
+    <ul>
+        <li>The base case should start at the smallest $n$ we are claiming $P(n)$ to be true for, which is <b>not always 0</b>. For example, Theorem 3.6 is stated for all $n \geq 4$, so our base case started at 4. </li>
+        <li>Some proofs will require <b>multiple base cases</b>, such as proving $P(0)$ and $P(1)$ in
+            the base case instead of just $P(0)$. When this is necessary depends on what
+            is needed to perform the inductive step.</li>
+        <li>Finally, you may opt to <b>change the notation</b> in the inductive step without
+            affecting your proof. Instead of showing that $P(0)\wedge \cdots \wedge
+            P(k)$ implies $P(k+1)$, you can show $P(0)\wedge \cdots \wedge P(k-1)$ implies
+            $P(k)$. It's also worth checking that your notation does not
+            inadvertently use something undefined like $P(-1)$, which can happen if you
+            try to use case $P(k-2)$ when $k=1$.</li>
+    </ul>
+
+<h3>How Induction Can Go Wrong</h3>
+
+<p>Now let's see what can go wrong with induction. Consider the following statement.</p>
+
+<div class="theorem"><p> All horses are the same color. </p></div>
+
+<p>This is obviously false, so the following proof must be wrong. Try
+    to spot the error.</p>
+
+<div class="proof"><p> We will that for all sets $H$ of horses, the horses in
+    $H$ are all the same color. We do this by induction on $n = |H|$, the
+    number of horses under consideration.</p>
+
+    <p><strong>Base case.</strong> If $|H|=1$, then there is only one horse.
+        A single horse is the same color as itself, so we are done. </p>
+
+    <p><strong>Inductive step.</strong> Assume that any set of $n$ horses is
+        the same color. Let $H$ be a set of $n+1$ horses, and consider two
+        distinct horses in $H$. By the inductive assumption, if we remove either
+        horse, then the remaining $n$ horses will be the same color. Thus, the
+        first horse is the same color as the other horses, and similarly so is the
+        second horse. Therefore all horses are the same color, completing the
+        inductive proof.  </p>
+</div>
+
+<p>The base case is fine, so the error is in the inductive step. Does this argument work for
+<b>all</b> $n \geq 2$? (Hint: It doesn't work in exactly one case).</p>
+
+
+<h2>Recommended Exercises</h2>
+
+<p>Rosen Chapter 5.1 and Velleman Chapter 6 both have a plethora of great examples. </p>
+
+</body>
