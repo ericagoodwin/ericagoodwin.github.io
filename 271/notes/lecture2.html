@@ -1,0 +1,729 @@
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel='shortcut icon' type='image/x-icon' href='../uc.png'>
+
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+
+    <title>CMSC 27100 &mdash; Lecture 2: Introduction to Number Theory</title>
+    <link rel="stylesheet" href="style-notes.css" type="text/css" media="screen, print">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+
+    <style>
+        body {
+            counter-reset: section 2 theorem;
+        }
+    </style>
+
+</head>
+
+<body>
+<h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 2</h1>
+
+<h3 class="citation">The notes for this course began from a series originally
+    written by <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>, with extensions by
+    <a href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and
+    <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>. I have modified them to follow our course.</h3>
+
+<p> This lecture is a crash course on Number Theory, which is the study of the natural numbers (i.e. the positive
+    integers). It's a vast, interesting, and incredibly challenging field, which can't fully be captured in just one lecture! 
+    It can also feel pretty intuitive, since we deal with the natural numbers in everyday life. 
+    It's a great place for us to start learning how to write proper mathematical proofs. 
+</p>
+
+<h2>Divisibility and Direct Proofs</h2>
+
+<p> One of the first topics in elementary number theory is
+    <em>divisibility</em> of integers. Division on integers is an interesting
+    operation even though we've likely been dividing numbers since childhood
+    without thinking about it too much. However, where it does come back to trip
+    us up again is when we start to learn how to program. This usually comes in
+    the form of trying to divide two numbers and then remembering that dividing
+    two integers doesn't always give you an integer. This happens to be why
+    division of integers is interesting. </p>
+
+<p>There are many possible ways to define one integer "evenly dividing"
+    another. Let's study the following definition, which is a model of
+    mathematical elegance and a good foundation for further study of
+    direct proofs.</p>
+
+<div class="definition"> <p>Let $a,b$ be integers. We say that
+    <strong>$a$ divides $b$</strong>, written $a \mid b$, if there exists an
+    integer $n$ such that $a \cdot n = b$. We also say that <em>$b$ is a
+        multiple of $a$</em>.
+</p></div>
+
+<p>This is our first real example of a mathematical definition. A definition
+    isn't claiming anything: it is just assigning some terminology to a predicate
+    (in this case, the predicate $P(a,b)$ that asserts $\exists n, an=b$). Note
+    that the definition uses "if" to connect the terminology to predicate. However,
+    it should more properly be "if and only if" (i.e., divisibility means
+    exactly that $P(a,b)$ holds). But the style of the definition is universally
+    accepted and seems to not cause much confusion.
+</p>
+
+<p>Now let's analyze the substance of the definition. Observe that for
+    all integers $a$, $a \mid 0$ (take $n=0$ in the definition) and in
+    particular, $0 \mid 0$. At first this seems a bit odd because it feels like
+    we are tempting fate by talking about dividing by 0, but if we take a more
+    careful look at the definition of divisibility, we see that there actually
+    isn't any division going on. What we're really talking about is
+    multiplication.</p>
+
+<p>Next we state and prove our first theorem.
+
+<div class="theorem"><p> For all integers $a, b, c$, if $a \mid b$
+    and $a \mid c$, then $a \mid (b + c)$.</p></div>
+
+<p> We can use the logic we learned to translate this as:
+    $$\forall a, b, c \in \mathbb Z, (a \mid b) \wedge (b \mid
+    c) \rightarrow a \mid (b+c).$$ So in order to prove this statement is true,
+    we need to consider every integer for $a,b,c$ and assume that our
+    hypothesis, $a \mid b$ and $a \mid c$, is true. Remember that since this is
+    an implication, we don't care about the case when we don't have $a,b,c$ such
+    that $a \mid b$ and $a \mid c$.</p>
+
+<div class="proof"><p> Let $a,b,c$ be arbitrary integers and assume that $a \mid
+    b$ and $a \mid c$. Since $a \mid b$, there exists an integer $m$ such that
+    $b = m \cdot a$, and since $a \mid c$, there exists an integer $n$ such that
+    $c = n \cdot a$. Now, consider the integer $b + c$. We have $$b + c = a
+    \cdot m + a \cdot n = a \cdot (m + n).$$ Since $m + n$ is an integer, by
+    definition of divisibility we have $a \mid (b+c)$.</p></div>
+
+<p>Let's take a more careful look at what it is that we've done in this
+    proof.</p>
+
+<table>
+
+    <tr><td style="width:50%">Let $a,b,c$ be arbitrary integers <td>Since our
+        claim about $a,b,c$ must hold for all possible integers, we simply say
+        that they're arbitrarily chosen. See Principle of Universal Generalization
+        from Lecture 1.
+
+    <tr><td>and assume that $a \mid b$ and $a \mid c$.  <td>Here is our
+        condition under which we chose $a,b,c$ and the assumption that we need
+        to make to prove the theorem. In $p \to q$, this is our $p$.
+
+    <tr><td>Since $a \mid b$, there exists an integer $m$ such that $b = m \cdot
+        a$,  <td>This is the definition of divisibility. Just like above, we
+        don't know exactly which integer works, we only know that one of them
+        works, so we give it a name (in this case $m$).
+
+    <tr><td>and since $a \mid c$, there exists an integer $n$ such that $c = n
+        \cdot a$. <td>This is the definition of divisibility again. Here, we
+        make sure to choose a different variable name that hasn't been used
+        ($n$).
+
+    <tr><td>Now, consider the integer $b + c$. <td> Now that we've used our definitions,
+    we can try to figure out how they relate to our goal, which was $b+c$.
+
+    <tr><td>We have $$b + c = a \cdot m + a \cdot n = a \cdot (m + n).$$
+        <td>This is some simple algebraic manipulation based on what we established previously.
+
+    <tr><td>Since $m + n$ is an integer, by definition of divisibility we have
+        $a \mid (b+c)$. <td>This follows from the above algebra, and we apply
+        the definition of divisibility one more time.
+
+    <tr><td> $$\tag*{$\Box$}$$ <td>We end proofs with a box. In typography, this
+        is called a tombstone and you often see these at the end of articles
+        in publications like magazines. It is sometimes taken to mean "QED"
+        (abbreviating the Latin <em>quod erat demonstrandum</em> that means
+        "what was to be shown"), which is a particular way of declaring
+        victory in your proof.
+
+</table>
+
+<p> This is an example of a <em>direct proof</em>. You can often find this
+    type of proof by cataloging what you are given, what your goals are, and
+    then trying to directly manipulate the givens into the goals. The proof
+    from the end of Lecture 1 was another such example. It can be worth putting
+    the two proofs side by side to see the parallels in their structure. The proof
+    of the next two theorems are further examples of this technique. </p>
+
+<div class="theorem"><p> For all integers $a, b, c$,  if $a \mid b$,
+    then $a \mid bc$.</p></div>
+
+<div class="proof"><p> Let $a,b,c$ be arbitrary integers and
+    assume that $a \mid b$. Since $a \mid b$, there exists an integer $n$ such
+    that $a \cdot n = b$.  Now, consider the integer $b \cdot c$. We have $$b
+    \cdot c = (a \cdot n) \cdot c = a \cdot (n \cdot c).$$ Since $n \cdot c$
+    is an integer, by definition of divisibility, we have $a \mid bc$.
+</p></div>
+
+<div class="theorem"><p> Divisibility is transitive. That
+    is, for all integers $a, b, c$, if $a \mid b$ and $b \mid c$, then $a \mid
+    c$.</p></div>
+
+<div class="proof"><p> Let $a, b, c$ be arbitrary integers and assume that $a
+    \mid b$ and $b \mid c$. Since $a \mid b$, there exists an integer $m$ such
+    that $b = m \cdot a$. Since $b \mid c$, there exists an integer $n$ such
+    that $c = n \cdot b$. Then we get $$c = n \cdot b = n \cdot (m \cdot a) = (n
+    \cdot m) \cdot a.$$ But $n \cdot m$ is also an integer, so by the definition
+    of divisibility, we have $a \mid c$.</p></div>
+
+<div class="theorem"> <p>For all integers $a,b,c,m,n$, if $a \mid b$
+    and $a \mid c$, then $a \mid (bm + cn)$.</p></div>
+
+<p>This is not too difficult to prove directly. However, we've already done
+    some work, so let's make use of it. This proof is an example of another
+    direct proof, but also an example of using previously-proved results to
+    save work. In this example, we're only saving a little work, but later
+    on this trick will be much more important.</p>
+
+<div class="proof"><p> Let $a,b,c,m,n$ be arbitrary integers and assume that $a
+    \mid b$ and $a \mid c$. Since $a \mid b$, by Theorem 2.3, we have $a \mid
+    bm$ (in fact we can replace $m$ with <em>any</em> integer). Similarly, we
+    have $a \mid cn$.  Since $a \mid bm$ and $a \mid cn$, by Theorem 2.2, we
+    have $a \mid (bm + cn)$.  </p></div>
+
+<p>It is a good exercise to ensure you understand how Theorems 2.2 and 2.3
+    were applied above. In particular, try to work out which variables played
+    which roles when applying them - there are some potentially confusing name
+    collisions between the variables in the proof and those in the theorems.</p>
+
+<h2>Proof by Contradiction</h2>
+<p> So far, we've been writing <i>direct</i> proofs: starting with our assumptions and showing a chain of implications 
+    to come to our desired conclusion.
+    For better or for worse, not all proofs are direct. Another proof style is <b>proof by contradiction.</b>
+    A <i>contradiction</i> is something that is <a href="https://www.merriam-webster.com/dictionary/contradiction">simultaneously true and not true</a>.
+    In terms of propositional logic, we can represent a contradiction by $q \wedge \neg q$.
+    </p>
+    <p>
+    A proof by contradiction follows an unusual template: When we want to prove
+    a statement $p$, we start by assuming that $p$ is in fact <em>false</em>, i.e.
+    we assume the opposite of what we want to prove.  We then use this assumption
+    to reach a logical contradiction. </p>
+
+<p> We can represent this with propositional logic as follows. If we want to
+    prove $p$, we find another proposition $q$ and then instead prove $\neg p
+    \rightarrow (q\wedge \neg q)$. This is logically equivalent to $p$, as the
+    following truth table shows:</p>
+
+<table>
+    <tr>
+        <th>$p$</th><th>$q$</th> <th>$\quad$</th> <th>$\neg p$</th>
+        <th>$q \wedge \neg q$ </th> <th>$\neg p \rightarrow (q\wedge \neg q)$ </th>
+    </tr>
+
+    <tr>
+        <td>$T$</td>
+        <td>$T$</td>
+        <td></td>
+        <td>$F$</td>
+        <td>$F$</td>
+        <td>$T$</td>
+    </tr>
+    <tr>
+        <td>$T$</td>
+        <td>$F$</td>
+        <td></td>
+        <td>$F$</td>
+        <td>$F$</td>
+        <td>$T$</td>
+    </tr>
+    <tr>
+        <td>$F$</td>
+        <td>$T$</td>
+        <td></td>
+        <td>$T$</td>
+        <td>$F$</td>
+        <td>$F$</td>
+    </tr>
+    <tr>
+        <td>$F$</td>
+        <td>$F$</td>
+        <td></td>
+        <td>$T$</td>
+        <td>$F$</td>
+        <td>$F$</td>
+    </tr>
+</table>
+
+<p>The truth table might still not convince everybody. The intuitive point
+    is that such a proof demonstrates that a world in which $p$ is not true must
+    suffer from some unacceptable inconsistency, and we reject such worlds.
+    There's a lot to that thinking, and logicians and philosophers have a lot
+    more to say on it.</p>
+
+<p>Practically speaking, proofs by contradiction can sometimes be easier to find
+    than direct proofs. Many people find it is easier to set up the assumptions
+    and start playing around until they can contradict something. They can still
+    be challenging, and one issue is that finding the appropriate statement $q$
+    can require an intuitive leap. </p>
+
+<p>Here is a simple example which uses the following definition.  We will
+    see more applications of this technique later.</p>
+
+<div class="definition"><p> An integer $a$ is <strong>even</strong> if
+    there exists some integer $k$ such that $2k = a$. It is odd if there
+    exists some integer $k$ such that $2k + 1 = a$.</p></div>
+
+<p>In other words, integer $a$ is even if $2|a$ and odd if $2|(a-1)$. </p>
+
+<div class="theorem"><p> No integer is both even and odd.</p> </div>
+
+<p>Pay attention to what this is saying when we use our definitions of even
+    and odd. It it asserting that one cannot have $2\mid a$ and $2\mid a-1$
+    simultaneously. If you try a direct proof, you'll notice there's not much to
+    work with: One can try proving that $2\mid a$ implies that $2\not\mid a-1$,
+    but it's not clear how to proceed.</p>
+
+<p>Contradiction, on the other hand, assume, purely for the purpose of
+    reaching a contradiction, that there exists an integer that is both even and
+    odd, and then manipulate this assumption into something that is absurd.</p>
+
+<div class="proof"><p> Suppose, to obtain a contradiction, that
+    $a$ is an integer that is both even and odd. Then there exist integers
+    $m,n$ such that $2m = a$ and $2n+1 = a$. This means $2m = 2n+1$, so
+    $2(m-n) = 1$. Note that this implies that $2k = 1$ for some integer $k$.
+    Thus we obtain a contradiction.
+</p></div>
+
+<p> A close reading of this proof reveals that the theorem is really
+    equivalent to the fact that $2$ does not divide $1$, and one may object
+    that the proof used some facts that are less obvious than the theorem.
+    I think this is a valid opinion, but the point of this proof is more just
+    to show the structure of a contradiction proof. <p>
+
+<p> That aside, it's worth reflecting on why proof by contradiction worked
+    here. We were trying to prove a negative statement: There is no integer that
+    is both even and odd. In contrast to direct proofs, we didn't have a
+    variable that we could begin manipulating in search of a proof. But once we
+    switched to contradiction, we started with a positive statement (that there
+    exists an integer that is both even and odd), and the values $m$ and $n$
+    naturally emerged.</p>
+
+<p> Analogously, proving something doesn't exist in the real world is difficult.
+    After all, how can we find proof that aliens don't exist? Instead, we may argue
+    something like ``if aliens existed, then they would have contacted us, but as
+    far as we know, they haven't, so...'' This is of course not conclusive proof,
+    but it is a more solid footing to start than trying to prove directly that
+    they don't exist.
+</p>
+
+<h2>Set Builder Notation</h2>
+
+<p> Let's briefly discuss some more notation that will show up over and over again.</p>
+
+<div class="definition"><p> A <strong>set</strong> is an unordered collection
+    of objects. If $S$ is a set and $a$ is a member of $S$, then we write $a \in
+    S$. Similarly, if $a$ is not a member of $S$, then we write $a \not \in
+    S$.</p></div>
+
+<p>Here, objects is used loosely. Often, we'll just stick to numbers, but
+    these can really be anything: books, trees, other sets, or anything else.</p>
+
+<p>Note that since sets are unordered, this means that $\{1,2,3\}$ and
+    $\{3,2,1\}$ are the same set. Furthermore, since an element is either a member
+    or not a member of a set, each element occurs in a set at most once.  This
+    means that $\{2,1,3,2\}$ is really just $\{1,2,3\}$.</p>
+
+<div class="definition"><p> The set containing no elements is called the
+    <strong>empty set</strong> and is denoted by $\emptyset$.</p></div>
+
+<p>In light of the above remark about objects in sets, note that
+    $\{\emptyset\}$ is <em>not</em> the same as $\emptyset = \{\}$. The set
+    $\{\emptyset\}$ is actually <em>the set containing the empty set</em>, which
+    means it is not empty; it contains one element: the empty set.</p>
+
+<p>There are two common ways to define sets. First, we can just list the
+    elements of the set, like $\{1, 2, 3\}$. This is easy to do for finite sets.
+    For infinite sets, we can do something like $\{1, 2, 3, \dots\}$ and usually,
+    that's enough for us to understand that this is the set containing all natural
+    numbers. </p>
+
+<p>For more complicated definitions, we define sets using
+    <em>comprehensions</em>, also called <em>set-builder notation</em>.  We
+    explain this via examples.</p>
+
+<div class="example"><p> Similar to what we did above, if we wanted to
+    define the set of even natural numbers, we can write something like
+    $\{2,4,6,\dots\}$. Using comprehensions, we can also write $$\{n \in \mathbb N
+    \mid \exists m \in \mathbb N, n = 2 \cdot m \},$$ which says that we want the
+    set of all natural numbers $n$ such that $n$ can be expressed as $2 \cdot m$
+    for some natural number $m$. That, of course, turns out to be the even natural
+    numbers.</p> </div>
+
+<p>We can do more complicated things with this, since there aren't very many
+    hard rules about what kinds of conditions we can or cannot place on our sets.
+    For instance, we can define the set $$\{n \in \mathbb N \mid \exists m \in
+    \mathbb N, (2 \cdot m = n) \wedge (\forall k \in \mathbb N, n \neq k^2) \}.$$
+    Sometimes, we don't even bother with that level of formality and just write
+    something like
+    $$\{n \in \mathbb N \mid \text{$n$ is even and not a square}\}.$$
+    This means that we have a lot of power in how we can define
+    our sets. Without any further restrictions on what we can say when defining
+    sets, this puts us in the realm of <em>naive</em> set theory. This system was
+    devised by Georg Cantor and later, Gottlob Frege as part of his quest to
+    formalize a foundation for mathematics.</p>
+
+<p> The $\mid$ symbol in set builder notation gets confusing sometimes because
+    this symbol is also used to express divisibility (consider $\{x\in\mathbb{Z}
+    \mid 2\mid x\}$). For this reason (and often just out authors' preference), a
+    colon can be used instead (e.g. $\{x\in\mathbb{Z} \ : \ 2\mid x\}$).</p>
+
+<p> However, we can get into trouble if we're not careful about how we define
+    sets. Bertrand Russell noticed this problem, leading to the following famous
+    example: $$S = \{T \mid T \not \in T\}.$$ If we let something like this
+    happen, then we get to conclude $S \in S \iff S \not \in S$, which is very bad
+    if we want mathematics to be consistent (when Russell communicated this to
+    Frege, he was quite spooked). This led to the development of
+    <em>axiomatic</em> set theory. For our purposes, we won't need to delve into
+    axiomatic set theory, but it is important to note that when we talk about set
+    theory being the basis of all mathematics, what we really mean is
+    axiomatic set theory.</p>
+
+<h2>Division Theorem</h2>
+
+<p> Now, equipped with set builder notation and proof by contradiction, we'll
+    take a trip back to grade school and think about division again.  Recall
+    that when we divide an integer $n$ by another integer $d$, if $n$ is a
+    multiple of $d$ (i.e. $d \mid n$), we get an integer $q$ which we call the
+    <em>quotient</em>.  But if $n$ isn't a multiple of $d$, we get a quotient
+    and a remainder $r$. The following theorem, called the division theorem,
+    formally states that whenever we divide two numbers $a$ and $b$, we will
+    always be able to "get" the integers $q$ and $r$ (they exist) and that
+    they're unique.</p>
+
+<div class="theorem"><p title="Division Theorem"> For all integers $n$ and
+    $d \gt 0$, there exist unique integers $q$ and $r$ such that $n = d \cdot q
+    + r$ and $0 \leq r \lt d$.</p></div>
+
+<p> How should we approach proving a theorem? In my mind, before we start writing
+    a proof, there are two things we must do. First we should build some intuition.
+    If $n = 30$ and $d=7$, what are $q$ and $r$? If $n = 5$ and $d = 6$, what are $q$
+    and $r$? Of course we know this to be true if we divide normally, but it's important
+    to make sure that we can see how it fits into the equation and constraints given.
+</p>
+
+<div class="example"><p> Say we want to use the Division Theorem with $n=30$ and $d=7$.
+    Following our intuition for division, we know that $q$ is our quotient, so $q=30//7=4$,
+    and $r$ is our remainder, so $r = 30 - (4 \cdot 7) = 2$. Plugging $q=4, r=2$ back into
+    our theorem, we can see not only that $30 = n = d \cdot q + r = 4 \cdot 7 + 2$,
+    but also that $0 \leq r < d$.
+</p> </div>
+
+<p> Next, we should figure out what we need to prove. This is a more difficult task
+    than one might expect, particularly with complex statements. Often, simple statements
+    can mask more complex proofs as well. For example, in CS, we may need to show "this
+    code works," but actually doing so may require figuring out what the intended behavior
+    is in every circumstance and showing that it follows all of them.
+</p>
+
+<p> To prove this theorem, we have to show two things:</p>
+<ol>
+    <li> that there exist $q$ and $r$ satisfying $n = d \cdot q + r$ and $0 \leq r < d$,
+    <li> and that the appropriate integers $q$ and $r$ are unique.
+</ol>
+<p> It is worth noting that it is not obvious before we start whether we can show these
+    both at once or whether they must be shown separately. Because it is unclear, it is
+    safer to list them as separate. Later, if it turns out that they can be proven together,
+    we can recombine.
+</p>
+
+<p> Let's split this into two lemmas (essentially, little theorems) corresponding
+    to those things we want to prove, and then
+    prove them individually. The first lemma is an example of a proof that is
+    quite a bit harder than the proofs above. It involves a creative step that
+    might not be obvious in a direct approach.</p>
+
+<div class="lemma">For all integers $n$ and $d \gt 0$, there exist
+    integers $q$ and $r$ such that $n = d \cdot q + r$ and $0 \leq r \lt
+    d$.</div>
+
+<div class="proof"><p> Let $n$ and $d \gt 0$ be arbitrary integers. Consider
+    the set $S = \{n - d \cdot q \mid q \in \mathbb Z\}.$ By taking an
+    appropriate $q$, we can see that $S$ contains a non-negative element.
+    Therefore $S$ contains a <em>smallest</em> non-negative element, which we
+    will call $r$, and we take $q$ such that $r = n-dq$.</p>
+
+    <p>For this choice of $q$ and $r$, we clearly have $n=dq+r$.  To complete
+        the proof we need to show that $0\leq r \lt d$. We already know that $r
+        \geq 0$, so all that remains is to show that our chosen $r$ satisfies $r
+        \lt d$.</p>
+
+    <p>Now suppose, to obtain a contradiction, that $r \geq d$. Then $r-d \in S$ (check
+        why), and moreover $0 \leq r-d \lt r$. This means that $r-d$ is a smaller
+        non-negative element of $S$, which contradicts our choice of $r$.
+    </p>
+</div>
+
+<p> This proof is more advanced than before. It takes a good bit of
+    creativity to consider the set $S$. But the proof also had a steps that
+    may seem suspicious: It assumed that $S$ had a smallest non-negative
+    element.  One justification is intuitive: Amongst any set of natural
+    numbers, there should be a smallest element. Another justification
+    would follow from an axiomatic development of the integers, and in that
+    approach this property is call the <i>well-ordering principle</i>.
+    In any case, note that this claim is <i>not</i> asking for a smallest
+    member of $S$ (positive or negative). If $S=\mathbb{Z}$, for example,
+    then it won't have a smallest element.</p>
+
+<p> You'll also notice here that our contradiction felt almost self-imposed.
+    In our last contradiction proof, we broke the rules of math by concluding
+    that $1$ is even, but here our contradiction is that "we said that $r$ was
+    the smallest element, but actually there's one smaller." The important thing
+    to remember is that the only new assumption we made is that $r \geq d$. We
+    defined $r$ to be the smallest, assumed that $r \geq d$, and concluded that
+    $r$ was not the smallest. For that reason, we concluded that the assumption
+    causes a contradiction (that $r$ is both the smallest and not the smallest),
+    so the assumption must be wrong.
+</p>
+
+<p> This proof of Lemma 2.12 is nice and neat but doesn't tell us very
+    directly how to find $q$ and $r$. However, this proof gives us a hint at how
+    we might wrangle a more concrete algorithm out of it. Just pick a positive
+    member of $S$ to be $r$ (by choosing some $q$) and see if it's less than $d$. If it is, then we're good.
+    Otherwise, we know that we have to find a smaller one. We do this by
+    increasing our candidate $q$ by 1, since $n$ and $d$ are fixed. Eventually,
+    we'll hit the $r$ that we want and that will give us the $q$ that we want
+    too. Of course, this isn't a complete algorithm, since I haven't defined
+    what "picking" or "searching" entails, but it's not too hard to see how you
+    might be able to work out those details. Of course, proving formally that
+    such an algorithm works is another challenge, but again, doable.</p>
+
+<p>The next lemma establishes that the our $q,r$ are unique. First let's
+    observe that we don't have special logical machinery for expressing
+    uniqueness. We can say "there exists," but we don't really have notation
+    for "there only exists one." Instead, this is done by saying "any other
+    solution must be equal to the one we found," like in the following lemma.
+    This is a common template and proof approach that is used frequently. </p>
+
+<div class="lemma">Let $n$ and $d \gt 0$ be arbitrary integers.  For any integers
+        $q_1,q_2,r_1,r_2$, if $n = dq_1 + r_1$ and $n=dq_2 +r_2$, where $0 \leq r_1 \lt d$,
+        and $0 \leq r_2 \lt d$, then $q_1=q_2$ and $r_1=r_2$.
+</div>
+
+<div class="proof"><p>Consider the following system of equations: </p>
+    \begin{align*}
+    n &= q_1 \cdot d + r_1 \\
+    n &= q_2 \cdot d + r_2.
+    \end{align*}
+    <p>Subtracting gives us $0 = (q_1 - q_2) \cdot d + (r_1 - r_2)$. Rearranging
+        this equation gives us $(q_2 - q_1) \cdot d = r_1 - r_2$. This shows that $d
+        \mid r_1 - r_2$. Since $-d \lt r_1 - r_2 \lt d$, it must be that $r_1 - r_2
+        = 0$, since there are no other multiples of $d$ strictly between $-d$ and
+        $d$.  Therefore $r_1 = r_2$. </p>
+
+    <p>Using $r_1-r_2=0$ in our earlier equation gives that $(q_2 - q_1) \cdot d
+        = 0$. The product of two numbers can be zero only if at least on those
+        numbers is zero, and  $d>0$, so it must be that $q_2 - q_1 = 0$ and
+        therefore $q_1 = q_2$, as desired.</p>
+</div>
+
+From the division theorem, we will also pull out the following terminology for future use.
+<div class="definition">
+    <p> Let $n$ and $d \gt 0$ be integers. We define the functions $n
+        \mathop{\mathbf{div}} d = q$ and $n \mathop{\mathbf{mod}} d = r$, where
+        $q$ and $r$ are as defined by the Division Theorem (Theorem 2.11).</p>
+</div>
+<p> For example, $17 \mathop{\mathbf{div}} 5= 3$ and $17 \mathop{\mathbf{mod}}
+    5= 2$. We can think of $\mathbf{div}$ as the integer division operation
+    in many programming languages that just returns the quotient and
+    $\mathbf{mod}$ is the modulus operator. </p>
+
+<p> Perhaps counterintuitively, the $\mathop{\mathbf{mod}}$ operator turns out
+    to be more widely applicable than $\mathop{\mathbf{div}}$. One example is in
+    computing the hour of the day: if I want to know the day of the week 30 days from
+    a Monday, I can compute $30 \mathop{\mathbf{mod}} 7 = 2$ to know that it is
+    two days away from Monday, or Wednesday. We'll see another interesting application next.
+</p>
+
+<h2>Greatest Common Divisors and Euclid's Algorithm</h2>
+<p>This lecture will cover greatest common divisors (GCDs) and build towards one
+    of the most famous algorithms of all time: Euclid's algorithm for computing
+    GCDs. Aside from being technically interesting, this is an algorithm that most
+    computer scientists tend to learn at some point, and will be a crucial step in
+    our development of number theory.  We begin with the main definition
+    of interest.</p>
+
+<div class="definition">
+    <p> If $a$ and $b$ are integers with $a \neq 0$ or $b \neq 0$, then the
+        <strong>greatest common divisor (GCD)</strong> of $a$ and $b$, denoted
+        $\gcd(a,b)$, is the largest integer $d$ such that $d\mid a$ and $d \mid
+        b$.</p>
+</div>
+
+<p>From the way we've defined this, it's not entirely obvious that the GCD
+    should exist: Maybe there is infinite list of integers that divide $a$ and
+    $b$, and in this case there might not be a largest such number.  Or maybe
+    there are no common divisors at all. We can rule out this latter problem by
+    observing that $1$ will always be a common divisor, so the GCD will always be
+    positive.</p>
+
+<p>To rule out the possibility of an infinite number of common divisors, we
+    use the fact that at least one of $a$ and $b$ is non-zero.  <em>Without loss
+        of generality</em>, assume $a \neq 0$ (the phrase "without loss of generality"
+    means that our assumption does not materially change the proof that follows; We
+    know that $a\neq 0$ or $b\neq 0$, and which case holds will only affect the
+    notation going forward.).  Since $a\neq 0$, it has a largest divisor, namely
+    $|a|$.  (Exercise: Carefully verify this; You can use the fact that if $x|y$ and
+    $y>0$, then $x\leq y$.).  Since $a$ has a largest divisor and there exists at
+    least one common divisor, we conclude that there exists a greatest common
+    divisor.</p>
+
+<p> One might say this definition is a little ugly: We did all this work to
+    develop nice number theoretic definitions that handle all integers (like
+    divisibility), and then did something like Definition 4.1 that doesn't define
+    $\gcd(0,0)$. The following definition addresses this, at some cost:</p>
+
+<div class="definition">
+    <p> Let $a$ and $b$ be integers. An integer $d$ is said to be a
+        <strong>mathematician's greatest common divisor (GCD)</strong> of $a$ and
+        $b$, if for all integers $c$, $c\mid a$ and $c \mid b$ implies that $c \mid
+        d$.  </p>
+</div>
+
+<p>The name in that definition is tongue-in-cheek; It's just called a GCD as
+    well, but we want to distinguish it from Definition 4.1. The downside of this
+    definition is that more than one integer can be a GCD of $a$ and $b$ (Exercise
+    for after this lecture: Prove that when at least one of $a,b$ are non-zero,
+    then $\pm\gcd(a,b)$ are both mathematician's GCDs, and prove they are the only
+    GCDs.). The upside is that the GCD of $a=0$ and $b=0$ is now cleanly defined -
+    try to find it, and prove your answer. And additional upside is that this
+    definition generalizes nicely in higher math, allowing one to define, say, the
+    "GCD of two polynomials" in a sensible way (there is no notion of "size" for
+    polynomials that works nicely for such a definition).</p>
+
+<h3>Euclid's Algorithm</h3>
+
+<p> A natural question then arises: how might we compute the greatest
+    common divisor of two integers $a$ and $b$? </p>
+
+<p> The obvious way to do this is to compute the set of divisors for $a$ and
+    $b$, compute their intersection, and take the largest element in the
+    intersection. The big problem with this approach is that factoring integers
+    is a notoriously hard problem to solve efficiently. There are some
+    heuristics that we can apply and some tricks that we can pull, but in
+    general we do not have a fast algorithm for factoring numbers. This fact
+    happens to be the backbone of many public-key cryptographic systems we use
+    today.</p>
+
+<p> However, if all we care about is the <em>greatest</em> common divisor
+    and not any of the other divisors, then there is an efficient method. Let's
+    start by seeing the method, and then we can talk about how to demonstrate
+    that it works.
+   </p>
+
+<p>The following algorithm is called Euclid's algorithm, named after Euclid who
+    describes it in the Elements. Euclid is the Greek mathematician from around
+    300 BC who, in the Elements, describes a lot of the elementary geometry,
+    algebra, and number theory that we learn in school. </p>
+
+<div class="algorithm"><p title = "Euclid's Algorithm">Euclid's Algorithm is a recursive
+    algorithm that takes in two integers $a$ and $b$ and returns their greatest common
+    divisor. It computes this as follows:
+    $$\gcd(a,b) = \begin{cases} a & \text{if $b = 0$,} \\ \gcd(b, a \mathop{\mathbf{mod}} b) & \text{otherwise.} \end{cases}$$
+</p>
+</div>
+
+<div class="example"><p> Suppose we want to compute the GCD of 232 and 72.
+    We apply Euclid's algorithm as follows:</p>
+    \begin{align*}
+    \gcd(232,72) &= \gcd(72,16) \\
+    &= \gcd(16,8) \\
+    &= \gcd(8,0) \\
+    &= 8
+    \end{align*}
+</div>
+
+<p> This is a great example, as mentioned above, where we want to argue that this
+    algorithm "works," but doing so is not so simple of a task. To show that this
+    algorithm works, we need to argue three things: </p>
+<ol>
+    <li> Before the algorithm ends, the $\mathbf{gcd}$ is preserved. In
+    other words, for all intgers $a$ and $b>0$, $\gcd(a,b) = \gcd(b,a \mathop{\mathbf{mod}} b)$. </li>
+    <li> This algorithm ends at some point. </li>
+    <li> When the algorithm ends, it should output $a$. </li>
+</ol>
+
+<p> Let's start with Statement 1. </p>
+
+<div class="theorem"><p>
+    For all integers $a$ and $b> 0$,
+    $$
+    \gcd(a,b) = \gcd(b,a \mathop{\mathbf{mod}} b).
+    $$
+</p></div>
+
+<div class="proof"><p>  Let $q = a \mathop{\mathbf{div}} b$ and $r = a
+    \mathop{\mathbf{mod}} b$. It suffices to show that the set of
+    common divisors of $a$ and $b$ equals the set of common divisors of
+    $b$ and $r$.</p>
+
+    <p>Suppose $x\mid a$ and $x\mid b$. Then by Theorem 2.5, $x\mid (a-qb)=r$,
+        so $x$ is a common divisor of $b$ and $r$. Conversely, if $y\mid b$ and
+        $y\mid r$, then $y\mid (qb+r)=a$ again by Theorem 2.5. Since $a$ and $b$ have
+        the same common divisors as $b$ and $r$, they must have the same greatest
+        common divisor.
+    </p></div>
+
+<p> Statements 2 and 3 are left as exercises, but here are some hints. For statement 2,
+    remember that $0 \leq a \mathop{\mathbf{mod}} b < b$. For statement $3$, if $b=0$, what happened
+    the step before?
+</p>
+
+<p> A point I want to drive home is that we have taken some tools from across the
+    lecture - from divisibility and from mod - to prove the correctness of this other
+    algorithm about greatest common divisors. I want to emphasize that the essence of the
+    skill of problem-solving is not necessarily coming up with fresh creative solutions
+    all the time, but instead using good ideas you've seen in the past to help you
+    tackle brand new problems. What we're learning in this class, primarily, is the skill
+    of recognizing when ideas are interesting, verifying that they are, and using them in
+    future contexts.
+</p>
+
+<h2>Recommended Exercises</h2>
+<h4> Divisibility </h4>
+<ol>
+    <li> Prove that if $a\mid b$ and $a\mid c$ then $a\mid b-c$.</li>
+    <li> Prove that if $a\mid b$ then $a^2 \mid b^2$.</li>
+    <li> Prove that if $a\mid c$ and $b\mid d$ then $ab\mid cd$.</li>
+    <li> Prove that we always have $a-b\mid a^2-b^2$.</li>
+</ol>
+
+<h4>Division Theorem</h4>
+<ol>
+    <li>The division theorem allows for $n=0$, $n\lt 0$, and $d=1$; Work through
+        a few examples to ensure you understand how the theorem is saying in these
+        cases (for example, $n=0,d=2$, $n=-11,d=5$, $n=5,d=1$).</li>
+    <li>Explicitly list the elements of the set $\{x\in \mathbb{Z}\ :\ x-2\geq 0\}$.</li>
+    <li>Explicitly list the elements of the set
+        $\{a+b\ :\ 0 \leq a \leq 3, 2\leq b \leq 5\}$.</li>
+    <li>Prove that if $a^2$ is even, then $a$ is even. </li>
+    <li>Prove that $8\mid n^2-1$ for every odd $n$.</li>
+    <li>Prove that if $a,b\in\mathbb{Z}$ and $a \geq 2$ then
+        $a \not\mid b$ or $a\not\mid b+1$. <em>(The symbol $\not\mid$
+            means "does not divide".)</em></li>
+    <li>Use proof by contradiction to show that there do not exist
+        integers $a,b$ such that $15a + 20b = 1$.</li>
+    <li>Use proof by contradiction to show that if $a, b \in \mathbb{Z}$ and
+        $a^2-b^2=1$, then $a,b \in\{-1,0,1\}$. </li>
+</ol>
+
+<h4>Greatest Common Divisors and Euclid's Algorithm</h4>
+<ol>
+    <li>From Rosen, 8th Edition: Section 4.3, #32, #33 for practice running
+        the Euclidean Algorithm.</li>
+    <li> Prove that if $a$ is even, then $\gcd(a,a+2)=2$.
+
+    <li>Let $a$ be a positive integer. Find $\gcd(a,a+1)$, and prove
+        your answer is correct.
+
+    <li>Let $a,b,c$ be a positive integer. Find $\gcd(ac,bc)$ in terms of
+        $\gcd(a,b)$, and prove your answer is correct.
+</ol>
+
+</body>
