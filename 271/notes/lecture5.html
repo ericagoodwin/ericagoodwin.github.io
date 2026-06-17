@@ -1,0 +1,250 @@
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="style-notes.css">
+    <link rel='shortcut icon' type='image/x-icon' href='uc.png'>
+	<meta charset="utf-8">
+    <meta name="robots" content="noindex">
+    
+	<title>CMSC 27100 &mdash; Lecture 5</title>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          processEscapes: true
+        }
+      });
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+  <style>
+  body {
+   counter-reset: section 5 theorem;
+  }
+  </style>
+</head>
+
+<body>
+	<h1><a href="index.html">CMSC 27100</a> &mdash; Lecture 5</h1>
+
+<h3 class="citation">These notes are part of an evolving series originally
+    written by <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a> and
+    subsequently extended by <a
+  href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and <a
+  href="https://rand.cs.uchicago.edu/">Robert Rand</a>.</h3>
+
+	 <h2>Modular Arithmetic</h2>
+
+    <p> For Euclid's Algorithm, we introduced the modulus operator.  
+    In this lecture we'll introduce a system of <em>modular arithmetic</em> on
+    integers based around this operator that has a wide array of applications.  In
+    particular we'll develop a notion of "division" that is well-defined within
+    this system. The system of modular arithmetic was first developed by
+    Gauss.</p>
+
+    <div class="definition"><p> Let $m$ be a positive integer. For integers $a$
+      and $b$, we say that $a$ is <strong>congruent to $b$ modulo $m$</strong>,
+      written $a \equiv b \pmod m$ or $a \equiv_m b$, if $m \mid (a-b)$.
+      We write $a \not\equiv_m b$ to mean that $a$ is not congruent to $b$
+      modulo $m$.
+      </p></div>
+		
+
+      <p>We will prefer the notation $a \equiv_m b$.</p>
+
+    <p>We need to be careful to distinguish the notion of equivalence modulo $m$
+    and the function $a \mathop{\mathbf{mod}} m$.  In the definition above, $a
+    \equiv_m b$ is shorthand for the assertion that $m\mid (a-b)$. On the
+    other hand, $a \mathop{\mathbf{mod}} m$ is a number.  However, there is a
+    tight connection between the two:</p>
+
+    <div class="proposition"><p> For all integers $a,b,m$ with $m$
+    positive, $a \equiv_m b$ if and only if $a \mathop{\mathbf{mod}} m = b
+    \mathop{\mathbf{mod}} m$.</p></div>
+
+    <div class="proof"><p> Remember that for "if and only if" statements, we need
+		to prove both directions. Assume first that $a \equiv_m b$. By the Division
+		Theorem applied twice, there exist $q_1,q_2,r_1,r_2\in\mathbb{Z}$
+		such that 
+    $a = q_1m + r_1$ and $b = q_2m + r_2$, and $0\leq r_1,r_2 \lt m$. Thus
+		$a-b = (q_1 - q_2)m + (r_1-r_2)$. Since $a \equiv_m b$, we know that
+		$m|(a-b)$. Combining this with the obvious fact that $m|(q_1-q_2)m$, we
+		get that $m|(r_1-r_2)$. But $-m \lt r_1-r_2 \lt m$, and the only multiple
+		of $m$ in that range is $0$. Hence $r_1-r_2=0$, i.e. $r_1=r_2$. 
+		Since, by definition, $a \mathop{\mathbf{mod}} m= r_1$ and
+		$b \mathop{\mathbf{mod}} m = r_2$, we are done.
+      </p>
+
+		<p>For the reverse direction, assume that $a \mathop{\mathbf{mod}} m = b
+		\mathop{\mathbf{mod}} m$, and let $q_1,q_2,r_1,r_2\in\mathbb{Z}$ be as
+		before. We then immediately have $r_1=r_2$ by the definitions of $r_1$ and
+    $r_2$, so $a-b = (q_1 - q_2)m +
+		(r_1-r_2)=(q_1-q_2)m$. Thus $m|(a-b)$, or in other words, $a \equiv_m b$.
+    </p>
+    </div>
+
+    <p>We next give some simple properties of the $\equiv_m$ symbol which say
+    that it behaves intuitively like standard equality.</p>
+
+    <div class="proposition"><p> Let $m$ be a positive integer. </p>
+    <ul>
+      <li>It always holds that $a \equiv_m a$.</li>
+      <li>If $a \equiv_m b$ then $b \equiv_m a$.</li>
+      <li>If $a \equiv_m b$ and $b\equiv_m c$, then $a \equiv_m c$. </li>
+    </ul>
+    </div>
+
+    <p>The proof of this proposition is a good exercise in using the
+    definitions. The proposition itself allows one to make chains of
+    assertions like $a\equiv_m b \equiv_m c$ with ambiguity.</p>
+
+    <p>Next we state a proposition that allows one to substitute congruent
+    values while doing
+    addition and multiplication modulo $m$.</p>
+
+    <div class="proposition"><p> Let $m$ be a positive integer.  If $a
+    \equiv_m b$ and $c \equiv_m d$, then $a + c \equiv_m b + d$ and $ac \equiv_m
+    bd$.</p></div>
+
+    <div class="proof"><p> The assertion about addition is easier and left as
+    an exercise, so we only prove the assertion for multiplication:
+    If $m\mid a-b$ and $m\mid c-d$, then $m\mid c(a-b) + b(c-d) = ac - bd$.
+    </p></div>
+
+
+
+    <h3>Thinking Modularly</h3> 
+
+    <p>The practical consequence of all of these properties is that one can
+    interleave addition and multiplication with "modding down" as one likes.
+    Here is one way to state that.</p>
+
+    <div class="proposition"><p> Let $m$ be a positive integer.  Then </p>
+      $$
+      (a+b) \mathop{\mathbf{mod}} m
+      = 
+      ((a\mathop{\mathbf{mod}} m)
+      +
+      (b\mathop{\mathbf{mod}} m)) \mathop{\mathbf{mod}} m,
+      $$
+      and
+      $$
+      ab \mathop{\mathbf{mod}} m
+      = 
+      ((a\mathop{\mathbf{mod}} m)
+      (b\mathop{\mathbf{mod}} m)) \mathop{\mathbf{mod}} m.
+      $$
+    </div>
+
+    <div class="proof"><p> We'll prove the statement about addition
+      and leave the second statement as an exercise. 
+      By Proposition 5.2, to show
+      $(a+b) \mathop{\mathbf{mod}} m
+      = 
+      ((a\mathop{\mathbf{mod}} m) +
+      (b\mathop{\mathbf{mod}} m)) \mathop{\mathbf{mod}} m
+      $,
+      it is enough to show that 
+      $a+b \equiv_m (a\mathop{\mathbf{mod}} m)+(b\mathop{\mathbf{mod}} m)$.
+      Using the
+      definition of $\mathbf{mod}$, it is easy to show that
+      $a \equiv_m (a  \mathop{\mathbf{mod}} m)$ and
+      $b \equiv_m (b  \mathop{\mathbf{mod}} m)$. Proposition 5.4 allows us
+      to add these congruences for the desired conclusion.
+      </p>
+    </div>
+
+
+    <div class="example"><p>
+      For instance, to
+      compute $31\cdot(123+49)\mathop{\mathbf{mod}} 5$, you can reduce
+      everything modulo $5$ at any time; Thus this value is 
+      </p>
+      \begin{align}
+      31\cdot(123+49)\mathop{\mathbf{mod}} 5 
+      & =
+      (31 \mathop{\mathbf{mod}} 5)\cdot ((123 
+      + 49) \mathop{\mathbf{mod}} 5) \mathop{\mathbf{mod}} 5 \\
+      & =
+      (31 \mathop{\mathbf{mod}} 5)\cdot ((123 \mathop{\mathbf{mod}} 5)
+      + (49 \mathop{\mathbf{mod}} 5)) \mathop{\mathbf{mod}} 5 \\
+      &= 1\cdot (3 + 4) \mathop{\mathbf{mod}} 5 \\
+      & = 7 \mathop{\mathbf{mod}} 5\\
+      &= 2.
+      \end{align}
+      <p>
+      Note that these are <em>equalities</em> of integers (using the $=$ symbol)
+      and not modular congruences (which would use the $\equiv_m$ symbol).
+      In order to prove this, we used Proposition 5.5 twice (on the first
+      second equalities; check that you can see why).
+      </p>
+    </div>
+
+    <p>In the usual presentation of calculations like this example, one does not
+    mention the application of Proposition 5.5 at all. This can be intuitive
+    once you're used to it, but you should be careful not to overstep what it is
+    implied by the theorem. We can "mod down" when doing addition and
+    multiplication, there are operations for which this isn't true, as the next
+    example shows.</p>
+
+    <div class="example">
+      <p>
+      Observe that $16 \equiv_{10} 6$, but if we divide both sides by $2$
+      (as integers) then the result is not congruent modulo $10$:
+      $16/2 =8$ and $6/2 = 3$, and $8 \not\equiv_{10} 3$.
+      </p>
+
+      <p>For a similar example, we have that $16 \equiv_{12} 4$, but this
+      congruence will not hold if we take the square root of both sides:
+      $\sqrt{16} = 4$ and $\sqrt{4}=2$, and $4\not\equiv_{12} 2$.
+      </p>
+
+    </div>
+
+    <h2>Applications to Cryptography</h2>
+
+
+    <p> Number theory plays a key role in cryptography, the art and science of transforming information so that it cannot be decoded without special knowledge. 
+        In general, cryptography involves the encryption and decryption of a secret message using a specific process, referred to as a cipher. 
+        Some early ciphers date back thousands of years! 
+         </p>
+
+         <h3>Caesar's Cypher</h3>
+         <p>One of the earliest known uses of cryptography was by Julius Caesar. He made messages secret
+            by shifting each letter three letters forward in the alphabet (sending the last three letters of the
+            alphabet to the first three).</p>
+    
+
+
+
+
+    
+		<h3>Recommended Exercises</h3>
+
+
+		<p>From Rosen, 8th edition: Section 4.4, #7, 9, 10, 15. 
+
+		<ol>
+    <li> Prove Propositions 5.3 and the unproved half of 5.4. </li>
+
+    <li> Prove that if $m\mid ab$ and $\gcd(m,a)=1$ then $m\mid b$.</li>
+
+    <li> Let $m>0$. We say that <em>$a$ is a zero divisor modulo $m$</em> if $a
+    \not\equiv_m 0$ and there exists an integer $b\not\equiv_m 0$ such that $ab
+    \equiv_m 0$. Prove that $a$ is a zero divisor modulo $m$ if and only if
+    $a$ and $m$ are not relatively prime. (One proof of this uses the
+    previous problem.)</li>
+
+		<li> Prove that for any integers $a,b,c,m$
+		with $m$ positive, if $ab \equiv_m ac$ and $\gcd(a,m)=1$, then
+    $b \equiv_m c$.</li>
+
+    <li> Prove Corollary 5.18. </li>
+
+		<li> Prove that for any integers $a,b,m$ with $m$ positive, the
+		congruence $ax\equiv_m b$ has a solution if an only if
+    $\gcd(a,m)|b$.</li>
+		</ol>
+
