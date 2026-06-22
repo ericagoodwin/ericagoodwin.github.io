@@ -31,10 +31,10 @@
 <body>
 <h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 3</h1>
 
-<h3 class="citation">The notes for this course are adapted from notes written by <a href="https://liujon23.github.io/">Jonathan Liu</a>,
-    <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>,
+<h3 class="citation">The notes for this course began from a series originally
+    written by <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>, with extensions by
     <a href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and
-    <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>.</h3>
+    <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>, adapted for the summer session by <a href="https://liujon23.github.io/">Jonathan Liu</a>. I have modified them to follow our course.</h3>
 
 
 <h2>Mathematical Induction</h2>
@@ -72,18 +72,12 @@ the fact that some structure is retained between numbers - that $P(i) \to P(i+1)
     induction.</p>
 
 <div class="theorem"><p title="Principle of Mathematical Induction"></p><p> Let $P(n)$ be a predicate with domain $n \in \mathbb
-    N$. If</p>
+    N$. To prove that $P(n)$ is true for all $n$, we complete two steps:</p>
     <ol>
-        <li>$P(0)$
+        <li><b>Base case: </b>Verify that $P(0)$ is true
+        <li><b>Inductive step:</b> Show that $P(k) \rightarrow P(k+1)$ is true for all $k \in \mathbb{N}.$
     </ol>
-    and
-    <ol start="2">
-        <li>for all $k \in \mathbb N$, if $P(k)$, then $P(k+1)$
-    </ol>
-    are both true, then the following is true:
-    <ol start="3">
-        <li>for all $n \in \mathbb N$, $P(n)$.
-    </ol>
+    If we can show these two steps, then we have proved that $\forall n \in \mathbb{N}, P(n)$
 </div>
 
 
@@ -99,14 +93,6 @@ k, P(k)\rightarrow P(k+1)))\rightarrow (\forall n, P(n)),$$ <p>where both
     prove that the property holds for the number 0 and that for any other natural
     number $k$, if it's true for $k$, then we can show that it's true for the next
     natural number, $k+1$.</p>
-
-<p>More formally, to prove that for all $n \in \mathbb N$ that $P(n)$ holds,
-</p>
-<ol>
-    <li>first, prove that $P(0)$ holds, then,</li>
-    <li>prove that for $k \in \mathbb N$, if $P(k)$ holds, then $P(k+1)$ also
-        holds.</li>
-</ol>
 
 <p>So why does this even work? Basically, what we're really proving is a very
     large, infinite chain of implications,</p>
@@ -175,6 +161,30 @@ P(2) &\rightarrow P(3), \\
 <p>This method works remarkably well for proving formulas like this. Once you've
     done a few of them, new problems will mostly reduce to finding the
     right algebraic manipulation. Here's another.
+
+    <div class="theorem"><p> For every $n \in \mathbb N$,</p>
+        $$\sum_{i=0}^n 2^i = 2^{n+1} - 1$$
+    </div>
+
+    <div class="proof"><p> We will prove this by induction on $n$.
+
+        <p><strong>Base case.</strong> Let $n = 0$. Then
+            $$\sum_{i = 0}^0 2^i = 2^0 = 1 \quad \text{and} \quad 2^{0+1} - 1 = 2 - 1 = 1,$$
+            so clearly $\sum_{i=0}^n 2^i = 2^{n+1} - 1$ holds for $n=0$.</p>
+    
+        <p><strong>Inductive Hypothesis.</strong> Let $k \in \mathbb N$ be arbitrary and
+            assume that $\sum_{i=0}^k 2^i = 2^{k+1} - 1$.</p>
+    
+        <p><strong>Inductive step.</strong> We will show that
+            $\sum_{i=0}^{k+1} 2^i = 2^{k+2} - 1$. We have
+            \begin{align*}
+            \sum_{i=0}^{k+1} 2^i &= \sum_{i=0}^k 2^i + 2^{k+1} \\
+            &= 2^{k+1} - 1 + 2^{k+1} & \text{by ind. hyp.} \\
+            &= 2 \cdot 2^{k+1} - 1  \\
+            &=  2^{k+2} - 1  \\
+            \end{align*}
+            Thus, we have shown that $\sum_{i=0}^n 2^i = 2^{n+1} - 1$ holds for $n=k+1$. Therefore, $\sum_{i=0}^n 2^i = 2^{n+1} - 1$ holds for all $n \in \mathbb N$.
+        </p></div>
 
 <div class="theorem"><p> For all $n \in \mathbb N$ and $x \geq 0$,
     $(1+x)^n \geq 1+nx$.</p></div>
@@ -271,19 +281,8 @@ piece of gossip.</p>
 <p>There is room for some variation in how you carry out the induction, and your
     proofs should be careful about the details! 
     
-    Here are three variations of our induction formula you should look out for: 
-    <ul>
-        <li>The base case should start at the smallest $n$ we are claiming $P(n)$ to be true for, which is <b>not always 0</b>. For example, Theorem 3.6 is stated for all $n \geq 4$, so our base case started at 4. </li>
-        <li>Some proofs will require <b>multiple base cases</b>, such as proving $P(0)$ and $P(1)$ in
-            the base case instead of just $P(0)$. When this is necessary depends on what
-            is needed to perform the inductive step.</li>
-        <li>Finally, you may opt to <b>change the notation</b> in the inductive step without
-            affecting your proof. Instead of showing that $P(0)\wedge \cdots \wedge
-            P(k)$ implies $P(k+1)$, you can show $P(0)\wedge \cdots \wedge P(k-1)$ implies
-            $P(k)$. It's also worth checking that your notation does not
-            inadvertently use something undefined like $P(-1)$, which can happen if you
-            try to use case $P(k-2)$ when $k=1$.</li>
-    </ul>
+    For example, the base case should start at the smallest $n$ we are claiming $P(n)$ to be true for, which is <b>not always 0</b>. For example, Theorem 3.6 is stated for all $n \geq 4$, so our base case started at 4. </li>
+
 
 <h3>How Induction Can Go Wrong</h3>
 

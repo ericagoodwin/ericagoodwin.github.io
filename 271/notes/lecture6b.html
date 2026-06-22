@@ -1,0 +1,397 @@
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="style-notes.css">
+    <link rel='shortcut icon' type='image/x-icon' href='../uc.png'>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+
+  <title>CMSC 27100 &mdash; Lecture 5b: Intro to Counting</title>
+  <link rel="stylesheet" href="../css/style-notes.css" type="text/css" media="screen, print">
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+  <style>
+    body {
+      counter-set: section 5 theorem 20;
+    }
+  </style>
+</head>
+
+<body>
+<h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 6b</h1>
+
+<h3 class="citation">The notes for this course began from a series originally
+    written by <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>, with extensions by
+    <a href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and
+    <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>, adapted for the summer session by <a href="https://liujon23.github.io/">Jonathan Liu</a>. I have modified them to follow our course.</h3>
+
+<h2>Basic Counting</h2>
+
+<p>For the rest of this lecture, we're going to be focused on counting. 
+    There are a couple of rules we leverage heavily when counting to make it
+easier for us to deal with larger and more complex sets. Both of these rules
+should be pretty intuitive, but they're good to be aware of and be confident
+that they are correct.
+
+<div class="example"> <p> Suppose you are ordering an ice cream cone. There are three
+  flavors of ice cream (chocolate, vanilla, strawberry), and two types of cones
+  (cake and waffle). How many different orders are possible?
+
+  <p>Intuitively, it's $3\cdot 2 = 6$. </p>
+</div>
+
+<p>To see this in an organized way, you can draw a tree, like in Figure 1.4
+  on page 10 of <a
+          href="https://drive.google.com/file/d/1VmkAAGOYCTORq1wxSQqy255qLJjTNvBI/view">[BH]</a>.
+</p>
+
+<p>We could formalize the thinking for this ice cream problem via a <b>decision process</b>. 
+A decision process is nothing more than a sequence of decisions that leads to a particular outcome. 
+If a decision process has stages have $d_1, d_2, \cdots, d_n$ options at each level then the tree has $d_1 \cdot d_2 \cdots d_k$ leaves, and hence so does the set we're trying to count. </p>
+
+<p>To be a bit more precise, we state the principle as the following theorem.</p>
+
+
+<div class="theorem"><p title="Decision Process Counting"> Suppose
+    a decision process with $k$ steps produces a tree with the following
+    properties:
+    <ol>
+      <li>At each level $i$, all nodes have the same number $d_i$ of branches
+        leading down to the next level.</li>
+      <li>Each outcome appeared on <strong>exactly one</strong> leaf.</li>
+    </ol>
+    Then the total number of outcomes is $d_1\cdot d_2 \cdots d_{k}$.
+  </div>
+
+  <p>An immediate application of decision processes is called the multiplication rule.</p>
+
+<div class="theorem"><p title="Multiplication Rule"> If $A_1, A_2, \dots,
+  A_k$ are finite sets, then $$|A_1 \times A_2 \times \cdots \times A_k| =
+  |A_1| \cdot |A_2| \cdots |A_k|.$$
+</p>
+</div>
+
+<div class="example"> <p> Suppose I have a bin with balls labeled $1$ to $10$,
+  and another with balls labeled $11$ to $15$. How many outcomes
+  are possible if I draw a ball out of each bin?
+</p>
+<p>The set of outcomes for bin $1$ is $B_1 = \{1, 2, ..., 10\}$, and the set
+of outcomes for bin $2$ is $B_2 = \{11, 12, ..., 15\}$, so the set of total
+outcomes is $B_1 \times B_2$. By the multiplication rule, we learn that
+$|B_1 \times B_2| = |B_1| \cdot |B_2| = 10 \cdot 5 = \boxed{50}$.
+</p>
+</div>
+
+The multiplication rule is used when we want to count the ways that multiple
+events occur. We can think of it as corresponding to the AND connective. For
+example, from Example 5.4, we found the number of ways that a ball from $B_1$
+is drawn AND a ball from $B_2$ is drawn. If, instead, we care about the number
+of outcomes where either a ball from $B_1$ is drawn OR a ball from $B_2$ is
+drawn, we can use the addition rule. The rule formalizes what is very intuitive:
+You can just count the sets in the union, and then add up their sizes.
+
+<div class="theorem"><p title="Addition Rule"> If $A_1, A_2, \dots,
+  A_k$ are disjoint finite sets, then $$|A_1 \cup A_2 \cup \cdots \cup A_k| =
+  |A_1| + |A_2| + |A_k|.$$
+</p>
+</div>
+
+<div class="example"> <p> Suppose I have a bin with balls labeled $1$ to $10$,
+  and another with balls labeled $11$ to $15$. How many outcomes
+  are possible if I draw a ball out of one of the bins?
+</p>
+  <p>The set of outcomes for bin $1$ is $B_1 = \{1, 2, ..., 10\}$, and the set
+    of outcomes for bin $2$ is $B_2 = \{11, 12, ..., 15\}$, so the set of total
+    outcomes is $B_1 \cup B_2$. By the addition rule, we learn that
+    $|B_1 \cup B_2| = |B_1| + |B_2| = 10 + 5 = \boxed{15}$.
+  </p>
+</div>
+
+<h2>Counting with Decision Processes</h2>
+
+<p>We'll solve a lot of problems using this approach, and also test the limits of this approach &mdash; not everything can be counted this way! </p>
+
+<p>We start with some examples.</p>
+
+<div class="example"><p> How many two-digit strings are there whose digits
+  are different? </p>
+
+  <p>We create a decision process for this as follows:</p>
+  <ol>
+    <li>Select the first digit.</li>
+    <li>Select the second digit to be different from the first.</li>
+  </ol>
+  Note that we have $10$ options for the first decision, and $9$ options
+  for the second decision. That leaves us with $10 \cdot 9 = \boxed{90}$
+  options overall.
+</div>
+
+<div class="example"><p> How many two-digit <b>numbers</b> are there whose digits
+  are different? </p>
+
+  <p>We create a decision process for this as follows:</p>
+  <ol>
+    <li>Select the first digit.</li>
+    <li>Select the second digit to be different from the first.</li>
+  </ol>
+  This time, note that the first digit can't be $0$ because it's a two-digit
+  number, so there are $9$ possibilities for the first digit. The second
+  digit can be any except for the one picked in the first decision. Thus,
+  $d_1$ has $9$ possibilities, and $d_2$ has $9$ possibilities, for a total
+  of $d_1 \cdot d_2 = \boxed{81}$.
+</div>
+
+<div class="example"><p> How many ways are there to arrange $6$ people
+into a line?</p>
+
+  <p>We create a decision process for this as follows:</p>
+  <ol>
+    <li>Select the person to be first in line.</li>
+    <li>Select the person to be second in line.</li>
+    <li>...</li>
+    <li>Select the person to be sicth in line.</li>
+  </ol>
+  The first decision has $6$ possibilities, the second has $6-1=5$ (because
+  the person who is first can not also be second), and so on, so the
+  total number of possibilities is $6 \cdot 5 \cdot 4 \cdot ... \cdot 1$.
+</div>
+
+
+The product of descending integers comes up so frequently in counting that
+we have notation for it:
+
+<div class="definition"><p title="Factorial">The decreasing product
+of positive integers from some $n$ down to $1$ is referred to as $n$
+  <b>factorial</b> or $n!$, with the factorial by the exclamation point.
+  For example,
+$$5! = 5 \cdot 4 \cdot 3 \cdot 2 \cdot 1.$$
+For notational reasons, it is also convenient to define $0!=1$.
+</p></div>
+
+<p>The Multiplication Rule gets applied in ad hoc ways to all sorts of
+    problems where one is making a sequence of decisions (like our ice cream
+    cones).  There are two patterns that are so common in probability and
+    combinatorics that they are given names: Sampling with and without
+    replacement.
+    </p>
+
+    <div class="theorem"><p title="Sampling With Replacement"> If we
+  make $k$ choices, one after the other, from a set of $n$ objects, and
+  we allow the same object to be chosen multiple times, then
+  there are $n^k$ possible outcomes.
+    </p>
+    </div>
+
+  <p>This theorem is just the Multiplication Rule with all of the
+  sets $A_1,\ldots,A_k$ taken as the same set of objects.
+    </p>
+
+    <div class="theorem"><p title="Sampling Without Replacement"> If we
+  make $k$ choices, one after the other, from a set of $n$ objects, and
+  we do <em>not</em> allow the same object to be chosen multiple times, then
+  there are $n\cdot(n-1)\cdots (n-k+1)$ possible outcomes.
+        </p>
+    </div>
+  <div class="proof">
+    <p>Let $A$ be the set of $n$ objects. The decision process is:</p>
+    <ol>
+      <li>Choose $a_1 \in A$.</li>
+      <li>Choose $a_2 \in A \setminus \{a_1\}$.</li>
+      <li>Choose $a_3 \in A \setminus \{a_1, a_2\}$.</li>
+      <li>...</li>
+      <li>Choose $a_k \in A \setminus \{a_1, a_2,\ldots, a_{k-1}\}$.</li>
+    </ol>
+    <p>In other words, at the $i$-th step, one chooses $a_i$ under the
+    constraint that is different from $a_1,\ldots,a_{i-1}$.
+    </p>
+
+    <p> There are clearly $n$ options at the first step. In the second step,
+    there are $n-1$ options, since $a_1$ is not allowed. Continuing, in the
+    $i$-th step there are $n-(i-1)$ options remaining. At the last step,
+    there $n-(k-1) = n-k+1$ options. We can check that each outcome appears
+    exactly once, similar to before. The formula now follows from decision
+    process counting.
+    </p>
+
+  </div>
+
+  <p>Another way to write $n\cdot(n-1)\cdots (n-k+1)$ is
+  $$
+  \frac{n!}{(n-k)!}.
+  $$
+  Later this notation will be more convenient, and it's also easier to remember
+  since you don't have to mess with the $n-k+1$ factor
+  each time.
+    </p>
+
+
+    <div class="example"><p> 
+   <ul>
+
+     <li>How many $6$ character passwords can we make using only lowercase
+       letters? This is sampling with replacement, with $n=26$ and $k=6$; so
+       there are $26^6$.  </li>
+
+     <li>How many $6$ character passwords can we make using only lowercase
+       letters, if we don't ever repeat a letter? This is sampling without
+       replacement, again with $n=26$ and $k=6$; so there are 
+       $26\cdot 25\cdot 24\cdot 23\cdot 22\cdot 21$ possibilities.</li>
+
+   </ul>
+   </p>
+    </div>
+
+<div class="example"> <p> Prove that $|\mathcal{P}(S)| = 2^{|S|}$.
+</p>
+  <p> If we denote $S=\{s_1, s_2, ..., s_n\}$, we note that the power set
+    consists of every possible subset of $S$. To construct any subset of $S$,
+    we can use the following decision process:
+  <ul>
+    <li>For each element in $S$:</li>
+    <ul>
+      <li>Decide whether or not to place it in the subset.</li>
+    </ul>
+  </ul>
+  <p>Then we have $n$ total decisions to make, each of which has two possible
+  choices, for a total of $2^{|S|}$ possibilities.</p>
+</div>
+
+<h3>Counting Subsets of a Given Size</h3>
+<p>Let's try a new one. Say I have my same bin of $10$ labeled balls, but I want
+to pull out three <b>at once</b>. In other words, I don't really care about
+the order of the three balls I'm getting - I just want to know which three
+I got. </p>
+
+<p>Using what we've learned so far, we might try to make another decision process.
+  We could try to select the first ball ($10$ options) and
+  then select the second ball ($9$ options), and finally select the third
+  ball ($8$ options). This may seem tempting, but it's actually incorrect!
+</p>
+
+<p>Let's take a closer look at what happened: because we only care about
+the balls we drew and not the order we drew them in, this decision process
+actually counts the same outcome multiple times! For example, in one run I
+may draw $4$, then $7$, then $1$, but in a different run I may draw $1$, then
+$4$, then $7$. These are the same outcome if I don't care about the order I
+drew them in, but the decision process doesn't account for that! In fact, for
+each $3$-ball group, we can use a decision process to find that there are
+$3 \cdot 2 \cdot 1$ different orderings in which we can get the same outcome.
+Knowing that, we can simply divide the number of outcomes we have found through
+  our decision process by $6$, giving us a final answer of $(10 \cdot 9 \cdot 8)
+  /(3 \cdot 2 \cdot 1)$.
+</p>
+
+<p>It is often the case that we are interested in the number of subsets of size
+$k$ exist in a set of size $n$. So often, in fact, that we will introduce special
+notation for it:
+<div class="definition"><p title="Binomial Coefficients"> Let $n,k$ be integers
+  with $n\geq 0$.  We define the notation $\binom{n}{k}$ (pronounced "$n$
+  choose $k$") to be the number of subsets of size $k$ contained in a subset of
+  size $n$. More formally,
+  $$
+  \binom{n}{k} = \left|\{ S \subseteq \{1,\ldots,n\} \ : \ |S| = k\}\right|.
+  $$
+  These numbers are called <strong>binomial coefficients</strong>.
+</p>
+</div>
+
+<p>Binomial coefficients are useful in a great many ways in combinatorics and
+  other areas of math. Observe that if $k$ is negative or greater than $n$,
+  then $\binom{n}{k}=0$ since there are never sets of those sizes. When
+  $k$ is between $0$ and $n$, we have the following formula that generalizes
+  the pattern above:
+
+<div class="theorem"><p> Let $n,k$ be integers with $n\geq 0$ and $0 \leq
+  k \leq n$. Then
+  $$
+  \binom{n}{k} = \frac{n!}{(n-k)!\cdot k!}.
+  $$
+  (We use the convention $0!=1$ in the notation above.)
+</p></div>
+
+<div class="proof"><p> This will be our first example of a <em>combinatorial proof</em>,
+  which is a perfectly rigorous way to establish formulas like this, but it
+  might at first feel loose and fast compared to more concrete proofs. (Indeed,
+  you can prove this via some sort of induction if you prefer.)
+</p>
+
+  <p>The number $n!/(n-k)!$ counts the ways to pick $k$ elements
+    from $\{1,\ldots,n\}$ with order. Amongst these, each subset of
+    size $k$ will have its elements listed exactly $k!$ times. Therefore
+    $$
+    k!\cdot \binom{n}{k} = \frac{n!}{(n-k)!}.
+    $$
+    It's worth noticing that this argument works when $n=0$ and/or
+    when $k=0$ or $k=n$.
+  </p>
+</div>
+
+<p>We have actually proved something non-obvious: For all $n$ and $k$ in
+  theorem, $n!$ is divisible by $(n-k)!\cdot k!$. <em>A priori</em> it was
+  not be clear why this should be the case.
+
+<div class="example"><p> Suppose we want to pick the top three of Taylor
+  Swift's 274 songs (as of July 2025, at least). If we're not ordering those songs as 1st/2nd/3rd,
+  then there are
+  $$\binom{274}{3} = \frac{274!}{(274-3)!3!} =
+  \frac{274\cdot 273\cdot 272}{3\cdot 2 \cdot 1} = 3391024
+  $$
+  ways to make this choice. Factorials and binomial coefficients get
+  big <em>very</em> quickly.
+</p>
+</div>
+The choose function does not have to be used on its own either - it can often show up as one step of a
+decision process.
+
+<div class="example"><p>
+  How many "words" can we make from the letters in LALALALA?</li>
+  It has $8$ letters, but the answer is not $8!$ since some of
+  those arrangements give the same word (e.g. swapping the
+  A's around won't change the word).
+</p>
+
+  <p>We can create a decision process for this problem as follows:
+    Begin with eight blanks, and then
+  <ol>
+    <li>Select four positions and put L's in them.</li>
+    <li>Put A's in the remaining positions.</li>
+  </ol>
+  <p>
+    There are $d_1 = \binom{8}{4}$ ways to the make the first choice, and $d_2
+    = 1$ way to make the second choice. The answer is thus $d_1\cdot d_2 =
+    \binom{8}{4}$.
+  </p>
+
+  <p>We could have selected positions from the A's first without changing
+    our answer.
+  </p>
+</div>
+
+
+<div class="example">
+  <p> Let's do the same for the word
+    BANANA. The decision process begins with $6$ blanks, and is:
+  <ol>
+    <li>Select three positions and put A's in them.</li>
+    <li>Of the remaining three positions, select two and put
+      N's in them.</li>
+    <li>Put a B in the remaining position.</li>
+  </ol>
+  We have $d_1 = \binom{6}{3}$, $d_2 = \binom{3}{2}$, and $d_3 = 1$.
+  The answer is $\binom{6}{3}\binom{3}{2}$. Once again, we can
+  change the order of the decisions and get the same number.
+</div>
+
+</body>
+</html>

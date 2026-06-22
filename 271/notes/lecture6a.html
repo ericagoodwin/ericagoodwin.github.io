@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="style-notes.css">
+    <link rel='shortcut icon' type='image/x-icon' href='../uc.png'>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+
+    <title>CMSC 27100 &mdash; Lecture 5a: Sets</title>
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+    <style>
+        body {
+            counter-reset: section 5 theorem;
+        }
+    </style>
+</head>
+
+<body>
+<h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 6a</h1>
+
+<h3 class="citation">The notes for this course began from a series originally
+    written by <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>, with extensions by
+    <a href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and
+    <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>, adapted for the summer session by <a href="https://liujon23.github.io/">Jonathan Liu</a>. I have modified them to follow our course.</h3>
+
+<p>In this lecture we turn to the next major section of CMSC 27100: Combinatorics and Probability. 
+    Probability has become an essential part of a computer scientist's toolbox. 
+    Whether studying data structures, cryptography, machine learning, or any number of other subareas of CS, probability is a foundational tool. Probability is an everyday term, but combinatorics is perhaps less common. 
+    For the purpose of this class, it is a fancy word for "counting." </p>
+
+    <p>This lecture gives some more definitions from set theory and then covers
+    the basics of relations and functions.  This provides some examples of the
+    modern mathematical idea that <em>everything</em> can be viewed as a set.
+    Everything. Functions? Sets. Numbers? Sets. Problems? Sets. Sets? Sets.
+    Redefining common objects within set theory might feel like a bit of game
+    (akin to reimplementing programs in an esoteric programming language), but
+    historically and practically it's an important and powerful idea that
+    eliminates (essentially) all ambiguity in mathematical theorems.</p> 
+</p>
+
+<p>Looking forward in this course, the next few lectures will cover
+    combinatorics and probability, and the ideas in both of these subjects are
+    very naturally expressed using set theory.
+</p>
+
+<h2>More Set Theory</h2>
+
+<p>We've already used sets a lot, but let's recall the definition here.</p>
+
+<div class="definition"><p>A <strong>set</strong> is an unordered
+    collection of objects. If $S$ is a set and $a$ is a member of $S$, then we
+    write $a \in S$. If $a$ is not a member of $S$, then we write $a
+    \not \in S$.</p></div>
+
+<p> Reminder that we originally introduced sets in Lecture 2, if you'd like a refresher.
+    Sets are determined by nothing more than what they contain. That is, there
+    are not two distinct sets that contain only the number $2$; They are both
+    $\{2\}$. The next definition states this more formally.</p>
+
+<div  class="definition"><p> Two sets $A$ and $B$ are <strong>equal</strong>
+    if and only if they have the same elements. That is, $$A = B \iff (\forall
+    x, x \in A \iff x \in B).$$</p></div>
+
+<p>In particular, there is a unique set containing nothing:
+
+<div class="definition"><p> The set $\{\}$ containing no elements
+    is the <strong>empty set</strong> and is denoted by $\emptyset =
+    \{\}$.</p></div>
+
+<p>We will need the following notion of a <em>subset</em>, which describes
+    when one set's elements are entirely contained in another set.
+
+<div class="definition"><p> A set $S$ is a <strong>subset</strong>
+    of $T$, written $S \subseteq T$, when every element of $S$ belongs to $T$. A
+    set $S$ is a <strong>proper subset</strong> of a set $T$, written $S
+    \subsetneq T$, when $S$ is a subset of $T$ and there exists an element of
+    $T$ which does not belong to $S$.</p></div>
+
+<p>Revisiting our conditional connective, $\to$, it's worth pointing
+    out how it relates to subsets:
+    $$S \subseteq T \Leftrightarrow (x \in S \to
+    x \in T).$$
+
+<p>You may notice that sometimes $\subset$ is used for proper subset. This
+    works quite nicely with $\subseteq$ meaning subset. However, we'll avoid
+    this particular notation because there are many other mathematicians who use
+    $\subset$ to mean (not necessarily a proper) subset. Instead, we will use
+    $\subseteq$ and $\subsetneq$ to keep things clear.
+
+<p>From the above, we note that by definition, we have $S \subseteq S$ and
+    if $S = T$, we have $S \subseteq T$ and $T \subseteq S$. This second
+    definition gives us an alternate characterization of two sets that are
+    equal.
+
+<div class="definition"><p> The <strong>cardinality</strong> of a set $S$ is
+    the number of elements in $S$ and is denoted $|S|$. If $S$ is finite, then
+    this will be a natural number. So, the size of the set $\{1,2,4,8\}$ would
+    be $|\{1,2,4,8\}| = 4$.  </p></div>
+
+<p>If $S$ is an infinite set, then things are a bit trickier. The
+    cardinality of the natural numbers is defined to be $|\mathbb N| =
+    \aleph_0$, while the cardinality of the real numbers is $|\mathbb R| =
+    2^{\aleph_0}$. Here, we reach into the Hebrew alphabet for $\aleph$ (aleph).
+    Anyhow, the cardinalities of $\mathbb N$ and $\mathbb R$ are clearly not the
+    same, a fact famously proved by Cantor in 1891. There are many infinite sets
+    that have cardinality $\aleph_0$, such as the set of even natural numbers
+    $\{n \mid \exists m \in \mathbb N, n = 2\cdot m\}$ or the set of rational
+    numbers $\mathbb Q = \{\frac m n \mid \exists m,n \in \mathbb N\}$. There
+    are also many sets with cardinality $2^{\aleph_0}$. This brings us to a
+    famous
+    problem call the <em><a
+            href="https://en.wikipedia.org/wiki/Continuum_hypothesis">Continuum
+        Hypothesis</a></em>: Are there any infinite sets that have cardinality
+    <em>strictly between</em> $|\mathbb N| = \aleph_0$
+    and $|\mathbb R| = 2^{\aleph_0}$?
+</p>
+
+<div class="definition"> <p> The <strong>power set</strong> of a set $A$ is
+    the set containing all of the subsets of $A$, $$\mathcal P(A) = \{S \mid S
+    \subseteq A\}.$$</p></div>
+
+<div class="example"><p>
+    <ul>
+        <li> $P(\{1,2\}) = \{\emptyset, \{1\}, \{2\}, \{1,2\}\}$</li>
+        <li> For any set $S$, $\emptyset \in P(S)$ and $S \in P(S)$</li>
+        <li> For any set $S$, and every $x\in S$, $\{x\} \in P(S)$</li>
+    </ul>
+</div>
+
+
+<div class="theorem"><p> If $A$ is a finite set, then $|\mathcal
+    P(A)| = 2^{|A|}$.</p></div>
+
+<p>We will prove this later, but you can do a proof by induction now if you
+    like.  Inspired by this fact, you'll sometimes see the power set of a set
+    $A$ denoted by $2^A$. This might also give you some hint about how one could
+    justify that $|\mathbb R| = 2^{\aleph_0}$.
+
+
+<h2>Operations on Sets</h2>
+
+<p> The next definition defines ways for combining sets to form
+    new sets.
+</p>
+
+<div class="definition"><p> The <strong>union</strong> of two sets
+    $S$ and $T$, denoted $S \cup T$ is the set of all elements in $S$ or $T$:
+    $$S \cup T = \{x \mid x \in S \vee x \in T\}.$$ </p>
+
+    <p>
+        The <strong>intersection</strong> of two sets $S$ and $T$, denoted $S \cap
+        T$, is the set of all elements in $S$ and $T$: $$S \cap T = \{x \mid x \in S
+        \wedge x \in T\}.$$
+    </p>
+
+    <p> The <strong>set difference</strong> of
+        two sets $S$ and $T$, denoted $S \setminus T$, is defined $$S \setminus T =
+        \{x \mid x \in S \wedge x \not \in T\}.$$
+    </p>
+
+
+    <p> The <strong>complement</strong> of a
+        set $S$ (with respect to another set $U$, called the "universe"), written
+        $\overline S$, is the set of all elements from $U$ not in $S$, that is,
+        $$\overline S = \{x \in U \mid x \not \in S\}.$$
+    </p></div>
+
+<p>By definition, we get $\overline S = U \setminus S$. Set complements will
+    be especially useful when we get to probability theory, where they will give
+    us an intuitive way to rigorously model an event <em>not</em> happening.
+</p>
+
+<p>The following definition is frequently useful.</p>
+<div class="definition"><p> We say two sets $S$ and $T$ are
+    <strong>disjoint</strong> if $S \cap T = \emptyset$.</p></div>
+
+
+<p>Set operations have a close intuitive and formal connection to logical
+    connectives. Here's an example of an identity that has both a logical
+    and set theory version.
+
+<div class="theorem"><p title="De Morgan's Laws"> For two sets $A$ and
+    $B$,
+    \begin{align}
+    \overline{A \cup B} &= \overline A \cap \overline B, \text{and} \\
+    \overline{A \cap B} &= \overline A \cup \overline B.
+    \end{align}
+</p></div>
+
+<div class="proof">
+    <p>Let's prove the second statement and leave the first as
+        an exercise. Recall from above that $A = B$ if and
+        only if $A \subseteq B$ and $B \subseteq A$. Equivalently, $x \in A
+        \Leftrightarrow x \in B$. Unpacking the definitions of $\cap$, $\cup$ and
+        $\overline{S}$, we want to show that $$\neg (x \in A \wedge x \in B)
+        \Leftrightarrow \neg (x \in A) \vee \neg (x \in B)$$
+    </p>
+
+    <p>Note that this is exactly De Morgan's law for logic, where $x \in A$ is
+        $P$ and $x \in B$ is $Q$.
+    </p>
+
+
+    \begin{align*}
+    \overline{A \cup B} &= \{x \mid x \notin A \cup B\} &\text{definition of complement} \\
+    &= \{x \mid \neg(x \in A \cup B)\} &\text{definition of set membership} \\
+    &= \{x \mid \neg(x \in A \vee x \in B)\} &\text{definition of union} \\
+    &= \{x \mid \neg(x \in A) \wedge \neg(x \in B)\} &\text{De Morgan's laws} \\
+    &= \{x \mid x \not\in A \wedge x \not\in B\} &\text{definition of set membership} \\
+    &= \{x \mid x \in \overline A \wedge x \in \overline B\} &\text{definition of complement} \\
+    &= \{x \mid x \in \overline A \cap \overline B\} &\text{definition of intersection} \\
+    &= \overline A \cap \overline B &\text{set definition} \\
+    \end{align*}
+    $$\tag*{$\Box$}$$
+</div>
+
+<h2>Relations</h2>
+
+<p>We'll now develop a theory of how functions can be viewed as sets.  In
+    order to carry this out, we'll need a notion of an <em>ordered</em>
+    collection (rather than an <em>unordered</em> collection, which is just
+    a set).
+</p>
+
+<div class="definition"><p> An <strong>$n$-tuple</strong> $(a_1,
+    a_2, \dots, a_n)$ is an ordered collection that has $a_1$ as its first
+    element, $a_2$ as its second element, $\dots$, and $a_n$ as its $n$th
+    element. An <em>ordered pair</em> is a 2-tuple.
+</p></div>
+
+<p>Observe that since tuples are ordered, we have $(a_1, \dots, a_n) = (b_1,
+    \dots, b_n)$ if and only if $a_i = b_i$ for $i = 1, \dots, n$.
+</p>
+
+<p>As a side note, we claimed at the start of class that everything in
+    mathematics is just a set, so how would we define tuples using sets?  For
+    the case of pairs, we can define $(x,y)$ to be the set $\{\{x\}, \{x,y\}\}$.
+    In this way, we can distinguish $x$ and $y$ and we have a way to determine
+    the order in which they appear. This definition is due to Kuratowski in
+    1921.  We can then generalize this definition for arity $n \gt 2$.
+</p>
+
+<div class="definition"><p> The <strong>Cartesian product</strong>
+    of two sets $A$ and $B$ is $$A \times B = \{(a,b) \mid a \in A, b \in
+    B\}.$$
+</p></div>
+
+<p>We generalize this to products of $n$ sets.
+
+<div class="definition"><p> The <strong>Cartesian product</strong>
+    of $n$ sets $A_1, A_2, \dots, A_n$, denoted $A_1 \times A_2 \times \cdots
+    \times A_n$ is defined $$A_1 \times A_2 \times \cdots \times A_n = \{(a_1,
+    a_2, \dots, a_n) \mid a_i \in A_i, i = 1, 2, \dots, n\}.$$
+</p>
+
+    <p>For any set $A$, we will sometimes write
+        $A^2$ for $A\times A$. More generally, for any $n\in \mathbb{N}$, we
+        will write $A^n$ for the Cartesian product of $A$ with itself $n$
+        times.</p></div>
+
+<!-- <p>You may have learned various definitions of what is or isn't a
+  function. Typically, we think of functions in a very calculus kind of way,
+  where we assign a value $x$ to some other value based on some expression
+like $x^2$. Then, we come across more complicated functions, that are
+defined piecewise, or maybe weird functions like the Heaviside function or
+the parity function. Here, we'll make use of the set theory concepts we've
+just defined to work towards a general definition for functions. -->
+
+<p>We now use the Cartesian product to define <em>relations</em>.
+
+<div class="definition"><p> A <strong>relation</strong> $R$ with
+    <em>domain</em> $X$ and <em>co-domain</em> $Y$  is a subset of $X \times
+    Y$. </p></div>
+
+<p>We can see from the definition that a relation really is just a subset
+    of the Cartesian product of some sets. In other words, it's a set of
+    tuples. This also resembles the set-theoretic definition of predicates and
+    it's not entirely a coincidence that we think of $k$-ary predicates as
+    relations.
+
+<p><em>Equivalence relations</em> are a special type of relation that are
+    frequently useful. They abstractly behave like "equalities", the
+    sense that $(a,b)\in R$ can be intuitively mapped to $a=b$.</p>
+
+<div class="definition"><p> We say that $R \subseteq A \times A$
+    is an <strong>equivalence relation</strong> if it satisfies the following:
+    <ol>
+        <li>$\forall a\in A, (a,a)\in R$ &nbsp;&nbsp;  ("$R$ is <b>reflexive</b>")</li>
+        <li>$\forall a,b\in A, (a,b)\in R \rightarrow (b,a)\in R$ &nbsp;&nbsp;
+            ("$R$ is <b>symmetric</b>")</li>
+        <li>$\forall a,b,c\in A, (a,b)\in R \wedge (b,c)\in R \rightarrow (a,c)\in
+            R$ &nbsp;&nbsp;  ("$R$ is <b>transitive</b>")</li>
+    </ol>
+    </p></div>
+
+<div class="example">
+    <p>
+    <ol>
+        <li>Equality (i.e. $R=\{(a,a) | a\in A\}$) is an equivalence relation.</li>
+        <li>Fix some $m>1$, and define $R \subseteq \mathbb{Z}\times\mathbb{Z}$
+            as $\{(a,b) | a\equiv_m b\}$. Then $R$ is an equivalence relation.
+        </li>
+    </ol>
+    </p>
+</div>
+
+<p>
+    Here is an another interesting example of an equivalence relation.
+</p>
+
+
+<div class="example"><p>Everyone who learns grade school math
+    gets comfortable with the fact that each number can be written many
+    ways as a fraction. For instance,
+
+    $$\frac{1}{2} = \frac{2}{4} = \frac{3}{6}= \frac{-1}{-2} = \cdots$$
+
+    and so on. You may recall that fractions $\frac{a}{b}$ and $\frac{c}{d}$
+    represent the same number if $ad=bc$. We can use this to rigorously model
+    fractions, and define an equivalence relation that captures this elementary
+    fact. Namely, we model fractions as the set
+    $\mathbb{Q} = \{ (a,b)\in\mathbb{Z}^2 | b \neq 0\}$;
+    The element $(a,b)$ represents $\frac{a}{b}$. Then we can
+    define the relation
+    $R$ on $\mathbb{Q}\times \mathbb{Q}$ by
+    $$
+    R = \{ ((a,b), (c,d))\in \mathbb{Q}\times\mathbb{Q} |  ad=bc \}.
+    $$
+    We leave as an exercise to prove $R$ is an equivalence relation.
+</p></div>
+    
+</html>
