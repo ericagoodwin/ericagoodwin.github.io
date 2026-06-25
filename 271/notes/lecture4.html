@@ -203,9 +203,9 @@ Let's apply this to our chicken nuggets problem:
     primes.</p>
 </div>
 
-<p>  The proof of uniqueness, below, is optional.
+<p> 
 
-<h3>Proof of Uniqueness of Factorization (Optional)</h3>
+<h3>Proof of Uniqueness of Factorization</h3>
 We'll need a lemma first (but it's a particularly good lemma called Euclid's
 Lemma, so we'll label it a Theorem).
 
@@ -214,8 +214,10 @@ Lemma, so we'll label it a Theorem).
     b$.</p>
 </div>
 
-<div class="proof"><p> Without loss of generality, suppose $p \not \mid a$.
-    Then $\gcd(p,a) = 1$ and there exist integers $x$ and $y$ such that $xa +
+<div class="proof"><p> There are two cases to consider: $p \mid a$ and $p \not \mid a$. If $p \mid a$, then we're done. 
+    Suppose $p \not \mid a$. We will show that $p \mid b$. 
+
+    If $p \not \mid a,$ then $\gcd(p,a) = 1$ and there exist integers $x$ and $y$ such that $xa +
     yp = 1$. Then multiplying both sides by $b$, we have $$b = xab + ypb.$$
     Since $p \mid ab$, let $n$ be an integer such that $ab = pn$. Then we have
     $$b = xab + ypb = xpn + ypb = p \cdot (xn+yb).$$ Therefore, by definition
@@ -230,7 +232,7 @@ Lemma, so we'll label it a Theorem).
 
 With the lemma, we present a corollary (a statement that follows naturally from a key result).
 <div class="corollary"> If $p, p_1, \dots, p_k$ are prime and $p
-    \mid p_1 \cdots p_k$, then $p = p_i$ for some $i$.
+    \mid p_1 \cdots p_k$, then $p = p_i$ for some $i$ where $1 \leq i \leq k$.
 </div>
 
 <div class="proof"><p> We will prove this by (non-strong) induction on $k$,
@@ -254,10 +256,13 @@ With the lemma, we present a corollary (a statement that follows naturally from 
 
 <p>With this corollary in tow, we can finally prove that factorization is unique.
 
+    <div class="theorem"><p title="Uniqueness of Prime Factorization"></p>
+        Let $$n = p_1p_2\dots p_s = q_1q_2 \dots q_t$$ be two ways of writing $n$ as a product of primes. Then $q_1, q_2,
+        \ldots, q_t$ is a reordering of $p_1, p_2, \ldots, p_s$. 
+    </div>
+
 <div class="proof">
-    <p>Suppose that $$n = p_1p_2\dots p_s = q_1q_2 \dots q_t$$ are two
-    ways of writing $n$ as a product of primes. We must show that $q_1, q_2,
-    \ldots, q_t$ is a reordering of $p_1, p_2, \ldots, p_s$.  We'll prove this
+    <p>We'll prove this
     by strong induction on $n$ again.</p>
 
     <p><strong>Base case.</strong> Our base case is the claim with $n=2$. This
@@ -270,7 +275,7 @@ With the lemma, we present a corollary (a statement that follows naturally from 
         n+1 = p_1p_2\dots p_s = q_1q_2 \dots q_t.
         $$
         Then $p_1$ divides $q_1 q_2 \dots q_t$. By Corollary 7.10, $p_1 = q_j$ for
-        some $j$. Therefore
+        some $j$. Dividing both sides by $q_j$, we have
         $$
         p_2\dots p_s = q_1\cdots q_{j-1} q_{j+1} \dots q_t.
         $$
@@ -302,6 +307,9 @@ broad nature of proofs in the space.</p>
   $x$. Since this prime can't be any of $p_1,\ldots,p_k$, we have found an
   additional prime beyond $p_1,\ldots,p_k$.
 </p></div>
+
+<p>The rest of the notes, presenting some more results related to primes and prime factorization, are optional.
+</p>
 
 
 <div class="theorem">
