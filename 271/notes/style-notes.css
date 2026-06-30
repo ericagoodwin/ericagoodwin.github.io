@@ -99,7 +99,7 @@ th {
 }
 
 /*.claim::before, .corollary::before, .definition::before, .example::before, .lemma::before, .proposition::before, .theorem::before {*/
-.claim::before, .corollary::before, .lemma::before, .proposition::before {
+.claim::before, .corollary::before, .lemma::before,  {
     counter-increment: theorem;
     content: attr(class) " " counter(section) "." counter(theorem) ". ";
     font-weight: bold;

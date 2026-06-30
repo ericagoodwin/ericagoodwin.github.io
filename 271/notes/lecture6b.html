@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="robots" content="noindex">
 
-  <title>CMSC 27100 &mdash; Lecture 5b: Intro to Counting</title>
+  <title>CMSC 27100 &mdash; Lecture 6b</title>
   <link rel="stylesheet" href="../css/style-notes.css" type="text/css" media="screen, print">
 
   <script type="text/x-mathjax-config">
@@ -23,7 +23,7 @@
   <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
   <style>
     body {
-      counter-set: section 5 theorem 20;
+      counter-set: section 6 theorem 20;
     }
   </style>
 </head>
@@ -297,7 +297,7 @@ $k$ exist in a set of size $n$. So often, in fact, that we will introduce specia
 notation for it:
 <div class="definition"><p title="Binomial Coefficients"> Let $n,k$ be integers
   with $n\geq 0$.  We define the notation $\binom{n}{k}$ (pronounced "$n$
-  choose $k$") to be the number of subsets of size $k$ contained in a subset of
+  choose $k$") to be the number of subsets of size $k$ from a set of
   size $n$. More formally,
   $$
   \binom{n}{k} = \left|\{ S \subseteq \{1,\ldots,n\} \ : \ |S| = k\}\right|.
@@ -341,7 +341,7 @@ notation for it:
   theorem, $n!$ is divisible by $(n-k)!\cdot k!$. <em>A priori</em> it was
   not be clear why this should be the case.
 
-<div class="example"><p> Suppose we want to pick the top three of Taylor
+<!-- <div class="example"><p> Suppose we want to pick the top three of Taylor
   Swift's 274 songs (as of July 2025, at least). If we're not ordering those songs as 1st/2nd/3rd,
   then there are
   $$\binom{274}{3} = \frac{274!}{(274-3)!3!} =
@@ -350,8 +350,8 @@ notation for it:
   ways to make this choice. Factorials and binomial coefficients get
   big <em>very</em> quickly.
 </p>
-</div>
-The choose function does not have to be used on its own either - it can often show up as one step of a
+</div> -->
+The choose function does not have to be used on its own either &mdash; it can often show up as one step of a
 decision process.
 
 <div class="example"><p>

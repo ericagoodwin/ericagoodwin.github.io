@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="robots" content="noindex">
 
-    <title>CMSC 27100 &mdash; Lecture 5a: Sets</title>
+    <title>CMSC 27100 &mdash; Lecture 6a: Sets</title>
 
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
@@ -19,7 +19,7 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
     <style>
         body {
-            counter-reset: section 5 theorem;
+            counter-reset: section 6 theorem;
         }
     </style>
 </head>
@@ -32,10 +32,10 @@
     <a href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and
     <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>, adapted for the summer session by <a href="https://liujon23.github.io/">Jonathan Liu</a>. I have modified them to follow our course.</h3>
 
-<p>In this lecture we turn to the next major section of CMSC 27100: Combinatorics and Probability. 
+<p>In this lecture we turn to the next major section of CMSC 27100: Combinatorics and Probability. Probability is an everyday term, but combinatorics is perhaps less common. 
+    For the purpose of this class, it is a fancy word for "counting." Over the next two lectures, we'll come up with methods for counting the number of possible outcomes of an event, which will then enable us to compute the probability of certain outcomes. 
     Probability has become an essential part of a computer scientist's toolbox. 
-    Whether studying data structures, cryptography, machine learning, or any number of other subareas of CS, probability is a foundational tool. Probability is an everyday term, but combinatorics is perhaps less common. 
-    For the purpose of this class, it is a fancy word for "counting." </p>
+    Whether studying data structures, cryptography, machine learning, or any number of other subareas of CS, probability is a foundational tool.  </p>
 
     <p>This lecture gives some more definitions from set theory and then covers
     the basics of relations and functions.  This provides some examples of the
@@ -45,11 +45,6 @@
     (akin to reimplementing programs in an esoteric programming language), but
     historically and practically it's an important and powerful idea that
     eliminates (essentially) all ambiguity in mathematical theorems.</p> 
-</p>
-
-<p>Looking forward in this course, the next few lectures will cover
-    combinatorics and probability, and the ideas in both of these subjects are
-    very naturally expressed using set theory.
 </p>
 
 <h2>More Set Theory</h2>
@@ -197,12 +192,12 @@
 </p></div>
 
 <div class="proof">
-    <p>Let's prove the second statement and leave the first as
+    <p>Let's prove the first statement and leave the second as
         an exercise. Recall from above that $A = B$ if and
         only if $A \subseteq B$ and $B \subseteq A$. Equivalently, $x \in A
         \Leftrightarrow x \in B$. Unpacking the definitions of $\cap$, $\cup$ and
-        $\overline{S}$, we want to show that $$\neg (x \in A \wedge x \in B)
-        \Leftrightarrow \neg (x \in A) \vee \neg (x \in B)$$
+        $\overline{S}$, we want to show that $$\neg (x \in A \vee x \in B)
+        \Leftrightarrow \neg (x \in A) \wedge \neg (x \in B)$$
     </p>
 
     <p>Note that this is exactly De Morgan's law for logic, where $x \in A$ is
@@ -223,10 +218,9 @@
     $$\tag*{$\Box$}$$
 </div>
 
-<h2>Relations</h2>
+<!-- <h2>Relations</h2> -->
 
-<p>We'll now develop a theory of how functions can be viewed as sets.  In
-    order to carry this out, we'll need a notion of an <em>ordered</em>
+<p>We sometimes need a notion of an <em>ordered</em>
     collection (rather than an <em>unordered</em> collection, which is just
     a set).
 </p>
@@ -240,14 +234,14 @@
 <p>Observe that since tuples are ordered, we have $(a_1, \dots, a_n) = (b_1,
     \dots, b_n)$ if and only if $a_i = b_i$ for $i = 1, \dots, n$.
 </p>
-
+<!-- 
 <p>As a side note, we claimed at the start of class that everything in
     mathematics is just a set, so how would we define tuples using sets?  For
     the case of pairs, we can define $(x,y)$ to be the set $\{\{x\}, \{x,y\}\}$.
     In this way, we can distinguish $x$ and $y$ and we have a way to determine
     the order in which they appear. This definition is due to Kuratowski in
     1921.  We can then generalize this definition for arity $n \gt 2$.
-</p>
+</p> -->
 
 <div class="definition"><p> The <strong>Cartesian product</strong>
     of two sets $A$ and $B$ is $$A \times B = \{(a,b) \mid a \in A, b \in
@@ -274,7 +268,7 @@ like $x^2$. Then, we come across more complicated functions, that are
 defined piecewise, or maybe weird functions like the Heaviside function or
 the parity function. Here, we'll make use of the set theory concepts we've
 just defined to work towards a general definition for functions. -->
-
+<!-- 
 <p>We now use the Cartesian product to define <em>relations</em>.
 
 <div class="definition"><p> A <strong>relation</strong> $R$ with
@@ -336,6 +330,6 @@ just defined to work towards a general definition for functions. -->
     R = \{ ((a,b), (c,d))\in \mathbb{Q}\times\mathbb{Q} |  ad=bc \}.
     $$
     We leave as an exercise to prove $R$ is an equivalence relation.
-</p></div>
+</p></div> -->
     
 </html>

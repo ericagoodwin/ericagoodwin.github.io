@@ -27,7 +27,7 @@
 </head>
 
 <body>
-	<h1><a href="index.html">CMSC 27100</a> &mdash; Lecture 5</h1>
+	<h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 5</h1>
 
   <h3 class="citation">The notes for this course began from a series originally
     written by <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>, with extensions by
@@ -36,8 +36,12 @@
 
 	 <h2>Modular Arithmetic</h2>
 
-    <p> For Euclid's Algorithm, we introduced the modulus operator.  
-    In this lecture we'll introduce a system of <em>modular arithmetic</em> on
+   <p> For Euclid's Algorithm, we introduced the modulus operator:  </p>
+    <div class="definition"><p> Let $n$ and $d \gt 0$ be integers. We define the functions $n
+          \mathop{\mathbf{div}} d = q$ and $n \mathop{\mathbf{mod}} d = r$, where
+          $q$ and $r$ are as defined by the Division Theorem.</p></div>
+
+    <p>In this lecture we'll introduce a system of <em>modular arithmetic</em> on
     integers based around this operator that has a wide array of applications.  In
     particular we'll develop a notion of "division" that is well-defined within
     this system. The system of modular arithmetic was first developed by
@@ -95,6 +99,20 @@
     </ul>
     </div>
 
+    <div class="proof"><p>We need to show that $\equiv_m$ is reflexive, symmetric, and transitive.
+
+      <p>To see that $\equiv_m$ is reflexive, observe that $m \mid (a-a)$ for all
+      integers $a$, showing that $a\equiv_m a$.  To see that $\equiv_m$ is
+      symmetric, if $a \equiv_m b$, then $m \mid (a - b)$. This means there is an
+      integer $n$ such that $mn= a - b$.  Then we get $b - a = m\cdot (-n)$,
+      showing $m \mid (b-a)$, i.e. $b\equiv_m a$.
+  
+      <p>To see that $\equiv_m$ is transitive, let $a,b,c$ be integers such
+      that $a \equiv_m b$ and $b \equiv_m c$. We have $m \mid (a-b)$ and $m \mid
+      (b-c)$, which gives us $m \mid (a-b) + (b-c)$ and therefore, $m \mid (a-c)$
+      and $a \equiv_m c$.  $$\tag*{$\Box$}$$</p></div>
+	
+
     <p>The proof of this proposition is a good exercise in using the
     definitions. The proposition itself allows one to make chains of
     assertions like $a\equiv_m b \equiv_m c$ with ambiguity.</p>
@@ -107,12 +125,9 @@
     \equiv_m b$ and $c \equiv_m d$, then $a + c \equiv_m b + d$ and $ac \equiv_m
     bd$.</p></div>
 
-    <div class="proof"><p> The assertion about addition is easier and left as
-    an exercise, so we only prove the assertion for multiplication:
-    If $m\mid a-b$ and $m\mid c-d$, then $m\mid c(a-b) + b(c-d) = ac - bd$.
+    <div class="proof"><p> Let $m\mid a-b$ and $m\mid c-d$ for $m > 0$ and $a,b,c,d \in \mathbb{Z}$. Then $m\mid (a-b) + (c-d) = (a + c) - (b+d)$. By definition, $a + c \equiv_m b + d$.
+    Next, note that if $m\mid a-b$ and $m\mid c-d$, then $m\mid c(a-b) + b(c-d) = ac - bd$, so $ac \equiv_m bd$.
     </p></div>
-
-
 
     <h3>Thinking Modularly</h3> 
 
@@ -181,8 +196,7 @@
       </p>
     </div>
 
-    <p>In the usual presentation of calculations like this example, one does not
-    mention the application of Proposition 5.5 at all. This can be intuitive
+    <p> This can be intuitive
     once you're used to it, but you should be careful not to overstep what it is
     implied by the theorem. We can "mod down" when doing addition and
     multiplication, there are operations for which this isn't true, as the next
@@ -202,48 +216,162 @@
 
     </div>
 
-    <h2>Applications to Cryptography</h2>
+    <h2>Multiplicative Inverses</h2>
+
+  <p> Next we develop a theory of how we can "divide by an integer $a$ modulo
+  $m$". Of course, this language isn't defined so far, since we can't speak of
+  "modding down" rational numbers. Instead we'll back up and reconsider what
+  division should mean in this context.</p>
+
+  <h3>Multiplicative Inverses Modulo $m$</h3>
+
+  <p>Obviously we're not going to actually divide integers, since we don't want
+  to create havoc with rational numbers. Instead, let's take a new perspective
+  on what it means to divide by a number. Observe that if $a,b\in\mathbb{Z}$,
+  then we can define "dividing by $a$" to be an operation that transforms $ab$
+  to $b$. Put another way, "dividing by $a$" can be phrased as "multiplying by
+  $a^{-1}$".  Under the usual interpretation, $a^{-1}$ is simply $1/a$, which is
+  not an integer in general .  Instead, we're going to define a suitable
+  stand-in that adapts the following point of view: $a^{-1}$ is a number such
+  that $a\cdot a^{-1}=1$.</p>
+
+  <p>This discussion motivates the following definition.</p>
+
+  <div class="definition"> <p>Let $m,a$ be integers. We say that another integer
+    $b$ is a <strong>multiplicative inverse of $a$ modulo $m$</strong> if $ab
+    \equiv_m 1$. When $a$ has a multiplicative inverse modulo $m$, we say that
+    $a$ is <strong>invertible modulo $m$</strong>.</p> 
+  </div>
+
+  <p>When the context and modulus $m$ are clear, we will sometimes just call $b$
+  "an inverse of $a$". We may go even further and write $a^{-1}$ for an inverse
+  of $a$, with the understanding this implicitly depends on the modulus $m$ (and
+  definitely isn't a non-integer value!). </p>
+
+  <div class="example"><p>We have that $3$ is an inverse of $2$ modulo $5$,
+    since $2\cdot 3 \equiv_5 1$. Notice also that $-2$ and $8$ are also inverses
+    of $2$ modulo $5$.</p>
+  </div>
+		
+  <div class="example"><p> Consider $m=4$.  There are four possible values of $a
+    \mathop{\mathbf{mod}} 4$: $0,1,2,3$. Observe that 1 and 3 have inverses
+    modulo $4$: $1^{-1} \equiv_4 1$ and $3^{-1} \equiv_4 3$, which we get by
+    observing that $3 \cdot 3 \equiv_4 9 \equiv_4 1$. However, a little
+    searching turns up no inverse for 2:</p>
+    \begin{align*}
+    2 \cdot 0 &\equiv_4 0  \\
+    2 \cdot 1 &\equiv_4 2  \\
+    2 \cdot 2 &\equiv_4 4 \equiv_4 0 \\
+    2 \cdot 3 &\equiv_4 6 \equiv_4 2 
+    \end{align*}
+
+		<p>If you poke around though, you'll notice that similarly
+		$6$ does not appear to have any inverses modulo $12$. There is
+		pattern here, but it is non-obvious. To see it, we need
+    the following definition.</p>
+  </div>
+
+  <div class="definition"><p> Two integers $a$ and $b$ are <strong>relatively
+      prime</strong> (or <em>coprime</em>) if $\gcd(a,b) = 1$.</p>
+  </div>
+
+  <div class="example"><p>  The numbers 10 and 21 are relatively prime, since
+    the divisors of $10$ are $\{\pm 1, \pm 2, \pm 5, \pm 10\}$ and $21$ are
+    $\{\pm 1, \pm 3, \pm 7, \pm 21\}$ and their only common divisors are $\pm
+    1$, of which $1$ is the largest.  
+    </p>
+  </div>
+
+    <p>This theorem explains which integers have an inverse modulo $m$.</p>
+
+    <div class="theorem"> <p>Let $m$ be a positive integer and $a$ be an
+      integer.  Then there exists a multiplicative inverse of $a$ modulo $m$ if
+      and only if $a$ and $m$ are relatively prime. </p>
+    </div>
+
+    <div class="proof"><p> Since this is an "if and only if" statement, we need
+      to prove the implication in both directions. So let's first assume that
+      $a$ and $m$ are relatively prime.  By Bézout's Identity, there exist
+      integers $s$ and $t$ such that $sa + tm = 1$. Then $tm = 1-sa$ shows that
+      $m\mid 1-sa$, i.e.  that $1 \equiv_m sa$. This shows that $s$ is an
+      inverse of $a$ modulo $m$.</p>
+
+      <p>For the other direction, assume there exists multiplicative inverse of
+      $a$ modulo $m$, say $b$. Then $m |(ab-1)$, so there exists $k\in\mathbb{Z}$
+      such that $km = ab-1$. This gives $ba+(-k)m=1$, showing that</p>
+      $$
+      1 \in \{sa + tm \ \mid \ s,t\in\mathbb{Z}\}.
+      $$
+      <p>By our proof of Bézout's Identity, we know that $\gcd(a,m)$
+      is the smallest positive element of this set, meaning that it must
+      be $1$.
+      </p>
+    </div>
+
+  <div class="example"><p>The numbers $1,5,7,11$ are invertible modulo $12$,
+    and the integers $2,3,4,6,8,9,10$ are not.</p>
+  </div>
 
 
-    <p> Number theory plays a key role in cryptography, the art and science of transforming information so that it cannot be decoded without special knowledge. 
-        In general, cryptography involves the encryption and decryption of a secret message using a specific process, referred to as a cipher. 
-        Some early ciphers date back thousands of years! 
-         </p>
+		    <!-- <p>One might ask whether there is any integer $m$ for which $\mathbb Z_m$ has a multiplicative inverse for all non-zero elements. Our discussion about prime numbers gives us a hint.
 
-         <h3>Caesar's Cypher</h3>
-         <p>One of the earliest known uses of cryptography was by Julius Caesar. He made messages secret
-            by shifting each letter three letters forward in the alphabet (sending the last three letters of the
-            alphabet to the first three).</p>
-    
+    <p><strong>Corollary 8.12.</strong> If $p$ is prime and $p \not\mid a$, then $a$ has a multiplicative inverse mod $p$.
+
+    <p>This is easy to see since every integer $2, \dots, p-1$ aren't divisors of $p$ and therefore share no non-trivial common divisors with $p$.
+
+    <p><strong>Definition 8.13.</strong> When it exists, we denote the multiplicative inverse of $a$ by $a^{-1}$. -->
 
 
+		<h3>Cancellation and Uniqueness of Inverses</h3>
 
+		<p>One application of inverses is to solving "equations" like $$6x
+		\equiv_{17} 8.$$ These are usually called "congruences" since they
+		are not asserting that anything is equal. In any case, intuitively
+		we want to "divide" both sides by $6$ to solve for $x$. The next
+    theorem justifies using inverses for this.</p>
 
-    
-		<h3>Recommended Exercises</h3>
+    <div class="theorem"><p> Let $m$ be a positive integer. For
+		all $a,b,c\in\mathbb{Z}$ such that $a$ is relatively prime to
+    $m$, if $ab \equiv_m ac$, then $b \equiv_m c$.</p></div>
 
+    <p>This says that we can cancel $a$ from both sides. The analogous version
+    of this from basic algebra says that if $a,b,c$ are real numbers <em>such
+    that $a$ is non-zero</em>, then $ab=ac$ implies $b=c$.  Note the connection
+    between being non-zero and being invertible.  In the case of real numbers,
+    the conclusion may not be true of $a$ is zero. Similarly, when working
+    modulo $m$ the conclusion may not be true if $a$ is not invertible. You
+    should try out some examples, say with $m=12$ and $a=6,b=2,c=4$.
+    </p>
 
-		<p>From Rosen, 8th edition: Section 4.4, #7, 9, 10, 15. 
+    <div class="proof"><p> Since $a$ is relatively prime to $m$, it has an
+    inverse modulo $m$. Then since $ab \equiv_m ac$, we have $a^{-1}ab \equiv_m
+    a^{-1}ac$. But the left hand side is $a^{-1}ab \equiv_m 1\cdot b \equiv_m
+    b$. Similarly, the right hand side is congruent to $c$ modulo $m$. Thus
+    $b\equiv_m c$.  </p></div>
 
-		<ol>
-    <li> Prove Propositions 5.3 and the unproved half of 5.4. </li>
+    <p>Note that proofs like this implicitly use multiple properties
+    of$\equiv_m$. You're encouraged to check it carefully.</p>
+		
+    <div class="example">
+    <p>To solve the congruence $6x \equiv_{17} 8$ from above,  observe that $3$
+    is an inverse of $6$ modulo $17$. Thus we can transform this to an
+    equivalent congruence $3\cdot 6x \equiv_{17} 3\cdot 8$, or $x \equiv_m 24$.
+    Thus $x=24$ is a solution, and modding down further gives $x=7$ as another
+    solution. After working a few of these, they are not too hard (see Rosen,
+    8th edition, Section 4.4.2 for some more examples). It is however important
+    to understand once how each of those steps is formally justified. (For
+    example: Why is it the case that $3\cdot 6x \equiv_{17} 3\cdot 8$, i.e. why
+    does multiplying by $3$ preserve equivalence?)</p>
+    </div>
+<!-- 
+    <p>We can apply our results on modular arithmetic to conclude that inverses
+    are "unique up to congruence modulo $m$", as made precise in the following
+    theorem.
 
-    <li> Prove that if $m\mid ab$ and $\gcd(m,a)=1$ then $m\mid b$.</li>
+    <div class="proposition"><p> Let $m$ be a positive integer and $a$
+    be relatively prime to $m$. If $b$ and $c$ are inverses of $a$ modulo $m$,
+    then $b \equiv_m c$.</p></div>
 
-    <li> Let $m>0$. We say that <em>$a$ is a zero divisor modulo $m$</em> if $a
-    \not\equiv_m 0$ and there exists an integer $b\not\equiv_m 0$ such that $ab
-    \equiv_m 0$. Prove that $a$ is a zero divisor modulo $m$ if and only if
-    $a$ and $m$ are not relatively prime. (One proof of this uses the
-    previous problem.)</li>
-
-		<li> Prove that for any integers $a,b,c,m$
-		with $m$ positive, if $ab \equiv_m ac$ and $\gcd(a,m)=1$, then
-    $b \equiv_m c$.</li>
-
-    <li> Prove Corollary 5.18. </li>
-
-		<li> Prove that for any integers $a,b,m$ with $m$ positive, the
-		congruence $ax\equiv_m b$ has a solution if an only if
-    $\gcd(a,m)|b$.</li>
-		</ol>
-
+    <div class="proof"><p> Since $ab\equiv_m 1$ and $ac \equiv_m 1$, by Proposition
+    5.4 we have $ab\equiv_m ac$.  By the previous theorem, this implies
+    $b\equiv_m c$.  </p></div> -->
