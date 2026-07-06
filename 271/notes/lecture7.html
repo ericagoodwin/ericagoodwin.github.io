@@ -21,11 +21,19 @@
     });
   </script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
-  <style>
-    body {
-      counter-set: section 7 theorem 20;
-    }
-  </style>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://benfred.github.io/venn.js/venn.js"></script>
+    <style>
+      body {
+        counter-reset: section 7 theorem;
+      }
+      .venn-container {
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 30px;
+      }
+    </style>
 </head>
 
 <body>
@@ -37,16 +45,202 @@
     <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>, adapted for the summer session by <a href="https://liujon23.github.io/">Jonathan Liu</a>. I have modified them to follow our course.</h3>
 
     <p>Last lecture, we introduced combinatorics, the study of counting the sizes of sets.
-      In most of our examples, our sets represented all possible outcomes in a specific situation. 
-      Knowing all possible outcomes allows us to compute the <b>probability</b> of specific outcomes. 
-      Probability has wide applications throughout the field of computer science: cryptography is probabilistic, machine learning
-      is probabilistic, and even modern data structures rely heavily on probabilistic guarantees
-      to make them efficient. For that reason, before we move further with counting, we will take a brief detour to tie combinatorics to probability to help motivate the
-      study of combinatorics and to allow us to ask questions about probability using the tools
-      we've already developed. Next week, we'll dive much further into the study of probability.
+      We came up with the following approaches to count the number of ways to make $k$ choices from $n$ options: </p>
+    <table>
+      <thead>
+      <tr>
+        <th></th>
+        <th scope="col" >Order of choices matters</th>
+        <th scope="col" >Order of choices doesn't matter</th>
+      </tr>
+      </thead>
+    
+      <tbody>
+      <tr>
+        <th scope="row">Sampling options without replacement</th>
+    
+        <td>$\frac{n!}{(n-k)!}$</td>
+        <td>$\binom{n}{k}$</td>
+      </tr>
+    
+      <!-- ############################################################ -->
+    
+      <tr>
+        <th scope="row">Sampling options with replacement</th>
+        <td>$n^k$</td>
+        <td>????</td>
+      </tr>
+      </tbody>
+    </table>
+
+    Mapping these scenarios to the analogy of throwing $k$ balls (representing $k$ choices to be made) into $n$ bins (representing the $n$ options overall), we have:
+    <table>
+      <thead>
+      <tr>
+        <th></th>
+        <th scope="col" >Balls are distinguishable </th>
+        <th scope="col" >Balls are not distinguishable</th>
+      </tr>
+      </thead>
+    
+      <tbody>
+      <tr>
+        <th scope="row">Up to one ball per bein</th>
+    
+        <td>$\frac{n!}{(n-k)!}$</td>
+        <td>$\binom{n}{k}$</td>
+      </tr>
+    
+      <!-- ############################################################ -->
+    
+      <tr>
+        <th scope="row">Any number of balls per bin</th>
+        <td>$n^k$</td>
+        <td>????</td>
+      </tr>
+      </tbody>
+    </table>
+    
+    <p>What about the last square? We'll see now that the last square
+    will require a more sophisticated approach.
+    
+    <h2>Stars and Bars</h2>
+    
+    <p>It'll help for us to ground our discussion in an example where we are making $k$ choices from $n$ options, where the order of our $k$ choices doesn't matter and we are sampling our $n$ options with replacement.
+    
+    <div class="example"><p> Suppose you're ordering six scoops of ice
+      cream and there is a choice of four types, say cookies & cream, pralines &
+      cream, salted caramel, and gold medal ribbon. This ice cream shop is well-stocked, 
+      so we can order as many scoops of each flavor as we'd like, but we don't care 
+      about the order of the flavors on our cone. 
+    </p>
+    </div>
+    
+    <p>If our decision
+    process goes one scoop at a time, we end up overcounting by an amount that
+    depends on the decision we've made, so it's not easy to correct for it. If
+    our decision process goes one flavor at a time instead, we end up with an
+    unclear number of choices for each step after the first one. Either way,
+    the strategies we have developed so far won't quite work for us.</p>
+    
+    <p>Let's try something different. One way to think about the number of possible choices to make
+      is to think about the number of ways to represent a distinct choice. Let's consider one possible selection,
+      $C,P,G,C,C,G$ (three cookie, one praline, two gold), assuming this is
+      the order in which we chose our scoops. However, since this is a combination and some of the elements
+      are indistinguishable anyway, the order doesn't really matter, so let's
+      group them together into $CCCPGG$. To be extra clear, let's indicate where one flavor 
+      ends and another flavor starts: $CCC|P|GG$.
     </p>
     
-    <h3>Naive Probability</h3>
+    <p> Something that is implicitly represented in this notation is that we chose 0 
+      scoops of salted caramel. Following the order of our flavor list (C, P, S, G), 
+      I can add another line to indicate 0 scoops of S: $CCC|P||GG$. 
+      Now that I've established that I will always write the scoops in this order, I don't 
+      actually need their letter labels, so I can equivalently write $***|*||**$. 
+    </p>
+    
+    <p>Let's consider another possible choice: $*||*|****$, which is one cookies
+      & cream, one salted caramel, and four gold medal ribbon. What we observe is
+      that each choice of six items from four classes can be represented by an
+      arrangement of six stars representing the items and three bars representing
+      the division of classes of items.
+    </p>
+    
+    <p>But this is something we've already seen before: it's just a string
+      problem over the alphabet $\{*,|\}$. Since we have six objects and four
+      classes, we can view our possible selections as a string of length 9 with 6
+      $*$s and 3 $|$s and ask how many such strings there are. There are $$\binom
+      9 6 = \binom 9 3 = \frac{9!}{6!3!} = \frac{9 \cdot 8 \cdot 7}{3 \cdot 2
+      \cdot 1} = 3 \cdot 4 \cdot 7 = 84$$ such strings.
+    </p>
+    
+    <p>This method of using stars and bars to denote the objects and categories
+      was popularized by William Feller's <cite>An Introduction to Probability
+        Theory and its Applications</cite> in 1950.
+    </p>
+    
+    <div class="theorem"><p title="Stars and Bars"> There are $\binom{n+k-1}{k}
+      = \binom{k+n-1}{n-1} = \frac{(n+k-1)!}{k!(n-1)!}$ outcomes when throwing $k$
+      balls into one of $n$ bins, allowing for multiple balls per bin
+      but with indistinguishable balls.
+    </p>
+    </div>
+    
+    <div class="proof"><p> We can represent each possible outcome as a string of length
+      $k+n-1$ over the alphabet $\{\star,|\}$. We know that each string contains
+      exactly $k$ $\star$'s, representing the $k$ balls, and $n-1$ $|$'s, demarcating which of the $n$ bins a ball was thrown into. 
+      Then there are $\binom{k+n-1}{k}$
+      possible ways to choose spots for the $k$ $\star$s. Since all remaining
+      spots must be occupied by $|$s, this is the same as choosing spots for $n-1$
+      $|$s, and there are $\binom{n+k-1}{n-1}$ ways to do so.
+    </p>
+    </div>
+    
+    <!-- <p>The Stars and Bars strategy also has a wide range of
+      applications to different scenarios. The following sitations can all
+      be counted with it:</p>
+    <ul>
+      <li> There are 5 bins, you'd like to put 10 indistinguishable balls in them. </li>
+      <li> There are 5 ice cream flavors, and you'd like ten scoops total. </li>
+      <li> There is a bin with 5 balls, you draw 10 out one at a time, with replacement,
+        but you only care about the total number of each ball drawn. </li>
+     </ul>
+    
+    <p>One more surprising application is shown below.</p>
+    
+    <div class="example"><p> How many solutions to $x+y+z = 13$ are
+      there, for non-negative integers $x,y,z$? Here, we can think of $x,y,z$ as
+      our types of objects, of which we want to choose 13 in some combination. For
+      instance, one solution would be to choose 6 $x$s, 4 $y$s, and 3 $z$s, which
+      would give us $6+4+3 = 13$. Then the number of solutions is just
+      $$\binom{13+3-1}{13} = \frac{15!}{13!2!} = \frac{15 \cdot 14}{2} = 105.$$
+    </p>
+    </div> -->
+    
+    <p>We can now fill out our completed table, representing the number of ways to throw $k$ balls (representing $k$ choices to be made) into $n$ bins (representing the $n$ options overall), we have:</p>
+    <table>
+      <thead>
+      <tr>
+        <th></th>
+        <th scope="col" >Balls are distinguishable</th>
+        <th scope="col" >Balls are indistinguishable</th>
+      </tr>
+      </thead>
+    
+      <tbody>
+      <tr>
+        <th scope="row">At most one ball per bin</th>
+    
+        <td>$\frac{n!}{(n-k)!}$</td>
+        <td>$\binom{n}{k}$</td>
+      </tr>
+    
+      <!-- ############################################################ -->
+    
+      <tr>
+        <th scope="row">Any # of balls per bin</th>
+        <td>$n^k$</td>
+        <td>$\binom{n+k-1}{k}$</td>
+      </tr>
+      </tbody>
+    </table>
+    <p>The beauty and the difficulty of combinatorics
+    is that almost every problem is about twisting the situation (through changed
+    perspectives, the tricks we discussed earlier, or just creative analogies) into
+    one that consists of a tractable decision process and/or a situation in our
+    table above. It takes a ton of practice to learn when different analogies and
+    different strategies are reasonable, and it is completely natural to try a
+    bunch of wrong ones before stumbling upon one that works. Nobody ever said
+    combinatorics was easy, but getting good at this will translate really well
+    to becoming an adept problem-solver in any context!
+
+    <p> Knowing all possible outcomes in a situation allows us to compute the <b>probability</b> of specific outcomes, which we'll focus on for most of the rest of this unit.
+      Probability has wide applications throughout the field of computer science: cryptography is probabilistic, machine learning
+      is probabilistic, and even modern data structures rely heavily on probabilistic guarantees
+      to make them efficient.
+    </p>
+    
+    <h2>Naive Probability</h2>
     
     <p>Probability models all sorts of phenomena related to unpredictability and
       uncertainty. We are going to start with a simple class of random experiments:
@@ -194,33 +388,7 @@
       challenge in naive probability: everything depends on your ability to determine
       the sizes of sets!
     </p>
-    
-    <h2>Counting Tricks</h2>
-    <p>As mentioned last lecture, we really don't have many ways to determine the sizes
-      of sets. If we can enumerate them then we can count them, or if we can describe
-      them as the sum or product of different sets whose sizes we know then we have some
-      footing to work with, but most sets are going to be more complex than that. </p>
-    
-    <p> Given that we don't have ways to directly count these more complex sets, our
-      task them is to <b>change the way we view the problem</b>. As mentioned last lecture,
-      this is the real important skill in combinatorics. We only have a few techniques to
-      count sets, so the task is instead to reimagine the problem, to shift our perspective,
-      to use some creativity to twist the complex problem into one that our techniques actually
-      do work for. This is the crux of combinatorics, and is an incredibly valuable
-      problem-solving skill in general as well!
-    </p>
-    
-    <p>The rest of this lecture will be focused on introducing a number of well-known tricks to
-      help us transform a given problem into one that's easier for us to work with. The tricks
-      we introduce here will show up over and over again in counting problems, but it's not
-      enough to see and understand them on their own - it's really important to be able to
-      recognize <b>when</b> they can be applied as well. This is something that takes a lot of
-      dedicated practice and reflection, so I encourage you to think really carefully about
-      each problem we list here and each problem on the homework, especially thinking about
-      <b>why</b> a trick worked for a particular problem or what is common between problems
-      where the trick could be applied.
-    </p>
-    
+      
     <h3>A problem with naive counting</h3>
     <p>Let's start by thinking about a problem that won't go the way we expect if we just
     naively approach it with the addition and multiplication rules from last lecture.
@@ -433,47 +601,7 @@
       </p>
     </div>
     
-    <h2>What have we learned so far?</h2>
-    In order to introduce our final counting trick, I want to take a step back and
-    discuss what we know how to count so far. Consider the following problem: You
-    have $k$ balls to throw into $n$ labeled bins. Within this problem, we can make
-    a grid of different possibilities for the problem specifics:
-    
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th scope="col" >Balls are distinguishable</th>
-          <th scope="col" >Balls are indistinguishable</th>
-        </tr>
-      </thead>
-    
-      <tbody>
-        <tr>
-          <th scope="row">At most one ball per bin</th>
-    
-          <td>Example 6.10</td>
-          <td>Example 6.12</td>
-        </tr>
-    
-      <!-- ############################################################ -->
-    
-        <tr>
-          <th scope="row">Any # of balls per bin</th>
-          <td>Example 6.11</td>
-          <td>????</td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <p> Here, when we say "distinguishable," one way to interpret it is that
-      swapping the locations of two balls results in a different outcome. For
-      example, in a problem about putting people in line, swapping two people
-      results in a different outcome, but in a problem about forming a committee,
-      swapping two people within a committee does not change the committee.
-      Let's work through these one at a time. To demonstrate the flexibility
-      of this diagram, each problem will be introduced in a different context.
-    </p>
+
     
     <div class="example"><p>There are $10$ people are auditioning for a play
       there are $7$ total roles. How many ways are there to assign people to
@@ -520,174 +648,5 @@
     number of options is $\binom{20}{3}$, or more generally $\binom{n}{k}$.</p>
     </div>
     
-    <p>Through our examples, we have seen that a wide variety of
-    situations can actually be represented as balls in bins situations. Furthermore,
-    our examples have given us nice representations for three of the squares.
-      Throwing $k$ balls into $n$ bins, we have:
-    
-    <table>
-      <thead>
-      <tr>
-        <th></th>
-        <th scope="col" >Balls are distinguishable</th>
-        <th scope="col" >Balls are indistinguishable</th>
-      </tr>
-      </thead>
-    
-      <tbody>
-      <tr>
-        <th scope="row">At most one ball per bin</th>
-    
-        <td>$\frac{n!}{(n-k)!}$</td>
-        <td>$\binom{n}{k}$</td>
-      </tr>
-    
-      <!-- ############################################################ -->
-    
-      <tr>
-        <th scope="row">Any # of balls per bin</th>
-        <td>$n^k$</td>
-        <td>????</td>
-      </tr>
-      </tbody>
-    </table>
-    
-    <p>What about the last square? We'll see now that the last square
-    will require a more sophisticated approach.
-    
-    <h3>Stars and Bars</h3>
-    
-    <p>It'll help for us to ground our discussion in an example.
-    
-    <div class="example"><p> Suppose you're ordering six scoops of ice
-      cream and there is a choice of four types, say cookies & cream, pralines &
-      cream, salted caramel, and gold medal ribbon. How many different
-      combinations can you make, with repetition? For an ordinary combination, we
-      would only choose one of each flavor, but because we're concerned about
-      classes of objects rather than single objects, we're able to choose
-      multiples of a particular type.
-    </p>
-    </div>
-    
-    <p>We can model this situation naturally as balls (scoops) in bins (flavors),
-    but any decision process we try to make quickly falls apart. If our decision
-    process goes one scoop at a time, we end up overcounting by an amount that
-    depends on the decision we've made, so it's not easy to correct for it. If
-    our decision process goes one flavor at a time instead, we end up with an
-    unclear number of choices for each step after the first one. Either way,
-    the strategies we have developed so far won't quite work for us.</p>
-    
-    <p>Let's try something different. Let's consider one possible selection,
-      $C,P,G,C,C,G$ (three cookie, one praline, two gold), assuming this is
-      the order in which we chose our scoops. However, since this is a combination and some of the elements
-      are indistinguishable anyway, the order doesn't really matter, so let's
-      group them together into $CCCPGG$. Now, let's separate these so they don't
-      touch each other and cross contaminate the flavours or something, and we
-      have something that looks like $CCC|P|GG$.
-    </p>
-    
-    <p>We can play with this analogy further and suppose we have a cup for each
-      flavor, regardless of the number that we end up choosing, so we have
-      something like $CCC|P||GG$. Finally, we note that since each cup contains a
-      specific flavor, we don't need to specifically denote the flavor, and we can
-      represent our choice by $***|*||**$.
-    </p>
-    
-    <p>Let's consider another possible choice: $*||*|****$, which is one cookies
-      & cream, one salted caramel, and four gold medal ribbon. What we observe is
-      that each choice of six items from four classes can be represented by an
-      arrangement of six stars representing the items and three bars representing
-      the division of classes of items.
-    </p>
-    
-    <p>But this is something we've already seen before: it's just a string
-      problem over the alphabet $\{*,|\}$. Since we have six objects and four
-      classes, we can view our possible selections as a string of length 9 with 6
-      $*$s and 3 $|$s and ask how many such strings there are. There are $$\binom
-      9 6 = \binom 9 3 = \frac{9!}{6!3!} = \frac{9 \cdot 8 \cdot 7}{3 \cdot 2
-      \cdot 1} = 3 \cdot 4 \cdot 7 = 84$$ such strings.
-    </p>
-    
-    <p>This method of using stars and bars to denote the objects and categories
-      was popularized by William Feller's <cite>An Introduction to Probability
-        Theory and its Applications</cite> in 1950.
-    </p>
-    
-    <div class="theorem"><p title="Stars and Bars"> There are $\binom{n+k-1}{k}
-      = \binom{k+n-1}{n-1} = \frac{(n+k-1)!}{k!(n-1)!}$ outcomes when throwing $k$
-      balls into one of $n$ bins, allowing for multiple balls per bin
-      but with indistinguishable balls.
-    </p>
-    </div>
-    
-    <div class="proof"><p> We can view each possible selection as a string of length
-      $k+n-1$ over the alphabet $\{\star,|\}$. We know that each string contains
-      exactly $k$ $\star$'s and $n-1$ $|$'s. Then there are $\binom{k+n-1}{k}$
-      possible ways to choose spots for the $k$ $\star$s. Since all remaining
-      spots must be occupied by $|$s, this is the same as choosing spots for $n-1$
-      $|$s, and there are $\binom{n+k-1}{n-1}$ ways to do so.
-    </p>
-    </div>
-    
-    <p>The Stars and Bars strategy also has a wide range of
-      applications to different scenarios. The following sitations can all
-      be counted with it:</p>
-    <ul>
-      <li> There are 5 bins, you'd like to put 10 indistinguishable balls in them. </li>
-      <li> There are 5 ice cream flavors, and you'd like ten scoops total. </li>
-      <li> There is a bin with 5 balls, you draw 10 out one at a time, with replacement,
-        but you only care about the total number of each ball drawn. </li>
-     </ul>
-    
-    <p>One more surprising application is shown below.</p>
-    
-    <div class="example"><p> How many solutions to $x+y+z = 13$ are
-      there, for non-negative integers $x,y,z$? Here, we can think of $x,y,z$ as
-      our types of objects, of which we want to choose 13 in some combination. For
-      instance, one solution would be to choose 6 $x$s, 4 $y$s, and 3 $z$s, which
-      would give us $6+4+3 = 13$. Then the number of solutions is just
-      $$\binom{13+3-1}{13} = \frac{15!}{13!2!} = \frac{15 \cdot 14}{2} = 105.$$
-    </p>
-    </div>
-    
-    <h2>Summary</h2>
-    <p>As a final recap, here is our completed table. Throwing $k$ balls
-    into one of $n$ labelled bins, we found:</p>
-    <table>
-      <thead>
-      <tr>
-        <th></th>
-        <th scope="col" >Balls are distinguishable</th>
-        <th scope="col" >Balls are indistinguishable</th>
-      </tr>
-      </thead>
-    
-      <tbody>
-      <tr>
-        <th scope="row">At most one ball per bin</th>
-    
-        <td>$\frac{n!}{(n-k)!}$</td>
-        <td>$\binom{n}{k}$</td>
-      </tr>
-    
-      <!-- ############################################################ -->
-    
-      <tr>
-        <th scope="row">Any # of balls per bin</th>
-        <td>$n^k$</td>
-        <td>$\binom{n+k-1}{k}$</td>
-      </tr>
-      </tbody>
-    </table>
-    <p>I really want to emphasize that the beauty and the difficulty of combinatorics
-    is that almost every problem is about twisting the situation (through changed
-    perspectives, the tricks we discussed earlier, or just creative analogies) into
-    one that consists of a tractable decision process and/or a situation in our
-    table above. It takes a ton of practice to learn when different analogies and
-    different strategies are reasonable, and it is completely natural to try a
-    bunch of wrong ones before stumbling upon one that works. Nobody ever said
-    combinatorics was easy, but getting good at this will translate really well
-    to becoming an adept problem-solver in any context!
-    
-</body>
+    </body>
 </html>
