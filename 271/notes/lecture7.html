@@ -160,15 +160,15 @@
     </p>
     
     <div class="theorem"><p title="Stars and Bars"> There are $\binom{n+k-1}{k}
-      = \binom{k+n-1}{n-1} = \frac{(n+k-1)!}{k!(n-1)!}$ outcomes when throwing $k$
-      balls into one of $n$ bins, allowing for multiple balls per bin
-      but with indistinguishable balls.
+      = \binom{k+n-1}{n-1} = \frac{(n+k-1)!}{k!(n-1)!}$ ways to make $k$
+      selections from $n$ options, where order of selections does not matter and 
+      a option may be selected multiple times. 
     </p>
     </div>
     
     <div class="proof"><p> We can represent each possible outcome as a string of length
-      $k+n-1$ over the alphabet $\{\star,|\}$. We know that each string contains
-      exactly $k$ $\star$'s, representing the $k$ balls, and $n-1$ $|$'s, demarcating which of the $n$ bins a ball was thrown into. 
+      $k+n-1$ over the alphabet $\{\star,|\}$, with $k$ stars representing the $k$ selections
+      to be made and $n-1$ bars demarcating which of the $n$ options was selected.
       Then there are $\binom{k+n-1}{k}$
       possible ways to choose spots for the $k$ $\star$s. Since all remaining
       spots must be occupied by $|$s, this is the same as choosing spots for $n-1$
@@ -362,7 +362,7 @@
         <li>Let $D$ be the event that at least two consecutive tosses
           show Heads. Then
           $$
-          C = (A_1 \cap A_2) \cup (A_2 \cap A_3) \cup \cdots \cup (A_9 \cap
+          D = (A_1 \cap A_2) \cup (A_2 \cap A_3) \cup \cdots \cup (A_9 \cap
           A_{10}) = \bigcup_{i=1}^9 A_i\cap A_{i+1}.
           $$
         </li>
