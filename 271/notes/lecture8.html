@@ -1,0 +1,434 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" sizes="32x32" href="../src/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../src/favicon-16x16.png">
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+
+    <title>CMSC 27100 &mdash; Lecture 8: Conditional Probability</title>
+    <link rel="stylesheet" href="style-notes.css" type="text/css" media="screen, print">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://benfred.github.io/venn.js/venn.js"></script>
+    <style>
+        body {
+            counter-reset: section 8 theorem;
+        }
+        .venn-container {
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 30px;
+        }
+    </style>
+</head>
+
+<body>
+<h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 7</h1>
+
+<h3 class="citation">The notes for this course began from a series originally
+    written by <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>, with extensions by
+    <a href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and
+    <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>, adapted for the summer session by <a href="https://liujon23.github.io/">Jonathan Liu</a>. I have modified them to follow our course.</h3>
+    <h2>Discrete Probability Spaces</h2>
+
+    <p>This lecture initiates the development of probability theory that is general
+    enough to model cases where outcomes might have different probabilities.  Our
+    first task will be to define what is a valid way of assigning probabilities.
+    Obviously we want to rule out things like assigning negative probabilities, or
+    probabilities that do not add up to $1$.  
+    
+    <p>In this definition, we use $2^\Omega$ to mean the power set of 
+    $\Omega$ (instead of $\mathcal{P}(\Omega)$, which may be confusing in this context).
+    
+    <div class="definition"><p> A <strong>discrete probability
+    space</strong> is a pair $(\Omega,p)$ where $\Omega$ is a set (called the
+    <strong>sample space</strong>) and $p : \Omega \to \mathbb{R}$ is a
+    function (called a <strong>distribution</strong>) satisfying the following
+    requirements:
+    <ol>
+      <li> For all $\omega \in \Omega$, $p(\omega) \geq 0$.</li>
+      <li> $\sum_{\omega \in \Omega} p(\omega) = 1$.</li>
+    </ol>
+    When $(\Omega,p)$ is a discrete probability space, we
+    call the function $\Pr: 2^\Omega \to \mathbb{R}$ defined by
+    \[
+      \Pr(E) = \sum_{\omega\in E} p(\omega)
+    \]
+    the <strong>probability measure induced by $p$</strong>.  
+    </p>
+    </div>
+    
+    <p>If you are following the BH textbook, note that this definition is different
+    from the one they use in Section 1.6. Our is simpler and equivalent for all of
+    the settings we'll care about this quarter. The definition in Rosen Section 7.2
+    is closer to this.</p>
+    
+    <p>The motivation for the first part of this definition is pretty direct:
+    For each outcome $\omega$, the function $p$ is defining the probability
+    of the outcome. Following our prior experience with probability, we
+    expect this to be a positive number (requirement 1). Second, we expect
+    that all of these probabilities add up to $1$ (requirement 2). 
+    </p>
+    
+    <p>The second part of the definition defines a function $\Pr$ that takes as
+    input a subset of $\Omega$ and also outputs a probability. It's defined with
+    the same intuition as in naive probability: The probability of an event is
+    just the sum of the probabilities of outcomes it contains.</p>
+    
+    <p>You may have noticed that we call this a <em>discrete</em> probability
+    space. There is indeed a more general notion of probability space that is able
+    to handle "continuous" spaces like choosing real numbers. We won't discuss this
+    direction further because it gets highly technical (with the sort of
+    technicalities we do not want to study now).
+    </p>
+    
+<div class="example"><p> Let $\Omega = \{H,T\}$, and define $p(H) = 3/4$ and
+    $p(T)=1/4$. This probability space models a biased coin flip. More generally for
+    any $0 \leq q \leq 1$ we can define $p(H) = q$ and $p(T) = 1-q$.  </p>
+    </div>
+
+<div class="theorem"><p> Let $(\Omega,\Pr)$ be a discrete probability
+    space. Then the following hold:
+    <ol>
+    
+        <li>$\Pr(\emptyset)=0$ and $\Pr(\Omega)=1$.</li>
+    
+        <li>If $E$ is an event, then $\Pr(E^c)=1 - \Pr(E)$.</li>
+    
+        <li>If $E$ and $F$ are events, then $\Pr(E\cup F)=\Pr(E) + \Pr(F) - \Pr(E\cap
+        F)$. In particular, when $E$ and $F$ are disjoint, $\Pr(E\cup F)=\Pr(E) +
+        \Pr(F)$.
+        </li>
+    
+    </ol>
+    </p>
+    </div>
+
+<p>
+    When $\Omega$ is finite, the proof of this theorem is an easy generalization of
+    the counting arguments we have seen. They are still true for infinite spaces,
+    but one has to account for taking sums over such sets (i.e. do some calculus
+    and take limits). We won't worry about doing the latter case rigorously in
+    this class.
+    </p>
+    
+<h2>Conditional Probability</h2>
+
+<p>Something that doesn't quite have a direct analogue from our discussions on
+    set theory is the notion of conditional events.
+
+<div class="definition"><p> Let $A$ and $B$ be events with $\Pr(B)\neq
+    0$. The <strong>conditional probability of $A$ given $B$</strong> is defined to
+    be $$\Pr(A \mid B) = \frac{\Pr(A \cap B)}{\Pr(B)}.$$
+</p>
+</div>
+
+<p>We can compute the conditional probability of $A$ given $B$ when we have some event $A$ whose probability we want to update given that we have observed $B$.</p>
+
+<p>Note that for any event $A$, we have $$\Pr(A \mid A) = \frac{\Pr(A \cap A)}{\Pr(A)} = 1. $$ 
+    This definition also gives us that $\Pr(A \cap B) = \Pr(A \mid B) \cdot
+    \Pr(B)$. </p>
+
+<p>One way of looking at this is if we restrict our attention to the event $B$
+    and ask, what is the probability of $A$ in this space? In this case, we are
+    asking for the intersection of the events $A$ and $B$. Then to "zoom out" back
+    to the sample space $\Omega$, we divide by the probability of $B$.
+
+<p>Another is to look at the version below the definition, where it's multiplied
+    out. If we want to compute $\Pr(A \cap B)$, the probability that two events both
+    occur, then one clear way to do so is to find the probability that the first event
+    occurs ($\Pr(B)$) and then find the probability that the second occurs, assuming
+    the first occurs ($\Pr(A \mid B)$).
+
+<div class="example"><p> Consider a roll of two fair dice.
+    <ol>
+
+        <li>What is the probability that the sum of the dice is 4, given that the
+            first die shows 3?</li>
+
+        <li>What is the probability that the first die shows 3, given that the sum of
+            the dice is 4?</li>
+
+    </ol>
+
+    <p>The set of outcomes when rolling two dice is $\Omega = \{1,\ldots,6\}^2 =
+        \{(1,1), (1,2), \ldots, (6,6)\}$. We have $|\Omega| = 36$.</p>
+
+    <ol>
+
+        <li>Let $A$ be the event that the sum is $4$ and let $B$ be the event that
+            the first die shows $3$. We want $\Pr(A\mid B)$. Then
+            \[
+            A = \{(1,3), (2,2), (3,1)\},
+            \]
+            \[
+            B = \{(3,1),(3,2),(3,3),(3,4),(3,5),(3,6)\},
+            \]
+            and $A \cap B = \{(3,1)\}$.
+            Therefore:
+            \begin{align*}
+            \Pr(A \mid B) & = \frac{\Pr(A \cap B)}{\Pr(B)} \\
+            &= \frac{|A\cap B|/|\Omega|}{|B|/|\Omega|} \\
+            &= \frac{1/36}{6/36} = \frac{1}{6}.
+            \end{align*}
+            We note that, curiously, $\Pr(A\mid B) = \Pr(A) = 1/6$. That is, conditioning
+            on $B$ didn't change the probability.
+
+            <p>We can work this problem more intuitively by observing that when we
+                condition on $B$, it means that one of its six outcomes happens with equal
+                probability. But only one of those six has a sum of four, so the probability
+                is $1/6$. This type of thinking will often work, but you should be very
+                cautious about errors in intuition. The value of the definition is that
+                we could work the problem without appealing to intuition and be confident
+                in our answer.</p>
+        </li>
+
+
+        <li>We now want $\Pr(B\mid A)$. Working this intuitively, when we
+            condition on $A$ we have that its three outcomes occur with
+            equal probability. Only one of these outcomes has the
+            first die equal to $3$, so the answer should be $1/3$.
+
+            <p>The formal calculation is
+                \begin{align*}
+                \Pr(B \mid A) & = \frac{\Pr(A \cap B)}{\Pr(A)} \\
+                &= \frac{|A\cap B|/|\Omega|}{|A|/|\Omega|} \\
+                &= \frac{1/36}{3/36} = \frac{1}{3},
+                \end{align*}
+                confirming the intuitive approach.
+        </li>
+        </p>
+
+    </ol>
+</div>
+
+<p>The prior example shows that in general $\Pr(A\mid B) \neq \Pr(B\mid A)$.
+    They might be equal however.
+</p>
+
+<p>Here is an example of why caution is required until you have developed a very
+    sharp intuition about conditional probability.</p>
+
+
+<div class="example"><p> Suppose we flip two fair coins.
+    <ol>
+
+        <li>What is the probability that we get two Heads, given that at least
+            one of the flips was Heads?
+        </li>
+
+        <li>What is the probability that we get two Heads, given that the <em>first
+            flip</em> showed Heads?
+        </li>
+    </ol>
+    Many people might guess, and even insist, that these probabilities are equal.
+    Let's calculate. Let $A$ be the event that two Heads are shown, $B$ be the event
+    that at least one Heads was shown, and $C$ be the event that the first flip
+    showed Heads. Then $A=\{HH\}, B=\{HT, TH, HH\},$ and $C = \{HT, HH\}$,
+    and $\Pr(A) = 1/4$, $\Pr(B)=3/4$ and $\Pr(C)=1/2$.
+    </p>
+
+    <p>
+        We want $\Pr(A\mid B)$ for the first part and $\Pr(A\mid C)$
+        for the second. We calculate
+        \begin{align}
+        \Pr(A \mid B) &= \frac{\Pr(A \cap B)}{\Pr{B}} \\
+        &= \frac{\Pr(\{HH\})}{\Pr(B)} \\
+        &= \frac{1/4}{3/4} = 1/3.
+        \end{align}
+        Next,
+        \begin{align}
+        \Pr(A \mid C) &= \frac{\Pr(A \cap C)}{\Pr{C}} \\
+        &= \frac{\Pr(\{HH\})}{\Pr(C)} \\
+        &= \frac{1/4}{1/2} = 1/2.
+        \end{align}
+        So these conditional probabilities are <em>not</em> equal.   If you find this
+        result counter-intuitive, you're not alone.  This happened because conditioning
+        on $B$ leaves three possibilities open while conditioning only $C$ leaves only
+        two.
+    </p>
+</div>
+
+<h2>Independence of Events</h2>
+
+<p>The definition of independence is wonderfully simple.
+</p>
+
+<div class="definition"><p> Events $A$ and $B$ are
+    <strong>independent</strong> if $\Pr(A \cap B) = \Pr(A) \cdot \Pr(B)$.
+</p>
+</div>
+
+<p>In our problem-solving, there will be two ways to determine whether events are
+    independent. First, by calculation we can show that the necessary
+    equality holds, using some pre-established model. The next example
+    shows how this can happen. The second way is <em>by fiat</em>, where
+    we look at an experiment we're modeling, and jump straight to the
+    conclusion that some events <em>should</em> be independent (to the
+    point where we would reject any model in which they weren't). The
+    second example gives a case where we would do this.
+</p>
+
+<p>From the definitions, it is easy to see that if $A$ and $B$ are independent,
+    then $\Pr(A \mid B) = \frac{\Pr(A) \cdot \Pr(B)}{\Pr(B)} = \Pr(A)$, which
+    should fit our intuition about conditional probability and independence.  </p>
+
+
+<div class="example"><p> Consider a roll of a two six-sided dice and the
+    events
+    <ul>
+        <li>$F_i$: the first roll comes up $i$,</li>
+        <li>$S_j$: the second roll comes up $j$,</li>
+        <li>$T_k$: the sum (or total) of the two rolls is $k$.</li>
+    </ul>
+    </p>
+
+    <p>All the $F_i$ and $S_j$ <em>should be</em> independent: The second roll doesn't
+        depend on the outcome of the first, or vice-versa. Mathematically, for any
+        $i$ and $j$, $$\Pr(F_i \cap S_j) = \frac{1}{36} = \frac{1}{6} \cdot
+        \frac{1}{6} = \Pr(F_i) \cdot \Pr(S_j)$$
+    </p>
+
+    <p>Equally clearly, most $T_k$ <em>are</em> correlated with the $F_i$: You
+        can't get a total of 11 unless the first die comes up $5$ or $6$. The one
+        exception is $T_7$: $\Pr(T_7 \mid F_i) = \frac{1}{6}$ and likewise for
+        $S_i$. However, obviously $T_7$ isn't independent of the combination of
+        $F_i$ and $S_i$s: $\Pr(T_7 \mid (F_4 \cap S_3)) = 1$ whereas $\Pr(T_7 \mid
+        (F_4 \cap S_4)) = 0$. 
+    </p>
+</div>
+
+<div class="example"> <p> Consider a coin biased to show Heads
+    with probability $3/4$, and suppose we flip it twice. What is the
+    probability that we get two Heads? By fiat, we declare that the
+    events $H_1,H_2$ of getting heads on the first and second toss
+    respectively should be independent. So we have
+    $$
+    \Pr(H_1 \cap H_2) = \Pr(H_1)\Pr(H_2) = \left(\frac{3}{4}\right)^2 =
+    \frac{9}{16}.
+    $$
+</p>
+</div>
+
+<h2>Bayes' Theorem</h2>
+<p>The last topic in this lecture is just a bit of algebraic manipulation away
+from what we've already seen today in class, but has a surprisingly wide array
+of applications. </p>
+
+<div class="theorem"><p title="Bayes' Theorem">For two events $A$ and $B$,
+$$\Pr(A|B) = \frac{\Pr(B|A) \cdot \Pr(A)}{\Pr(B)}$$</p></div>
+
+<div class="proof"><p title="of Theorem 7.7">We found earlier in this lecture
+    that the definition of conditional probability gives us
+    $\Pr(A \cap B) = \Pr(A \mid B) \cdot \Pr(B)$. Because the event $A \cap B$
+    is the same as the event $B \cap A$, we know
+    $\Pr(A \cap B) = \Pr(B \mid A) \cdot \Pr(A)$. Substituting, we find
+    $$\Pr(A \mid B) \cdot \Pr(B) = \Pr(B \mid A) \cdot \Pr(A),$$ so
+    $$\Pr(A|B) = \frac{\Pr(B|A) \cdot \Pr(A)}{\Pr(B)}.$$
+</p></div>
+
+The following definition and theorem are often used with Bayes's Theorem.
+<div class="definition">
+    <p>
+    A <b>partition</b> of $\Omega$ is a
+    family of pairwise disjoint events $H_1, \dots, H_m$ covering $\Omega$.
+    That is, $\bigcup_{i=1}^m H_i = \Omega$ and $H_i \cap H_j = \emptyset$
+    for all $i \neq j$.
+    </p>
+</div>
+
+<div class="theorem">
+<p title="Law of Total Probability (LOTP)">
+    Given a partition $H_1, \dots, H_m$ of $\Omega$ and an event $A \subseteq \Omega$,
+$$\Pr(A) = \sum_{i=1}^m \Pr(A \cap H_i).$$
+        </div>
+
+        <div class="proof"><p> Since we have a partition $H_1, \dots, H_m$, we have $A = A \cap \Omega = A \cap \bigcup_{i = 1}^m H_i$. Then,
+\begin{align*}
+\Pr(A) &= \Pr\left( A \cap \bigcup_{i=1}^m H_i \right) \\
+&= \Pr \left( \bigcup_{i=1}^m (A \cap H_i) \right) \\
+&= \sum_{i=1}^m \Pr(A \cap H_i) &\text{since $H_i$ are pairwise disjoint} \\
+\end{align*}
+        </div></p>
+
+        <p>
+This can be rewritten as
+$$\Pr(A) = \sum_{i=1}^m \Pr(A \mid H_i) \cdot \Pr(H_i).$$
+        </p>
+
+<p>The Law of Total Probability generalizes the idea that if I know $\Pr(A
+\cap B)$ and I know $\Pr(A \cap B^c)$, then that just gives me $\Pr(A)$ when I put them together. </p>
+
+<p>The Law of Total Probability also gives me that $$\Pr(B^c|A) + \Pr(B|A) = \frac{\Pr(B^c \cap A)}{\Pr(A)} + \frac{\Pr(B \cap A)}{\Pr(A)} = \frac{\Pr(B^c \cap A) + \Pr(B \cap A)}{\Pr(A)} = \frac{\Pr(A)}{\Pr(A)} = 1.$$</p>
+
+
+
+
+<p> One interpretation of Bayes' theorem that is particularly useful is thinking of
+$A$ as a hypothesis (e.g. this medicine cures the disease) and $B$ as an observation
+(e.g. this patient who took the medicine is now better). We'd like to know whether $A$
+is true, so we run a test and get observation $B$. Does that mean we should conclude
+that $A$ is true? How should it affect our belief in $A$? We should think that it
+increases the probability of $A$ being true, but by how much?
+
+<p> Bayes' Theorem gives us a nice structure to talk about it. It tells us that $\Pr(A|B)$
+can be described as an interaction between $\Pr(A)$ (our current belief in $A$),
+$\Pr(B)$ (the probability of getting better), and $\Pr(B|A)$ (the probability of
+the patient getting better given that the medicine does cure it). Each of these values
+are at least easier to grapple with - we can estimate them based on data we already
+have. This approach to hypothesis testing is known as Bayesian statistics, and
+has become popular as a method for testing the strength of models, an
+endeavor increasingly relevant with the advent of large computers doing large
+predictive computations.
+
+<div class="example">
+    <p> One canonical example application of Bayesian statistics is in disease testing.
+    Say I am being tested for a disease that only affects $1\%$ of the population.
+    The test has a $10\%$ false negative rate &mdash; a person with the disease will test
+    negative $10\%$ of the time. It has a $30\%$ false positive rate &mdash; a person
+    without the disease will test positive $30\%$ of the time. I am tested
+    for the disease, and it returns positive. What is the probability that I have
+    the disease?
+
+    <p> Here, we invoke Bayes' Theorem. Define $A$ to be the event that I have
+    the disease and $B$ to be the event that I test positive.</p>
+
+    <p>First, I can map the information given to the events $A$ and $B$. We know that the false negative rate is $10\%$, so $\Pr(B^c \mid A) = 0.1$. 
+        This gives us that $\Pr(B \mid A) = 0.9$. Similarly, we know that the false positive rate is $30\%$, so $\Pr(B \mid A^c) = 0.3$. This gives us that $\Pr(B^c \mid A^c) = 0.70$.</p>
+
+    <p> 
+        Finally, we know that $\Pr(A) = 0.01$ because only $1\%$ of the population
+        is affected. </p>
+
+    <p> For Bayes' Theorem, we need to know $\Pr(B \mid A)$, $\Pr(A)$, and $\Pr(B)$. To determine $\Pr(B)$, we need to use the Law of Total Probability:
+    $$\Pr(B) = \Pr(A \cap B) + \Pr(A^c \cap B).$$
+    </p>
+
+    <p>An application of the definition of conditional probability then tells
+        us that
+        $$\Pr(B) = \Pr(A) \cdot \Pr(B \mid A) + \Pr(A^c) \cdot \Pr(B \mid A^c).$$
+    </p>
+    <p>Plugging in the values given, we note that
+        $$\Pr(B) = 0.01 \cdot 0.9 + 0.99 \cdot 0.3 = 0.306.$$
+    </p>
+    <p>With this, we invoke Bayes' Theorem to find that
+        $$\Pr(A|B) = \frac{\Pr(B|A) \cdot \Pr(A)}{\Pr(B)} = \frac{0.9 \cdot 0.01}{0.306} \approx 0.029,$$
+        so there is actually less than a 3% chance that I even have the disease
+        based on this test! 
+    </p>
+
+</div>
+
+</body>
+</html>
