@@ -239,7 +239,7 @@ same <b>value</b> which is not the case &mdash; our two dice rolls could have di
     For instance, $\Pr(S=7, D=0) = 0$ since no die roll can have difference
     zero and sum to an odd number, but $\Pr(S=7)\Pr(D=0) \gt 0$ because these
     events individually have non-zero probability. Note that it was sufficient
-    to find one combination of $x,y$ for which these random variables violated
+    to find one combination of $s,d$ for which these random variables violated
     Definition 8.9.
 </p></div>
 
@@ -534,11 +534,10 @@ occurring - this just formalizes that.
 <div class="theorem"><p> If $X\sim\mathrm{Bin}(n,p)$, then
     $E(X)=np$.
 </p></div>
-<div class="proof"><p>  Let $X_1,\ldots,X_n$ be i.i.d. random variables
-    with distribution $\mathrm{Bern}(p)$. Then $X_1+\cdots+X_n$ has
-    distribution $\mathrm{Bin}(n,p)$, which can be justified either by
-    calculation or by the "story" behind the binomial. Then, by linearity of
-    expectation, we have
+<div class="proof"><p>  If $X\sim\mathrm{Bin}(n,p)$, then $X$ can be modeled as the number of 
+    successful trials (from $n$ total trials) where each trial is independent and succeeds with probability $p$.
+    Let $X_i$ be the random variable representing the success of trial $i$. 
+    Then $X = X_1 + \cdots + X_n$, so by linearity of expectation, we have
     \begin{align*}
     E(X) & =  E(X_1 + \cdots + X_n) \\
     & =  E(X_1) + \cdots + E(X_n) \\
@@ -597,13 +596,12 @@ occurring - this just formalizes that.
     <li>Find indicator random variabless $I_1,\ldots,I_n$ for events
         $A_1,\ldots,A_n$ such that $X = I_1 + \cdots + I_n$.</li>
 
-    <li>Use linearity and Theorem 18.21:
+    <li>Use linearity:
         $$
         E(X) = \sum_{i=1}^n E(I_i) = \sum_{i=1}^n \Pr(A_i).
         $$
     </li>
-    <li>Calculate each $\Pr(A_i)$ and add them up. Ideally this are all the same
-        by a symmetry argument.
+    <li>Calculate each $\Pr(A_i)$ and add them up. 
 </ol>
 
 <!-- <div class="example"><p> Let $X$ be the number of spades in a five
@@ -722,7 +720,7 @@ occurring - this just formalizes that.
 
 <div class="example"><p> Recall the roll of a fair 6-sided die and
     that $E(X) = 3.5$. To compute the variance, we need $E(X^2)$. For $i = 1,
-    2, \dots, 6$, $X^2 = i^2$ with probability $\frac 1 6$. Then by LOTUS
+    2, \dots, 6$, $X^2 = i^2$ with probability $\frac 1 6$. Then
     $$E(X^2) = \sum_{i=1}^6 \frac{i^2}{6} = \frac{91}6.$$
     Then we can calculate $V(X)$ by
     $$
