@@ -1,0 +1,853 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel='shortcut icon' type='image/x-icon' href='../uc.png'>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+
+    <title>CMSC 27100 &mdash; Lecture 9: Random Variables</title>
+    <link rel="stylesheet" href="style-notes.css" type="text/css" media="screen, print">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://benfred.github.io/venn.js/venn.js"></script>
+    <style>
+        body {
+            counter-reset: section 8 theorem;
+        }
+        .venn-container {
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 30px;
+        }
+    </style>
+</head>
+
+<body>
+<h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 9</h1>
+
+<h3 class="citation">The notes for this course began from a series originally
+    written by <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>, with extensions by
+    <a href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and
+    <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>, adapted for the summer session by <a href="https://liujon23.github.io/">Jonathan Liu</a>. 
+    I have modified them to follow our course.</h3>
+
+<h2>Random Variables</h2>
+
+<p>Recall at the beginning of the course, when we were first discussing
+    logic, that we could define propositional statements, but at some point we
+    hit a wall in terms of being able to express properties of objects. At that
+    point, we had to introduce predicates into our language to be able to
+    express such notions.</p>
+
+<p>We have a very similar problem at this point, where we have been
+    discussing and defining events explicitly whenever we want to discuss some
+    particular set of outcomes. What we'd like to do now is develop a language
+    that allows us to say "let $X$ be the outcome of a random die roll" or
+    let "let $Y$ by the number of spades in a random five card poker hand".
+    That is, we want to assign variable names to unknown random values in
+    a rigorous and useful way, one that lets us talk about outcomes rather
+    than just events either occurring or not.</p>
+
+<p>The following definition formalizes the standard approach for doing this.
+    At first glance, it might seem odd, or even useless. At least it is simple.
+    The motivation will come later.</p>
+
+<div class="definition"><p> A <strong>random variable on a sample
+    space $\Omega$</strong> is a function $X : \Omega \to \mathbb R$. </p>
+</div>
+
+<p>The choice of co-domain $\mathbb R$ is more permissive than prescriptive.
+    A lot of the time, we'll be mapping objects to a particular subset of
+    $\mathbb R$, like $\mathbb N$ or even $\{0,1\}$. And while the standard
+    definition of a random variable is for $\mathbb R$, this can be extended to
+    more exotic co-domains than just $\mathbb R$, but we usually prefer numbers
+    so that we can eventually talk about averages. In fact, for the purposes of
+    this course, you can think of the range of the function as probabilities. </p>
+
+<p>Now, you may have noticed from our discussion that random variables are
+    not random and are not variables (a random variable is a function, as we can
+    see from the definition above).</p>
+
+<p>Having set up this mechanism, we can define the probability of a
+    particular outcome of a random variable.</p>
+
+<div class="definition"><p> If $X$ is a random variable, we define
+    the notation
+    $$\Pr(X = r) = \Pr(\{\omega \in \Omega \mid X(\omega) = r\}).$$
+    More generally we extend this notation as follows. If $Q$ is
+    any predicate, we define
+    $$\Pr(Q(X)) = \Pr(\{\omega \in \Omega \mid Q(X(\omega)) \}).$$</p>
+</div>
+
+
+<div class="example"><p> Suppose we flip a coin three times. Let
+    $X(\omega)$ be the random variable that equals the number of heads that
+    appear when $\omega$ is the outcome. So we have
+    \begin{align*}
+    X(HHH) &= 3, \\
+    X(HHT) = X(HTH) = X(THH) &= 2, \\
+    X(TTH) = X(THT) = X(HHT) &= 1, \\
+    X(TTT) &= 0.
+    \end{align*}
+    Now, suppose that the coin is fair. Since we assume that each of the coin
+    flips is mutually independent, this gives us a probability of $\frac 1 2
+    \frac 1 2 \frac 1 2 = \frac 1 8$ for any one of the above outcomes. Now,
+    let's consider $\Pr(X = k)$:</p>
+    <table>
+        <tr><th>$k$ <th>$\{\omega \in \Omega \mid X(\omega) = k\}$ <th>$\Pr(X = k)$
+        <tr><td>3 <td>$\{HHH\}$ <td>$\frac 1 8$
+        <tr><td>2 <td>$\{HHT,HTH,THH\}$ <td>$\frac 3 8$
+        <tr><td>1 <td>$\{TTH,THT,HTT\}$ <td>$\frac 3 8$
+        <tr><td>0 <td>$\{TTT\}$ <td>$\frac 1 8$
+    </table>
+    <p>Using the notation from the definition, we could write $\Pr(X \leq 1)$
+        to mean $\Pr(\{\omega \ : \ X(\omega) \leq 1\})$; This probability is
+        $1/2$, since $4$ out of $8$ outcomes have at most $1$ Heads.</p>
+</div>
+
+<div class="example"><p> Continuing with the same sample space, we can
+    define a random variable $Y$ that counts the number of tails. Then we have,
+    for all $\omega\in\Omega$, $X(\omega) + Y(\omega)=3$. </p>
+</div>
+
+<p>Notation for random variables often omits the input variable. So one
+    might define a new random variable $Z$ by saying $Z=X-Y$, or in English:
+    $Z$ is the number of heads minus the number of tails. It is important
+    to understand that this is just defining a new function like you did
+    in calculus, where you'd write $h(x) = f(x)+g(x)$. For another example,
+    we could have defined $Y$ above by $Y=3-X$.</p>
+
+
+<h2>The Distribution of a Random Variable</h2>
+
+<p>When studying random variables and answering questions about them,
+    a very useful concept is their <em>distribution</em>, which is
+    defined next.</p>
+
+<div class="definition"><p> Let $X$ be a random variable
+    on a sample space $\Omega$. The <strong>distribution of $X$</strong>
+    is the function $p_X : \mathbb{R}\to\mathbb{R}$ defined by
+    $$
+    p_X(x) = \Pr(X = x).
+    $$
+    This function is also called the <strong>probability mass function</strong>
+    or <strong>pmf</strong> of $X$.</p>
+</div>
+
+<div class="example"><p> In the three-coin-toss example above,
+    when $X$ counts the number of heads, we have
+    $$
+    p_X(0) = 1/8, \quad
+    p_X(1) = 3/8, \quad
+    p_X(2) = 3/8, \quad
+    p_X(3) = 1/8,
+    $$
+    and $p_X(x) = 0$ for all other $x$.</p>
+
+    <p>Now consider $Y$, which counts the number of tails. This is a different
+        random variable (it is a different function!). But observe that its
+        distribution is
+        $$
+        p_Y(0) = 1/8, \quad
+        p_Y(1) = 3/8, \quad
+        p_Y(2) = 3/8, \quad
+        p_Y(3) = 1/8,
+        $$
+        and $p_Y(x) = 0$ for all other $x$. This is <strong>exactly</strong>
+        the same function of $p_X$. That is, $p_X = p_Y$. This is a very common
+        situation, and the next definition records a term to describe this
+        situation.</p>
+</div>
+
+<div class="definition"><p> Let $X,Y$ be random variables.  When
+    $p_X=p_Y$, we say that $X$ and $Y$ are <strong>identically
+        distributed</strong>.</p>
+</div>
+
+<div class="example"><p> Now consider rolling two dice, and let
+    $X$ be the first roll and $Y$ be the second roll. We have that $X$ and
+    $Y$ are identically distributed, and that their distributions assign
+    $1/6$ to $x=1,2,3,4,5,6$ and $0$ to all other $x$.
+    Now define $Z=X+Y$.
+    What is the distribution of $Z$? You can calculate this function
+    by hand. For example, there is only one roll {(1,1)} that gives Z = 2, but there are 
+    two rolls {(2,1), (1,2)} that give Z = 3. There are three rolls {(1,3), (2,2), (3,1)} that give Z = 4. 
+    Following similar logic, we have the following for our first few values: 
+    $$
+    p_Z(2) = 1/36, \quad
+    p_Z(3) = 2/36, \quad
+    p_Z(4) = 3/36, \quad
+    p_Z(5) = 4/36, \quad
+    p_Z(6) = 5/36,
+    $$
+    and so on (plotting this may be instructive; see the BH textbook, for
+    example.) We can see from this example that we need to be careful
+    when computing distributions of random variables like $X+Y$ from
+    the distributions of $X$ and $Y$. It's certainly not that true that the distribution of
+    $X+Y$ is $p_X+p_Y$!</p>
+</div>
+
+<p>It's worth noting, explicitly, that saying $X$ and $Y$ are identically distributed
+is not the same as saying $X=Y$. As we see in the example above, $X$ and $Y$ are clearly
+identically distributed, but saying $X=Y$ means that these two variables always have the
+same <b>value</b> which is not the case &mdash; our two dice rolls could have different outcomes! </p>
+
+<h2>Independence of Random Variables</h2>
+
+<p>The notion of independence for random variables is an intuitive adaptation
+    of the definition for events. We want to say that random variables $X,Y$ are independent
+    if knowing the outcome of one never affects the distribution of the other.
+    The next definition makes this precise.</p>
+
+<div class="definition"><p>We say that random variables $X,Y$ (on
+    the same sample space) are <strong>independent</strong> if for all
+    $x,y\in\mathbb{R}$,
+    $$
+    \Pr(X=x, Y=y) = \Pr(X=x)\Pr(Y=y).
+    $$
+    Mutual independence is defined analogously: $X_1,\ldots,X_n$ are
+    <strong>mutually independent</strong> if for all $x_1,\ldots,x_n$,
+    the events $X_i=x_i$ are mutually independent.
+</p>
+</div>
+
+
+<p>The notation $\Pr(X=x, Y=y)$ means the probability that $X=x$ <em>and</em>
+    $Y=y$. It is less clunky than trying to use a "$\cap$" or other notation.
+    The definition for more than two random variables is a direct
+    adaptation of mutual independence for several events.
+
+<div class="example"><p> If $X$ and $Y$ represent distinct
+    independent fair die rolls, then (by fiat) they are independent &mdash; one die roll's outcome cannot affect the other's! So for any
+    $x,y\in\{1,2,3,4,5,6\}$ we have
+    $$
+    \Pr(X=x, Y=y) = \frac{1}{36} = \frac{1}{6}\cdot\frac{1}{6}= \Pr(X=x)\Pr(Y=y).
+    $$
+
+    If we let $S=X+Y$ and $D=X-Y$, we might have an intuition that these variables are not independent. 
+    We can show this by finding some values $s,d$ for which $\Pr(S=s, D=d) \neq \Pr(S=s)\Pr(D=d).$
+    For instance, $\Pr(S=7, D=0) = 0$ since no die roll can have difference
+    zero and sum to an odd number, but $\Pr(S=7)\Pr(D=0) \gt 0$ because these
+    events individually have non-zero probability. Note that it was sufficient
+    to find one combination of $x,y$ for which these random variables violated
+    Definition 8.9.
+</p></div>
+
+<!-- <div class="example"><p> Suppose we pull two cards from a standard deck of cards,
+    and let $X$ be the number of Aces and $Y$ be the number of black cards in our two cards.
+    Now it is less clear if these are independent are not. A simple calculation
+    shows that
+    $$
+    \Pr(X=2) = \frac{\binom{4}{2}}{\binom{52}{2}},
+    $$
+    $$
+    \Pr(Y=2) = \frac{\binom{26}{2}}{\binom{52}{2}},
+    $$
+    and
+    $$
+    \Pr(X=2, Y=2) = \frac{1}{\binom{52}{2}}.
+    $$
+    We have $\Pr(X=2, Y=2) \approx 0.00075$ but $\Pr(X=2)\Pr(Y=2) \approx 0.0011$.
+    Can you find an intuitive explanation?
+</p>
+</div> -->
+
+<h2>Three Named Distributions</h2>
+
+<p>When studying probability, the same distributions tend to show up over
+    and over again. Thus several distributions are given names and a compact
+    notation is used to indicate that a random variable has a commonly-known
+    distribution. </p>
+
+<div class="definition"><p> A random variable $X$ is said to
+    have the <strong>uniform distribution over $S$</strong>,
+    written $X\sim\mathrm{U}(S)$, if $\Pr(X=s)=\frac{1}{|S|}$ for all
+    $s \in S$.</p>
+</div>
+<p>This should be a very familiar distribution - it's the one have been using and
+relying on in all of our previous work with probability. After all, we've been
+assuming that all relevant outcomes in our sample space have equal probability of
+occurring - this just formalizes that.
+
+<div class="definition"><p> A random variable $X$ is said to
+    have the <strong>Bernoulli distribution with parameter $p$</strong>,
+    written $X\sim\mathrm{Bern}(p)$, if $\Pr(X=1)=p$ and $\Pr(X=0) = 1-p$.</p>
+</div>
+
+<p>Bernoulli random variables are frequently described as <em>trials</em>
+    that either succeed (i.e. output $1$) or fail (i.e. output $0$).</p>
+
+<div class="example"><p> Suppose we roll a fair six-sided die,
+    and define
+    $$
+    X(\omega) = \begin{cases}
+    1 & \omega \leq 3 \\
+    0 & \omega > 3
+    \end{cases}.
+    $$
+    Then $X\sim \mathrm{Bern}(1/2)$. If we define
+    $$
+    Y(\omega) = \begin{cases}
+    1 & \omega \leq 2 \\
+    0 & \omega > 2
+    \end{cases}
+    $$
+    then $Y\sim \mathrm{Bern}(1/3)$.</p>
+</div>
+
+<p>Bernoulli random variables will show up a few times later.
+    For now we turn to another common distribution that models repeated
+    independent Bernoulli trials. A simple physical example of this is
+    tossing a coin $n$ times and counting the number of Heads that are
+    shown. Each toss can be seen as a trial, and the trials are independent
+    (which we declare by fiat, not calculation). This case is modeled
+    by the <em>binomial distribution</em>, defined next.</p>
+
+<div class="definition"><p> A random variable $X$ is said to
+    have the <strong>binomial distribution with parameters $n$ and $p$</strong>,
+    written $X\sim\mathrm{Bin}(n,p)$, if for $k=0,1,\ldots,n$,
+    $$
+    \Pr(X=k)=\binom{n}{k}p^k(1-p)^{n-k},
+    $$
+    and $\Pr(X=k)=0$ for all other $k\in\mathbb{R}$.</p>
+</div>
+
+<p>This is just a definition, but it deserves some explanation. The
+    parameter $n$ corresponds to the number of trials, and $p$ corresponds to
+    the probability of success of each trial. To see why the probabilities are
+    assigned this way, consider first some sequence of successes and failures
+    that describes the aggregate outcome of the $n$ trials; For instance, with
+    $n=5$ we may have the outcome $SFFSS$ to indicate that the second and third
+    trials failed and the rest succeeded.  This particular outcome should have
+    probability $p(1-p)(1-p)pp=p^3(1-p)^2$, since the trials are independent.
+    Indeed, this is probability of any particular outcome that has three
+    successes (and thus two failures).</p>
+
+<p>Now to calculate $\Pr(X=3)$, we need to count the number of outcomes
+    with example three successes. There are $\binom{5}{3}$ such outcomes,
+    which correspond to strings with three $S$'s and two $F$'s. Adding
+    up these (disjoint) events, we justify that
+    $\Pr(X=3)=\binom{5}{3}p^3(1-p)^2$. The general pattern is justified
+    the same way.</p>
+
+<div class="example"><p> Suppose we have a coin that is biased to show
+    Heads with probability $3/4$. If we toss this coin $100$ times and let $X$
+    count the number of Heads, then $X\sim\mathrm{Bin}(100,3/4)$.</p>
+</div>
+
+<!-- <div class="example"><p> Here is a less obvious example where the
+    binomial distribution arises. Suppose we have an array of $b$ bins, and
+    we randomly toss $n$ balls so that each ball lands in any bin with
+    equal probability, independently of the other balls. For each
+    $j=1,\ldots,b$, we can define $X_j$ to the number of balls in the $j$-th
+    bin. Then for all $j$, $X_j\sim\mathrm{Bin}(n,1/b)$, since we can view
+    the balls as trials that succeed when the ball lands in the $j$-th bin.
+    Balls-in-bins problems are particularly important for data structures,
+    where the balls are data items and bins are hash table cells.</p>
+</div> -->
+
+<!-- <div class="example"><p> Suppose we deal a five-card poker hand.
+    Then we can define a trial for each of the four aces that succeeds
+    when that ace is in our hand. If we call these $X_1,X_2,X_3,X_4$,
+    then the total number of aces is $Z = X_1+X_2+X_3+X_4$. While $Z$
+    is a sum of Bernoulli trials, it does not have a binomial
+    distribution because the trials are not independent (having three
+    aces in our hand makes it less likely that the fourth ace is in
+    your hand). The next lecture will rigorously define independence to
+    better understand cases like this.</p>
+</div> -->
+
+<!-- <div class="example"><p> Let $X\sim\mathrm{Bin}(n,p)$.
+    Verify that
+    $$
+    \sum_{k=0}^n p_X(k) = 1.
+    $$
+    (Use the Binomial Theorem.)</p>
+</div> -->
+<!-- 
+<div class="example"><p> Let $X\sim\mathrm{Bin}(n,p)$ and
+    define $Y = n - X$. Verify that $Y\sim\mathrm{Bin}(n,1-p)$.</p>
+</div> -->
+
+<h2>Expectation of Random Variables</h2>
+
+<p>The following definition captures a notion of "weighted average" for
+    random variables. It is extremely useful in understanding random variables,
+    especially complicated ones where just knowing a formula for their
+    distribution is not directly enlightening.
+</p>
+
+<div class="definition"><p> The <strong>expectation</strong> (or
+    <strong>expected value</strong> or <strong>mean</strong>) of a random
+    variable $X$, denoted $E(X)$, is
+    $$
+    E(X) = \sum_{x\in\mathbb{R}} x \Pr(X=x).
+    $$
+</p></div>
+
+<div class="example"><p> If $X$ is a fair die roll, then
+    $$
+    E(X) = 1\cdot \frac{1}{6} + 2\cdot \frac{1}{6} +3\cdot \frac{1}{6} +4\cdot
+    \frac{1}{6} +5\cdot \frac{1}{6} + 6\cdot \frac{1}{6} = 3.5.
+    $$
+</p></div>
+<div class="theorem"><p> If $X\sim\mathrm{U}(S)$ where $S = \{s_1, \cdots, s_n \}$, then
+    $E(X) = \frac{s_1 + \cdots + s_n}{n}$.
+</p></div>
+<div class="proof"><p> $X$ takes the $n$ values $s_1, \cdots, s_n$ with equal probability of $\frac{1}{n}$, so
+    $$
+    E(X) = s_1 \cdot \frac{1}{n} + \cdots + s_n \cdot \frac{1}{n} = \frac{s_1 + \cdots + s_n}{n}.$$
+    This proves the theorem.
+</p></div>
+
+<div class="example"><p> If $X$ is the number of Heads obtained (0 or 1) from flipping a coin biased to Heads 
+    $\frac{3}{4}$ of the time,
+    $$
+    E(X) = 0 \cdot \Pr(X=0) + 1 \cdot \Pr(X=1) = 0 \cdot \frac{1}{4} + 1 \cdot \frac{3}{4} = \frac{3}{4}.
+    $$
+</p></div>
+
+<div class="theorem"><p> If $X\sim\mathrm{Bern}(p)$, then
+    $E(X) = p$.
+</p></div>
+<div class="proof"><p> The only values that $X$ takes with non-zero
+    probability are $0$ and $1$, so
+    $$
+    E(X) = 0\cdot\Pr(X=0) + 1\cdot\Pr(X=1) = \Pr(X=1) =p.$$
+    This proves the theorem.
+</p></div>
+
+<!-- <div class="theorem"><p title="Optional"> If
+    $X\sim\mathrm{Bin}(n,p)$, then $E(X)=np$.</p></div> -->
+
+<h2>Linearity of Expectation</h2>
+
+<p>The core trick deals with expectations of random variables that
+    are sums of other random variables. Consider computing the expectation
+    of the sum of two fair dice; This could be written $E(X+Y)$, where
+    $X,Y$ are the die rolls. Using the formula for expectation,
+    we get
+    $$
+    E(X+Y) = \sum_{k=2}^{12} k\cdot \Pr(X+Y=k) = 7.
+    $$
+</p>
+
+<p>This is not so bad, but it is a small case of a more general issue:
+    In order to compute this expectation, we need the distribution of
+    $X+Y$ (i.e., we need to calculate $\Pr(X+Y=k)$), which is often
+    more complicated that the distributions of $X$ and
+    $Y$.
+</p>
+
+<p>The following theorem gives us a way to compute $E(X+Y)$ without computing
+    the distribution of $X+Y$. The property it establishes is known as
+    <em>linearity of expectation</em>.
+</p>
+
+<div class="theorem"><p title="Linearity of Expectation"> For any random
+    variables $X,Y$ on the same sample space
+    $$
+    E(X+Y) = E(X)+E(Y),
+    $$
+    and if $c\in\mathbb{R}$, then
+    $$
+    E(cX) = c\cdot E(X).
+    $$
+</p>
+</div>
+
+<p>
+    Our main goal is
+    understand this intuitively and see how to apply it.  The proof, which we do
+    at the end of these notes, will be optional. (That proof states and uses
+    Proposition 8.36, also proved at the end of the notes) </p>
+
+<p>The BH textbook provides another intuitive explanation for how $E(X+Y)$
+    and $E(X)+E(Y)$ correspond to two different ways of computing averages of the
+    sum of two lists. Here is a small example: </p>
+
+<table>
+    <tr>
+        <th>$\omega$ </th>
+        <th>$X(\omega)$ </th>
+        <th>$Y(\omega)$ </th>
+        <th> $X(\omega) + Y(\omega)$</th>
+    </tr>
+    <tr>
+        <td>$\omega_1$ </td>
+        <td>$2$ </td>
+        <td>$5$ </td>
+        <td>$7$ </td>
+    </tr>
+    <tr>
+        <td>$\omega_2$ </td>
+        <td>$10$ </td>
+        <td>$20$ </td>
+        <td>$30$ </td>
+    </tr>
+    <tr>
+        <td>$\omega_3$ </td>
+        <td>$0$ </td>
+        <td>$-1$ </td>
+        <td>$-1$ </td>
+    </tr>
+</table>
+
+<p>If we average $X$ and $Y$ separately (i.e. sum them and divide by $3$),
+    their averages are $4$ and $8$, which sum to $12$. But if we add the lists
+    and then take an average, we also get $12$, agreeing with the linearity of
+    expectation.
+</p>
+
+<p>The formula for linearity of expectation extends to more random
+    variables by an easy induction. That is, for any random variables $X_1,\ldots,X_n$,
+    $$
+    E(X_1+\cdots+X_n) =
+    E(X_1)+\cdots+E(X_n).
+    $$
+</p>
+
+
+
+<div class="example"><p> Returning to the case of rolling two dice,
+    We have that $E(X+Y)=7$ because $E(X)=E(Y)=3.5$, as previously calculated.
+    In fact, if we roll $n$ dice, we know the expectation is $3.5n$, for any
+    $n$, despite not computing the complicated distribution of the experiment.
+</p>
+</div>
+
+<p>
+    Now we'll give the nice way to calculate the expectation of a binomial
+    random variable.
+</p>
+
+<div class="theorem"><p> If $X\sim\mathrm{Bin}(n,p)$, then
+    $E(X)=np$.
+</p></div>
+<div class="proof"><p>  Let $X_1,\ldots,X_n$ be i.i.d. random variables
+    with distribution $\mathrm{Bern}(p)$. Then $X_1+\cdots+X_n$ has
+    distribution $\mathrm{Bin}(n,p)$, which can be justified either by
+    calculation or by the "story" behind the binomial. Then, by linearity of
+    expectation, we have
+    \begin{align*}
+    E(X) & =  E(X_1 + \cdots + X_n) \\
+    & =  E(X_1) + \cdots + E(X_n) \\
+    & =  p + \cdots + p \\
+    & =  np.
+    \end{align*}
+    &nbsp;
+
+</p></div>
+
+
+<!-- <div class="example"><p> Linearity does not require that $X,Y$
+    be independent. For example, we let $X$ count the number of spades
+    in a five card poker hand and $Y$ count the number of Aces,
+    then $X$ and $Y$ are certainly not independent, and $X+Y$ has
+    a somewhat complex distribution. But $E(X+Y)=E(X)+E(Y)$ anyway,
+    and we can just compute the simpler expectations and add them.
+</p></div> -->
+
+
+<h2>The Indicator Method</h2>
+
+<p>The real magic of linearity is that you can often apply it even
+    when the original random variable is not explicitly the sum of
+    other random variables. The trick is that you can decompose the
+    random variable yourself, and then compute the simpler expectations
+    and add them.
+
+<p>A common version of this trick is called the indicator method,
+    where one writes a random variable as a sum of zero/one random
+    variables, called <em>indicators</em>.
+
+
+<div class="definition"><p> Let $A\subseteq \Omega$ be an
+    event. Then the random variable $I_A$ defined by
+    $$
+    I_A(\omega) =
+    \begin{cases}
+    1 & \omega\in A \\
+    0 & \omega\notin A
+    \end{cases}
+    $$
+    is called the <strong>indicator random variable for the event $A$</strong>.
+</p></div>
+
+<p>Indicators are simply Bernoulli random variables with parameter
+    $p=\Pr(A)$. Thus the expectation is easy to calculate:
+
+<div class="theorem"><p> If $I_A$ is the indicator random variable
+    for $A$, then $E(A)=\Pr(A)$.
+</p></div>
+
+<p><strong>The Indicator Method</strong> works as follows. To compute
+    $E(X)$, one proceeds:
+<ol>
+    <li>Find indicator random variabless $I_1,\ldots,I_n$ for events
+        $A_1,\ldots,A_n$ such that $X = I_1 + \cdots + I_n$.</li>
+
+    <li>Use linearity and Theorem 18.21:
+        $$
+        E(X) = \sum_{i=1}^n E(I_i) = \sum_{i=1}^n \Pr(A_i).
+        $$
+    </li>
+    <li>Calculate each $\Pr(A_i)$ and add them up. Ideally this are all the same
+        by a symmetry argument.
+</ol>
+
+<!-- <div class="example"><p> Let $X$ be the number of spades in a five
+    card poker hand. Our indicators $I_1,\ldots,I_5$ are defined so that $I_j=1$
+    if the $j$-th card is a spade, and $0$ otherwise. (Notice that we're assuming
+    the experiment is ordered now, which we're free to do.) Then
+    $X=I_1+I_2+I_3+I_4+I_5$. We have that $E(I_j) = 1/4$ for all $j$, since this
+    is the probability that a given card is a spade. Therefore,
+    $$
+    E(X) = E(I_1)+E(I_2)+E(I_3)+E(I_4)+E(I_5) = 1/4 + 1/4 + 1/4 + 1/4 + 1/4 = 5/4.
+    $$
+    Notice that the $I_j$ were not independent!
+</p></div> -->
+
+<!-- <div class="example"><p> Suppose we toss $n$ balls into $b$ bins,
+    with all outcomes equally likely. (This is hashing once again.) Let
+    $X$ be the number of empty bins. Our indicators here correspond
+    to bins, with $I_j$ indicating if the $j$-th bin is empty.
+    We have $E(I_j) = ((b-1)/b)^n = (1-1/b)^n$ by a counting argument or
+    by using that the tosses are independent. Therefore
+    $$
+    E(X) = b(1-1/b)^n.
+    $$
+</p></div> -->
+
+<div class="example"><p> Suppose we toss a coin 100 times, and let
+    $X$ be the number of times we get five consecutive tosses $HTHTH$.
+    The random variable $X$ is very complicated, and we won't even try to compute
+    its distribution, but observe that the streaks counted by $X$ may
+    overlap!
+</p>
+
+    <p>To compute $E(X)$, we create indicators $I_j$ that indicate if
+        the streak $HTHTH$ appears starting at the $j$-th toss.
+        Then
+        $$
+        X = I_1 + \cdots + I_{96}.
+        $$
+        Note that we stop at $96$ because the streak can't possibly start in the last
+        four tosses.
+        We have $E(I_j)=1/2^5$ since this simply the probability that we get a
+        particular outcome in $5$ tosses. Thus the expectation is $E(X)=96/2^5=3$.
+    </p></div>
+
+<h2>Variance</h2>
+
+<p> While expectation is a useful piece of information
+    about a random variable, it does not tell the full story.  For instance,
+    suppose $X$ is a uniformly distributed random variable between the values of $1$ and $-1$, 
+    and $Y$ is another uniformly distributed random variable between the values of $100$ and $-100$.
+    Then $E(X)=E(Y)=0$, but the behavior of these random
+    variables is clearly different: $Y$ has bigger "swings", and for many
+    applications the size of the "swings" is as important as the average value.
+    The measure of "swingy-ness" is called <em>variance</em> and is defined in
+    the first half of this lecture.  </p>
+
+<p>The following definition is the most common measure of swingy-ness
+    of a random variable.</p>
+
+<div class="definition"><p> Let $X$ be a random variable  with
+    $E(X)=\mu$. The
+    <strong>variance</strong> of $X$ is defined to be
+    $$V(X) = E((X - \mu)^2).$$
+    The <strong>standard deviation</strong> of $X$ is $\sigma(X) =
+    \sqrt{V(X)}$. Because of this, variance is sometimes denoted by
+    $\sigma^2(X)$.</p>
+</div>
+
+<p>Let's break this definition down. First, the square is on the inside
+    of expectation: It's not $(E(X-\mu))^2$. Indeed, that value is not
+    interesting, because by linearity we have
+    $$
+    (E(X-\mu))^2 = (E(X)-\mu)^2 = (\mu - \mu)^2 = 0.
+    $$
+    (There, we used $E(\mu)=\mu$, which is that the expectation of a constant
+    is just the constant.)</p>
+
+<p>The square is in the definition so that the positive and negative
+    swings do not cancel each other out. By squaring, all of the deviations
+    become positive, and thus accumulate in the total measure of swings.
+    A very natural question is: Why squaring? Why not raising to another
+    larger even power? Or more intuitively, why don't we use the value
+    $$
+    E(|X-\mu|)
+    $$
+    which also has the effect of accumulating both down and up swings into
+    the total? The best answer at this point is that the definition with the
+    square is way easier to compute, and still close enough to being
+    intuitively useful. A deeper answer is that this definition 		has many
+    other theoretical and practical uses beyond getting intuition for
+    swings.</p>
+
+<p>The definition of variance is rarely used directly in computations.
+    The following equivalent version is easier to use.</p>
+
+
+<div class="theorem"><p> If $X$ is a random variable
+    then $V(X) = E(X^2) - E(X)^2$.</p>
+</div>
+
+<div class="proof"><p> Let $E(X)=\mu$. By linearity,
+    \begin{align*}
+    V(X)
+    &= E((X-\mu)^2) \\
+    &= E(X^2 - 2\mu X + \mu^2)  \\
+    &= E(X^2) - 2\mu E(X) + E(X)^2  \\
+    &= E(X^2) - 2\mu^2 + \mu^2  \\
+    &= E(X^2) - \mu^2.
+    \end{align*}
+</p>
+</div>
+
+<p>This formula reduces the job of computing $V(X)$ to computing
+    $E(X^2)$ and $E(X)$.</p>
+
+
+<div class="example"><p> Recall the roll of a fair 6-sided die and
+    that $E(X) = 3.5$. To compute the variance, we need $E(X^2)$. For $i = 1,
+    2, \dots, 6$, $X^2 = i^2$ with probability $\frac 1 6$. Then by LOTUS
+    $$E(X^2) = \sum_{i=1}^6 \frac{i^2}{6} = \frac{91}6.$$
+    Then we can calculate $V(X)$ by
+    $$
+    V(X) = E(X^2) - E(X)^2
+    = \frac{91}{6} - \left( \frac 7 2 \right)^2
+    = \frac{35}{12} \approx 2.92.
+    $$
+    From this, we can also get the standard deviation, $\sqrt{V(X)} \approx
+    1.71$. </p>
+</div>
+
+<!-- <h2>Recommend Exercises</h2>
+
+<p>
+    <a href="https://drive.google.com/file/d/1VmkAAGOYCTORq1wxSQqy255qLJjTNvBI/view">Blitzstein
+        and Hwang</a>, Section 3.12, Problems 1, 2, 6, 7, 8, 20, 22.
+        Section 4.12,  Problems 2, 3, 4, 6, 7, 8, 34-60.</p> -->
+
+<!-- <h2>Optional Proofs</h2>
+
+<h3>Proof of Theorem 8.26.</h3>
+
+<div class="proof"><p>
+    Here is a direct proof, following standard proofs like <a
+        href="https://proofwiki.org/wiki/Expectation_of_Binomial_Distribution">this
+    one</a>.
+    \begin{align*}
+    E(X) &= \sum_{k=0}^n k \Pr(X=k) \\
+    &= \sum_{k=0}^n k \binom{n}{k}p^k(1-p)^{n-k} \\
+    &= \sum_{k=1}^n k \binom{n}{k}p^k(1-p)^{n-k}
+    \end{align*}
+    The only difference in last equality is that the $k=0$ term
+    is dropped from the sum; It is zero.
+</p>
+
+    <p>Now we'll use an identity which says that for all positive $k,n$
+        with $k\leq n$,
+        $$
+        k\binom{n}{k} = n \binom{n-1}{k-1}.
+        $$
+        You can prove this algebraically, or better, with a combinatorial
+        proof. Applying this we get
+        \begin{align*}
+        \sum_{k=1}^n k \binom{n}{k}p^k(1-p)^{n-k}
+        &= \sum_{k=1}^n n \binom{n-1}{k-1}p^k(1-p)^{n-k}  \\
+        &= np \sum_{k=1}^n \binom{n-1}{k-1}p^{k-1}(1-p)^{(n-1)-(k-1)}.
+        \end{align*}
+        Now let $m=n-1$, relabel the sum to go from $j=0$ to $m$ instead
+        of $k=1$ to $n$, and then apply the Binomial Theorem:
+        \begin{align*}
+        np \sum_{j=0}^m \binom{m}{j}p^{j}(1-p)^{m-j}
+        = np (p + (1-p))^m
+        = np.
+        \end{align*}
+    </p>
+    &nbsp;
+</div>
+
+<h3>Proof of Theorem 8.27</h3>
+<p>
+    In order to prove this, we need the equivalent formula for expectation
+    given in the next proposition.
+</p>
+
+<div class="proposition">
+    For any random variable $X$,
+    $$
+    E(X) = \sum_{\omega\in\Omega} X(\omega)\cdot\Pr(\{\omega\}).
+    $$
+</div>
+
+<div class="proof"><p title="of Proposition 8.36">
+    Since the event $X=x$ is $\{\omega\in\Omega:X(\omega)=x\}$,
+    \begin{align*}
+    E(X)
+    & = \sum_{x\in\mathbb{R}} x\cdot \Pr(X=x) \\
+    & = \sum_{x\in\mathbb{R}} x\cdot \Pr(\{\omega\in\Omega:X(\omega)=x\}) \\
+    & = \sum_{x\in\mathbb{R}} \sum_{\omega:X(w)=x}x\cdot \Pr(\{\omega\}) \\
+    & = \sum_{x\in\mathbb{R}} \sum_{\omega:X(w)=x}X(\omega)\cdot \Pr(\{\omega\}) \\
+    & = \sum_{\omega\in\Omega}X(\omega)\cdot \Pr(\{\omega\}).
+    \end{align*}
+</p>
+    &nbsp;
+</div>
+
+<p>The original formula for expectation and this formula correspond to
+    two different ways you might compute an average. For example, suppose
+    a course has six students, and they score 100, 100, 95, 95, 95, 90 on
+    the exam. The formula in the above theorem says this can be computed
+    as
+    $$
+    100\cdot \frac{1}{6} +
+    100\cdot \frac{1}{6} +
+    95\cdot \frac{1}{6} +
+    95\cdot \frac{1}{6} +
+    95\cdot \frac{1}{6} +
+    90\cdot \frac{1}{6}.
+    $$
+    On the other hand, the original formula for expectation grouped together
+    students with the same scores, which would correspond to
+    $$
+    100\cdot \frac{2}{6} +
+    95\cdot \frac{3}{6} +
+    90\cdot \frac{1}{6}.
+    $$
+
+
+<div class="proof"><p title="of Theorem 8.27">
+    Using Proposition 8.36 three times, the proof is very simple:
+    \begin{align*}
+    E(X+Y)
+    & = \sum_{\omega\in\Omega}(X(\omega)+Y(\omega))\cdot \Pr(\{\omega\}) \\
+    & = \sum_{\omega\in\Omega}X(\omega)\cdot \Pr(\{\omega\})
+    + \sum_{\omega\in\Omega}Y(\omega)\cdot \Pr(\{\omega\}) \\
+    &= E(X)+E(Y).
+    \end{align*}
+    For the second part of the theorem,
+    \begin{align*}
+    E(cX)
+    & = \sum_{\omega\in\Omega}cX(\omega)\cdot \Pr(\{\omega\}) \\
+    & = c\sum_{\omega\in\Omega}X(\omega)\cdot \Pr(\{\omega\}) \\
+    &= cE(X).
+    \end{align*}
+
+    $\tag*{$\Box$}$ -->
+
+</body>
+</html>
