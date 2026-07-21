@@ -1,0 +1,241 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel='shortcut icon' type='image/x-icon' href='../uc.png'>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+
+    <title>CMSC 27100 &mdash; Lecture 10: Combinatorial Proofs</title>
+    <link rel="stylesheet" href="style-notes.css" type="text/css" media="screen, print">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://benfred.github.io/venn.js/venn.js"></script>
+    <style>
+        body {
+            counter-reset: section 10 theorem;
+        }
+        .venn-container {
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 9</h1>
+    
+    <h3 class="citation">The notes for this course began from a series originally
+        written by <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>, with extensions by
+        <a href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and
+        <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>. I have modified them to follow our course.</h3>
+    
+    <h2>Combinatorial Proofs</h2>
+    <p>Combinatorial proofs are a nice form of proof that embody the core of what we've been doing this unit:
+    counting and analyzing objects/sets/events. So far (and on our warm-up worksheet problem), we've developed our skills
+    at counting the number of outcomes in certain scenarios. In this lecture, we'll do the reverse, translating numerical expressions
+    into scenarios to show that two expressions are valid ways to count the same set. 
+
+        
+    <p>For example, consider the following theorem:
+    
+        <div class="theorem"><p> For all integers $n\geq 0$ and $0 \leq k
+            \leq n$,
+            $$
+            \binom{n}{k} = \binom{n}{n-k}.
+            $$
+        </p>
+        </div>
+        We can prove this instantly by algebra. A combinatorial proof observes that the left-hand side counts 
+        the same thing as the right-hand side. 
+        <div class="proof">
+            <p> We will show that each side of this expression counts the number of ways to select $k$ people from a group of $n$ people.
+                The left-hand side counts the number of ways to select $k$ people from $n$ people directly, while the right-hand side
+                counts this by the following decision process:
+            </p>
+            <ol>
+                <li>Pick $n-k$ people not to be on the committee ($\binom{n}{n-k}$ choices).</li>
+                <li>Choose the remaining remaining $k$ people to be on the committee (1 choice).</li>
+            </ol>
+        </div>
+    
+    <p> For another example, consider the following theorem.
+    
+    <div class="theorem"><p> For all positive integers $n$, $$\sum_{i=0}^n \binom n
+        i = 2^n.$$ </p></div>
+    
+    <p>In some sense, this is a very complex statement. One is summing up
+        binomial coefficients, which individually have a complicated formula.
+        For $n=3$, it is asserting that
+        $$ {n \choose 0} + {n \choose 1} + {n \choose 2} + {n \choose 3} = 2^3.
+        $$
+        By our definition of binomial coefficients, 
+        $$
+        \frac{3!}{3!\cdot 0!} +
+        \frac{3!}{2!\cdot 1!} +
+        \frac{3!}{1!\cdot 2!} +
+        \frac{3!}{0!\cdot 3!}
+        = 2^3.
+        $$
+    <p>The fact that terms with lots of factorials always collapses is remarkable.
+        On the other hand, the formula has a very simple explanation: The right-hand
+        side is counting the number of subsets of a set of size $n$. It turns out
+        that the left-hand is also counting the same sets! It's counting the
+        $\binom{n}{0}$ sets of size zero, the $\binom{n}{1}$ sets of size one,
+        and so on up to the maximum size.
+    
+    <p>This type of reasoning, where one avoids algebra and/or induction and
+        just proves an identity via counting, is called a <em>combinatorial proof</em>
+        (The BH textbook calls these "story proofs.) They are completely rigorous
+        and acceptable, and often preferred to algebraic proofs because they usually
+        come with a built-in explanation for why the identity is true. Here is
+        an example of how to write up the above reasoning:
+    
+    <div class="proof"><p> The right-hand side counts the number of subsets of any set
+        of size $n$. Let's say our set of size $n$ is called $X$. Now consider
+        the left-hand size. For each $0\leq i \leq n$, $\binom{n}{i}$ is the number of
+        subsets of size $i$ in $X$. Every subset $A \subset X$ has size $0\leq |A|
+        \leq n$, so the left-hand side is counting these sets as well.  </p></div>
+
+    Let's say we chose a different metaphor. Rather than starting with the right-hand side 
+    counting the number of subsets of size $n$, we also have that the right-hand side counts
+    the number of binary strings of length $n$. Then we have: 
+        
+    <div class="proof"><p> The right-hand side counts the number of binary strings of length $n$. 
+        For each $0\leq i \leq n$, the number of binary strings of length $n$ with $i$ 1's is $\binom{n}{i}$ &mdash;
+        first we place the 1's ($\binom{n}{i}$ choices), then place the rest of the 0's (1 choice). 
+        Every binary string of legnth $n$ has between 0 and $n$ 1's; therefore we separately count
+         the binary strings in each of these cases. Therefore the left-hand side also counts the number of binary
+         strings of length $n$. 
+    </p></div>
+    
+    <p>There are other proofs, say by induction. We'll do a different proof
+        below using something called the Binomial Theorem.
+    
+    
+    <p>There are a lot of other neat results that are provable with
+        combinatorial proofs. Perhaps the most famous one is due to Blaise Pascal in
+        the 1600s.</p>
+    
+    <div class="theorem"><p title="Pascal's Identity">For all integers
+        numbers $n \gt k \gt 0$,
+        $$\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}.$$
+    </p></div>
+
+    There is a straightforward algebraic proof of this fact,
+    but let's do a combinatorial proof.
+    
+    <div class="proof"><p>
+    </p>
+        <p>Let $A$ be a set of $n$ elements, where $n > 0$. The left-hand side counts the
+            number of subsets of $A$ of size $k$, which is $\binom{n}{k}$. We must
+            show that right-hand side also counts these sets.
+        </p>
+    
+        <p>Since $A$ is non-empty, we can choose an arbitrary element of $A$, say $a$.
+            Let $r$ be the number of subsets of $A$ that contain $a$, and $s$ be
+            the number of subsets that don't. Then
+            $$
+            \binom{n}{k} = r + s
+            $$
+            because every subset either contains $a$ or doesn't.
+        </p>
+    
+        <p>We claim that $r=\binom{n-1}{k-1}$. Here is a decision process
+            for counting sets that contain $a$:
+        <ol>
+            <li>Put $a$ in the set (1 choice).</li>
+            <li>Pick $k-1$ elements from the remaining $n-1$, and put them in
+                the set ($\binom{n-1}{k-1}$ choices).</li>
+        </ol>
+        <p>We next claim that $s=\binom{n-1}{k}$. This has a one-step decision
+            process: Just pick $k$ elements from the $n-1$ elements of $A$ that are
+            not $a$. This completes the proof.
+        </p>
+    </div>
+    
+    <p>This identity leads us to the famous Pascal's Triangle, a visual way to organize the binomial coefficients. 
+        We
+        start by arranging the nontrivial binomial coefficients in the
+        following infinite
+        pattern:
+        $$
+        \begin{matrix}
+        &&&&&& \binom 0 0 &&&&&&  \\
+        &&&&& \binom 1 0 && \binom 1 1 &&&&&  \\
+        &&&& \binom 2 0  && \binom 2 1  && \binom 2 2  &&&&  \\
+        &&& \binom 3 0  && \binom 3 1  && \binom 3 2  && \binom 3 3  &&&  \\
+        && \binom 4 0  && \binom 4 1  && \binom 4 2  && \binom 4 3  && \binom 4 4  &&  \\
+        & \binom 5 0  && \binom 5 1  && \binom 5 2  && \binom 5 3 && \binom 5 4  && \binom 5 5  &  \\
+        \binom 6 0  && \binom 6 1  && \binom 6 2  && \binom 6 3  && \binom 6 4  && \binom 6 5  && \binom 6 6
+        \end{matrix}
+        $$
+        Filling in the values for the coefficients, the triangle looks like this:
+        $$
+        \begin{matrix}
+        &&&&&& 1 &&&&&&  \\
+        &&&&& 1 && 1 &&&&&  \\
+        &&&& 1 && 2 && 1 &&&&  \\
+        &&& 1 && 3 && 3 && 1 &&&  \\
+        && 1 && 4 && 6 && 4 && 1 &&  \\
+        & 1 && 5 && 10 && 10 && 5 && 1 &  \\
+        1 && 6 && 15 && 20 && 15 && 6 && 1
+        \end{matrix}
+        $$
+        When viewed like this, it's easy to see how Pascal's identity is used to
+        construct the following row: We just add the two adjacent entries and put
+        the sum in the next row between them (and put $1$'s on the ends).
+    </p>
+
+    
+    <p>The following identity is due to Alexandre-Théophile Vandermonde from the
+        late 1700s.
+    </p>
+    
+    <div class="theorem"><p title="Vandermonde's Identity"> For all $n,m \geq
+        k \gt 0$,
+        $$ \binom{m+n}{k} = \sum_{i=0}^k \binom{m}{i} \binom{n}{k-i}.$$
+    </p>
+    </div>
+    
+    <div class="proof"><p> If we have disjoint sets $A$ and $B$ with $|A| = m$ and
+        $|B| = n$, then $\binom{m+n}{k}$ is the number of subsets of $A \cup B$ of
+        size $k$.
+    </p>
+    
+    
+        <p>We can consider this decision process choosing an $k$-element subset of
+            $A \cup B$.  Beware that this decision process gives a tree that is
+            not "regular", meaning that we cannot directly use the Multiplication Rule.
+        <ol>
+            <li>Pick a number $i \in \{0,\ldots,k\}$ .</li>
+            <li>Pick $i$ elements from $A$. ($\binom{m}{i}$ choices)</li>
+            <li>Pick $k-i$ elements from $B$. ($\binom{n}{k-i}$ choices)</li>
+        </ol>
+        </p>
+        <p>To see that this process counts every outcome exactly once, observe that
+            any subset of $k$ elements from $A\cup B$ has $i$ elements from $A$ and
+            $k-i$ elements from $B$ for some $i$.
+        </p>
+    
+        <p>Note that our decision in the first stage affects the number
+            of options in the later stages, so we need to be careful. After
+            we select $i$ however, the rest is regular: There are
+            $\binom{m}{i}\binom{n}{k-i}$ leaves under this part of our tree.
+            Now we apply the Addition Rule, and add up these counts as
+            $i$ ranges from $0$ to $k$ to get the theorem.
+        </p>
+    </div>
+    
+    </body>
+</html>
