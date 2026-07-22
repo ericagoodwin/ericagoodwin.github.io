@@ -33,7 +33,7 @@
 </head>
 
 <body>
-    <h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 9</h1>
+    <h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 10</h1>
     
     <h3 class="citation">The notes for this course began from a series originally
         written by <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>, with extensions by
@@ -64,9 +64,10 @@
                 counts this by the following decision process:
             </p>
             <ol>
-                <li>Pick $n-k$ people not to be on the committee ($\binom{n}{n-k}$ choices).</li>
-                <li>Choose the remaining remaining $k$ people to be on the committee (1 choice).</li>
+                <li>Pick $n-k$ people not to be in the group ($\binom{n}{n-k}$ choices).</li>
+                <li>Choose the remaining remaining $k$ people to be in the group (1 choice).</li>
             </ol>
+        Both sides of the equation count the number of ways to select $k$ people from a group of $n$ people, so they are equal. 
         </div>
     
     <p> For another example, consider the following theorem.
@@ -103,24 +104,22 @@
     
     <div class="proof"><p> The right-hand side counts the number of subsets of any set
         of size $n$. Let's say our set of size $n$ is called $X$. Now consider
-        the left-hand size. For each $0\leq i \leq n$, $\binom{n}{i}$ is the number of
-        subsets of size $i$ in $X$. Every subset $A \subset X$ has size $0\leq |A|
-        \leq n$, so the left-hand side is counting these sets as well.  </p></div>
+        the left-hand side. For each $0\leq i \leq n$, $\binom{n}{i}$ is the number of
+        subsets of size $i$ in $X$. Every subset $A \subseteq X$ has size $0\leq |A|
+        \leq n$, so the left-hand side is counting these sets as well. Both sides of the equation
+        count the number of subsets of a set of size $n$, so they are equal. </p></div>
 
     Let's say we chose a different metaphor. Rather than starting with the right-hand side 
     counting the number of subsets of size $n$, we also have that the right-hand side counts
     the number of binary strings of length $n$. Then we have: 
         
     <div class="proof"><p> The right-hand side counts the number of binary strings of length $n$. 
-        For each $0\leq i \leq n$, the number of binary strings of length $n$ with $i$ 1's is $\binom{n}{i}$ &mdash;
+        Now consider the left-hand side. For each $0\leq i \leq n$, the number of binary strings of length $n$ with $i$ 1's is $\binom{n}{i}$ &mdash;
         first we place the 1's ($\binom{n}{i}$ choices), then place the rest of the 0's (1 choice). 
-        Every binary string of legnth $n$ has between 0 and $n$ 1's; therefore we separately count
-         the binary strings in each of these cases. Therefore the left-hand side also counts the number of binary
-         strings of length $n$. 
+        Every binary string of legnth $n$ has between 0 and $n$ 1's, so the left-hand side is separately counting
+        the number of binary strings in each of these cases. Both sides of the equation count the number 
+        of binary strings of length $n$, so they are equal. 
     </p></div>
-    
-    <p>There are other proofs, say by induction. We'll do a different proof
-        below using something called the Binomial Theorem.
     
     
     <p>There are a lot of other neat results that are provable with
@@ -128,7 +127,7 @@
         the 1600s.</p>
     
     <div class="theorem"><p title="Pascal's Identity">For all integers
-        numbers $n \gt k \gt 0$,
+        numbers $n, k \gt 0$,
         $$\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}.$$
     </p></div>
 
@@ -160,7 +159,9 @@
         </ol>
         <p>We next claim that $s=\binom{n-1}{k}$. This has a one-step decision
             process: Just pick $k$ elements from the $n-1$ elements of $A$ that are
-            not $a$. This completes the proof.
+            not $a$. 
+            
+            Therefore both sides of the equation count the number of subsets of size $k$ from a set of size $n$, so they are equal. 
         </p>
     </div>
     
@@ -214,19 +215,21 @@
     </p>
     
     
-        <p>We can consider this decision process choosing an $k$-element subset of
-            $A \cup B$.  Beware that this decision process gives a tree that is
-            not "regular", meaning that we cannot directly use the Multiplication Rule.
+        <p>The right-hand side also counts the number of subsets of $A \cup B$ of size $k$ by the following decision process:
         <ol>
             <li>Pick a number $i \in \{0,\ldots,k\}$ .</li>
-            <li>Pick $i$ elements from $A$. ($\binom{m}{i}$ choices)</li>
-            <li>Pick $k-i$ elements from $B$. ($\binom{n}{k-i}$ choices)</li>
+            <li>Pick exactly $i$ elements from $A$. ($\binom{m}{i}$ choices)</li>
+            <li>Pick exactly $k-i$ elements from $B$. ($\binom{n}{k-i}$ choices)</li>
         </ol>
         </p>
-        <p>To see that this process counts every outcome exactly once, observe that
+        <p>Observe that
             any subset of $k$ elements from $A\cup B$ has $i$ elements from $A$ and
-            $k-i$ elements from $B$ for some $i$.
+            $k-i$ elements from $B$ for some $i$, so this process counts every outcome exactly once. 
         </p>
+        <p>
+            Therefore both sides of the equation count the number of subsets of size $k$ from $A \cup B$, so they are equal. 
+        </p>
+    </div>
     
         <p>Note that our decision in the first stage affects the number
             of options in the later stages, so we need to be careful. After
@@ -235,7 +238,6 @@
             Now we apply the Addition Rule, and add up these counts as
             $i$ ranges from $0$ to $k$ to get the theorem.
         </p>
-    </div>
     
     </body>
 </html>
