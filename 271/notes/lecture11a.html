@@ -1,0 +1,320 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel='shortcut icon' type='image/x-icon' href='../uc.png'>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+  <title>CMSC 27100 &mdash; Lecture 11a: Graphs</title>
+  <link rel="stylesheet" href="style-notes.css" type="text/css" media="screen, print">
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://benfred.github.io/venn.js/venn.js"></script>
+  <style>
+    body {
+      counter-reset: section 11 theorem;
+    }
+  </style>
+</head>
+
+<body>
+<h1><a href="../index.html">CMSC 27100</a> &mdash; Lecture 11a</h1>
+
+    
+<h3 class="citation">The notes for this course began from a series originally
+  written by <a href="https://people.cs.uchicago.edu/~timng/">Tim Ng</a>, with extensions by
+  <a href="https://people.cs.uchicago.edu/~davidcash/">David Cash</a> and
+  <a href="https://rand.cs.uchicago.edu/">Robert Rand</a>, adapted for the summer session by <a href="https://liujon23.github.io/">Jonathan Liu</a>. 
+  I have modified them to follow our course.</h3>
+
+<h2>Introduction to Graph Theory</h2>
+
+<p>Our last major topic in CMSC 27100 is <strong>graph theory</strong>.
+  By <em>graphs</em>, we mean mathematical objects that consist of nodes
+  connected by edges. We'll see that graphs are a helpful
+  conceptual model for representing connections or relationships between locations, people, and more. 
+  You can scroll down to see some visualizations of
+  graphs. Note that these graphs have nothing to do with the graphs you
+  saw in calculus: it is a just a collision of names.
+</p>
+
+<p> Computer science uses graphs to
+  model all sorts of abstract relationships in data structures. In
+  order to give some examples, let's fix the definition of a graph.
+</p>
+
+<div class="definition"> <p>A <strong>graph</strong> $G = (V,E)$ is a
+  pair of sets where $V$ is finite and every element of $E$ is a subset of
+  $V$ of size $2$. We call the elements of $V$ the <strong>vertices of
+    $G$</strong> and the elements of $E$ the <strong>edges of $G$</strong>.
+  When $e=\{u,v\}$ is an edge,
+  we will usually write $e=uv$ instead of $\{u,v\}$.
+  We define the <strong>empty graph</strong> to be
+  $G= (\emptyset,\emptyset)$.
+</p></div>
+
+<p>
+  This definition is presented for technical precision. In practice, graphs
+  and statements about them are quite intuitive, and we won't appeal to
+  the precise definition that often. Here is a visualization of a graph:
+</p>
+
+<img src="graph1.png" class="center" width="50%">
+
+<p>Graphs can represent various relationships, like friendships in
+  social networks, how computers are connected, and how locations are connected by roads or paths.
+</p>
+
+<p>A few comments about Definition 10.1 are in order. The objects defined here
+  are called <strong>finite simple undirected graphs</strong> in other contexts.
+<ol>
+
+  <li>They are <strong>finite</strong> because we require that $V$
+    is finite. In other contexts $V$ is allowed to be infinite.</li>
+
+  <li>They are <strong>simple</strong> because we disallow self-loops
+    (i.e. edges of form the $e=vv$) and we do not allow "multiple edges"
+    in a graph. Self loops are disallowed because we define edges to
+    subsets of size exactly 2. Multiple edges are disallowed because
+    $E$ is a set and can contain an edge $e$ at most once (by our definition
+    of a set).</li>
+
+  <li>They are <strong>undirected</strong> because within an edge
+    $e=\{u,v\}$ there is no notion of "direction". In the graph
+    above this is represented by the fact that we just drew lines with
+    out arrow tips.
+    A <strong>directed graph</strong>, which we don't have time
+    to cover in detail, has directed edges, which are <em>ordered
+      pairs</em> $e=(u,v)$. Diagrams for directed graphs have arrows
+    to indicate the direction of the edge.</li>
+</ol>
+
+<p>All graphs in this class will obey our definition. </p>
+
+<p>Graph theory has a lot of definitions and terminology, but it is mostly
+  intuitive, easy to remember, and even charming.
+</p>
+
+<div  class="definition"> <p>Two vertices $u$ and $v$ of a graph $G$
+  are <strong>adjacent</strong> or are <strong>neighbors</strong> if $uv\in E$.
+  We say the edge $e$ is <strong>incident</strong> to $u$ if $u\in e$. If $e=uv$
+  is an edge, we refer to $u$ and $v$ as the
+  <strong>endpoints of $e$</strong>.
+</p>
+</div>
+
+<div class="definition"><p> The <strong>neighbourhood of a vertex $v$</strong>,
+  denoted $N(v)$, is the set of neighbors of $v$. In mathematical notation, this is
+  \[
+  N(v) = \{u \in V \mid uv \in E\}.
+  \]
+  The <strong>neighborhood of a set of vertices $A \subseteq V$</strong>
+  is defined to be
+  \[
+  N(A) = \bigcup_{v \in A} N(v)\setminus A.
+  \]
+  That is, $N(A)$ consists of all vertices that are adjacent to some vertex in
+  $A$, but not in $A$ themselves.
+</p>
+</div>
+
+<div class="definition"> <p>The <strong>degree</strong> of a vertex $v$ in $G$,
+  denoted $\deg(v)$, is the number of its neighbors. A graph $G$ is
+  <strong>$k$-regular</strong> if every vertex in $G$ has degree $k$.
+</p>
+</div>
+
+<p>Observe that every vertex in the Petersen graph has degree 3, so the
+  Petersen graph is 3-regular, or <em>cubic</em>.  </p>
+
+<p>The following results are some of the first graph theory results, proved by
+  Leonhard Euler in 1736.  </p>
+
+<div class="theorem"> <p>Let $G = (V,E)$ be an graph. Then $$\sum_{v \in V} \deg(v)
+  = 2 \cdot |E|.$$ </p>
+</div>
+
+<p>This proof is usually presented very quickly, and indeed it is true for a
+  simple reason: Every edge $uv$ is incident to exactly two vertices: $u$ and
+  $v$. Therefore, each edge contributes 2 to the sum of the degrees of the
+  vertices in the graph.  </p>
+
+  <p>In case that is too fast, here is a more detailed proof.</p>
+
+<div class="proof">
+  <p>Define a
+    function $f: V \times E \to \{0,1\}$ by
+    $$
+    f(v,e) =
+    \begin{cases}
+    1 & \text{if $v$ is incident with $e$} \\
+    0 & \text{otherwise}
+    \end{cases}.
+    $$
+    Now consider the sum
+    $$
+    D = \sum_{v\in V}\sum_{e\in E} f(v,e).
+    $$
+    On the one hand, we have
+    $$
+    D = \sum_{v\in V}\deg(v)
+    $$
+    since the inner sum counts the edges incident at $v$, which
+    is the same as the degree of $v$. On the
+    other hand, we can reverse order of the sums to get
+    $$
+    D = \sum_{e\in E}\sum_{v\in V} f(v,e).
+    $$
+    The inner sum is always equal to $2$, since every edge is incident at
+    exactly two vertices. Therefore
+    $$
+    D = \sum_{e\in E} 2 = 2|E|,
+    $$
+    proving the theorem.
+  </p>
+</div>
+
+<div class="theorem"><p>Let $G$ be a graph. Then the number of
+  vertices of odd degree in $G$ is even.
+</p> 
+</div>
+
+<div class="proof"><p>
+  Let $V_1, V_2 \subseteq V$ be the sets of vertices of $G$ with odd and even
+  degree, respectively. Note that $V_1 \cup V_2 = V$, and $|V_1| + |V_2| = |V|$. Then
+  $$\sum_{v \in V} \deg(v) = 2|E| = \sum_{v \in V_1} \deg(v) + \sum_{v \in V_2} \deg(v).$$
+  We observe that since $\deg(v)$ for $v \in V_2$ is even, then the sum
+  $\sum_{v \in V_2} \deg(v)$ is even. Then since $2|E|$ is even, this must
+  mean that the sum $\sum_{v \in V_1} \deg(v)$ is even. But since $\deg(v)$ is
+  odd for $v \in V_1$, this implies that $|V_1|$ must be even.
+</p>
+</div>
+
+<p> When
+  rephrased as a bunch of people shaking hands, the lemma says that there must
+  be an even number of people who have shaken an odd number of hands.
+
+<h3>Some Special Graphs</h3>
+
+<p>We now define some notation for certain graphs that arise frequently.
+</p>
+
+<div class="definition"><p>A <strong>complete graph on $n$ vertices </strong> is
+  a graph $K_n = (V,E)$, where $|V|=n$ and $$E = \{uv \mid u,v \in V\}.$$
+  That is, all vertices are neighbours with each other.  </p>
+</div>
+
+<p>Here are some complete graphs: </p>
+
+<img src="graph2.png" class="center" width="70%">
+
+<div class="definition"> <p>A <strong>path on $n$ vertices</strong> is a graph
+  $P_n = (V,E)$ with
+  $n\geq 1$ distinct vertices $V = \{v_1,v_2,\ldots,v_n\}$
+  and
+  \[
+  E = \{v_1v_2,\  v_2v_3,\  \ldots,\  v_{n-1}v_n\}.
+  \]
+</p>
+</div>
+
+<p>Under this definition, we allow a graph consisting of a lone vertex with
+  no edges to be a path.  Here are some other graphs that are paths: </p>
+<img src="graph3.png" class="center" width="50%">
+
+<div class="definition"> <p>A <strong>cycle on $n$ vertices</strong> is a graph
+  $C_n = (V,E)$ with
+  $n\geq 3$ distinct vertices $V = \{v_1,v_2,\ldots,v_n\}$
+  and
+  \[
+  E = \{v_1v_2,\  v_2v_3,\  \ldots,\  v_{n-1}v_n,\ v_nv_1\}.
+  \]
+</p>
+</div>
+
+<p>And here are some graphs that are cycles:</p>
+<img src="graph4.png" class="center" width="70%">
+
+
+<!-- <div class="definition"><p>The <strong>$n$-(hyper)cube graph</strong> is the
+  graph $Q_n = (V,E)$, where $V = \{0,1\}^n$ (i.e., binary strings of length
+  $n$) and $uv\in E$ if and only if $u$ and $v$ differ in exactly one
+  bit.</p></div>
+
+<img src="graph5.png" class="center" width="70%">
+
+<p>It's called a cube (or hypercube) because one of the ways to draw it is
+  to arrange the vertices and edges so that they form the $n$th-dimensional
+  cube.</p> -->
+
+<h2>Subgraphs</h2>
+
+<p>It will frequently be useful to speak of one graph "containing" another
+  graph. For instance, we could describe a graph with a triangle as "containing a
+  $K_3$".  The notion of a subgraph makes this precise.</p>
+
+<div class="definition"> <p>A graph $G' = (V',E')$ is a <strong>subgraph</strong> of
+  a graph $G = (V,E)$ if $V' \subseteq V$ and $E' \subseteq E$.  A
+  subgraph $G'$ is <strong>spanning</strong> if $V'=V$.</p>
+</div>
+
+<p>Note that because we require that $G'$ itself be a graph, $E'$ must
+  consist of edges with both ends in $V'$.</p>
+
+<p>We will also use the concept of an <em>induced</em> subgraph.</p>
+</p>
+
+<div class="definition"><p>The <strong>subgraph induced by a subset $V' \subseteq V$
+</strong> is the graph $G'=(V',E')$, where $E' \subseteq E$ consists of every
+  edge with both ends in $V'$.  We say a subgraph $G'$ is an <strong>induced
+    subgraph of $G$</strong> if it is induced by some subset of $V$.  </p>
+</div>
+
+<p>A subgraph being induced by $V'$ means that it takes all of the edges from
+  $G$ that go between its vertices. For example, the graph induced by $V'=V$ is
+  always the original graph.</p>
+
+<h2>Walks, Paths, and Cycles</h2>
+
+<p>A natural impulse when presented with a graph is
+  to see if we can get from one circle to another by following the lines. More
+  formally, when we do this, what we're doing is checking if an object is
+  connected to another object. It's not surprising to learn that this is a
+  fundamental property of graphs that we'd like to work with.  </p>
+
+
+<div class="definition"> <p>A <strong>walk</strong> is a sequence of at least $2$
+  vertices $v_0,v_1,\ldots,v_k$ such that $v_{i-1}$ and $v_i$ are adjacent for
+  $1\leq i \leq k$. The <strong>length</strong> of a walk $v_0,v_1,\ldots,v_k$
+  is $k$. A walk is <strong>closed</strong> if $v_0=v_k$, i.e. it starts and
+  ends at the same vertex.</p>
+</div>
+
+<p>Note that a walk of length $k$ consists of $k+1$ vertices with $k$
+  "hops" between them.</p>
+
+<p>Walks are different from paths and cycles that we defined earlier.  Walks
+  are sequences of vertices and are <em>not</em> graphs. You can think of them
+  as "histories" for how someone might wander around a graph and write down the
+  vertices they visited. If a vertex is visited multiple times then it appears
+  in the walk multiple times. On the other hand, paths and cycles <em>are</em>
+  graphs; they consist of a set of vertices and a set of edges, and vertices 
+  do not appear multiple times. 
+</p>
+
+<p>Note that the above definitions are not universal and you should be
+  <em>very careful</em> when consulting other materials—in particular, the Rosen
+  textbook uses "path" to mean walk and "simple path" to mean path. The
+  terminology we use here is more standard.</p>
+
+</body>
+</html>
